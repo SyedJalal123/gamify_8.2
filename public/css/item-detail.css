@@ -1,0 +1,121 @@
+body {
+    color: #ffffff;
+}
+
+.gold-item-wrapper {
+    background-color: #fdf7e3;
+    border: 2px solid gold;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #000;
+}
+
+.gold-title {
+    color: #c9a200;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.gold-price {
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.standard-item-wrapper {
+    background-color: #222;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #fff;
+}
+
+.price {
+    font-size: 1.2rem;
+    color: #0f0;
+    margin: 1rem 0;
+}
+
+.seller-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #b02a2a;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.input-group-text {
+    /* min-width: 50px; */
+    justify-content: center;
+    background-color: #efeff1;
+    border: 0px;
+    font-weight: 600;
+    border-radius: 0px;
+}
+
+.input-group-text-input {
+    border-right: 0px;
+    height: auto;
+}
+
+
+
+.volume-dropdown {
+    /* border: 1px solid #e0e0e0; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.volume-dropdown-header {
+    display: flex;
+    width: 300px;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.volume-discount-icon {
+    margin-right: 8px;
+}
+
+.volume-dropdown-arrow {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.volume-dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.volume-dropdown-content {
+    width: 100%;
+    display: none;
+    padding: 10px;
+    padding-top: 0px;
+    background-color: #fafafa;
+}
+
+.volume-discount-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.volume-discount-table th,
+.volume-discount-table td {
+    text-align: left;
+    padding: 6px 0 !important;
+}
+
+.volume-discount-table th {
+    font-weight: bold;
+    color: #555;
+}

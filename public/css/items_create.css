@@ -1,0 +1,241 @@
+#regForm {
+    color: white;
+    font-family: 'Montserrat';
+    min-width: 70%;
+}
+
+input, select {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    font-family: Raleway;
+    border: 1px solid #aaaaaa;
+    border-radius: 10px;
+}
+.tab_2 input, .tab_2 select {
+    height: 38px;
+}
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+    background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+    display: none;
+    padding: 20px;
+    margin: 40px 0px;
+    border-radius: 18px;
+    /* text-align: center; */
+}
+
+@media (max-width: 576px) {
+    #regForm {
+        width: 100%;
+    }
+    .tab {
+        padding: 0px;
+    }
+}
+
+#regForm .tab_title {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 25px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+#regForm .tab_title_2 {
+    font-weight: 700;
+    font-size: 23px;
+    line-height: 25px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#regForm .buttons button {
+  background-color: #343a40;
+  border-radius: 5px;
+  color: #ffffff;
+  border: none;
+  padding: 7px 17px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+#regForm .buttons button:hover {
+    opacity: 0.8;
+}
+
+#prevBtn {
+    background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+    background-color: #04AA6D;
+}
+.step-number {
+    color: #bbbbbb;
+}
+
+.category-select {
+    box-shadow: 5px 5px 15px rgb(255 255 255 / 22%);
+    cursor: pointer;
+}
+.category-select:hover {
+    transition: 0.5s;
+    box-shadow: 5px 5px 15px rgb(255 255 255 / 0%);
+}
+
+
+
+
+.preview-container { display: flex; flex-wrap: wrap; gap: 10px; }
+.image-wrapper { position: relative; display: inline-block; }
+.image-wrapper img { width: 100px; cursor: pointer; border: 3px solid transparent; }
+.image-wrapper .remove-btn { 
+    position: absolute; top: 0; right: 0; background: red; color: white; 
+    border: none; cursor: pointer; padding: 2px 5px; font-size: 12px; 
+}
+.featured { border: 3px solid gold !important; }
+.featured-tag { 
+    position: absolute; bottom: 5px; left: 5px; background: gold; color: black; 
+    padding: 3px 5px; font-size: 12px; font-weight: bold; border-radius: 3px;
+}
+
+
+
+
+
+
+
+.card-section {
+    color: black;
+}
+.custom-container {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+  .main-card {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .card-section {
+    background: #ffffff;
+    border: 1px solid #e2e2e2;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  .form-label {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  small, .form-text {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 400;
+  }
+  .input-group-text {
+    /* min-width: 50px; */
+    justify-content: center;
+    background-color: #efeff1;
+    border: 0px;
+    font-weight: 600;
+    border-radius: 0px;
+  }
+  .input-group-text-input{
+    border-right: 0px;
+    height: auto;
+  }
+  .btn-minus, .btn-plus {
+    width: 36px;
+    background-color: #f1f1f1;
+    border: none;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 8px;
+  }
+  .btn-minus:hover, .btn-plus:hover {
+    background-color: #d6d6d6;
+  }
+  .btn-delete {
+    background-color: #dc3545;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  .btn-delete:hover {
+    background-color: #ffffff;
+    border: 1px solid #dc3545;
+  }
+  .btn-delete:hover i {
+    color: #dc3545;
+  }
+  .btn-delete i {
+    font-size: 18px;
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+  button, input, select, textarea {
+    font-size: 14px;
+  }
+  @media (max-width: 576px) {
+    .row.g-2 > div {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+
+/* Toggle button css */
+.list-group-item {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+
+.custom-switch {
+  transform: scale(1.15);
+  margin-left: 1rem;
+}
+
+.service-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header {
+  cursor: pointer;
+}
+
+.arrow-icon {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
