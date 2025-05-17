@@ -15,7 +15,9 @@ use App\Models\BuyerRequest;
 use App\Models\Game;
 use App\Models\Seller;
 use App\Http\Controllers\NowPaymentController;
+use App\Http\Controllers\SellerDashboardController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StripeController;
 use App\Notifications\Testing;
 use App\Notifications\BoostingOfferNotification;
@@ -41,21 +43,21 @@ Route::get('/clear-cache', function () {
     return "Config and cache cleared!";
 });
 
-Route::get('noti', function() {
-    $boostingOffer = BuyerRequest::where('id', 1)->with('service.categoryGame.game','user','attributes')->first();
-    $sellers = Seller::with('user')->get();
-    $users = $sellers->pluck('user')->filter();
-    $userIds = $users->pluck('id')->all();
+// Route::get('noti', function() {
+//     $boostingOffer = BuyerRequest::where('id', 1)->with('service.categoryGame.game','user','attributes')->first();
+//     $sellers = Seller::with('user')->get();
+//     $users = $sellers->pluck('user')->filter();
+//     $userIds = $users->pluck('id')->all();
 
-    $data = [
-        'title' => $boostingOffer->service->categoryGame->game->name.' ('.$boostingOffer->service->name.')',
-        'data1' => $boostingOffer->attributes[0]->pivot->value,
-        'data2' => $boostingOffer->attributes[1]->pivot->value,
-        'link' => url('boosting-request/' . $boostingOffer->id),
-    ];
+//     $data = [
+//         'title' => $boostingOffer->service->categoryGame->game->name.' ('.$boostingOffer->service->name.')',
+//         'data1' => $boostingOffer->attributes[0]->pivot->value,
+//         'data2' => $boostingOffer->attributes[1]->pivot->value,
+//         'link' => url('boosting-request/' . $boostingOffer->id),
+//     ];
 
-    Notification::send($users, new Testing($data));
-});
+//     Notification::send($users, new Testing($data));
+// });
 
 Route::middleware('verified')->group(function () {
     Route::get('/', function () {
@@ -82,15 +84,21 @@ Route::middleware('verified')->group(function () {
     Route::get('/live-search', [CatalogController::class, 'liveSearch'])->name('live.search');
     Route::get('/item/{item}', [CatalogController::class, 'itemDetail'])->name('item.detail');
     
-    //Boosting Services Routes
+    // Boosting Services Routes
     Route::get('/save-service', [ServiceController::class, 'store'])->middleware(['auth']);
     Route::get('/get-service-attributes', [ServiceController::class, 'getServiceAttributes']);
     Route::get('/boosting-request/{id}', [ServiceController::class, 'boostingRequest'])->middleware(['auth']);
     Route::post('/create-offer', [ServiceController::class, 'create_offer'])->name('offer.create')->middleware(['auth']);
 
-
+    
     // Checkout Routes
-    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout')->middleware(['auth']);
+    Route::post('/order', [CheckoutController::class, 'create'])->name('checkout.create')->middleware(['auth']);
+
+
+    // Orders Route
+    Route::get('order/{order_id}', [SellerDashboardController::class, 'orderDetail'])->name('order-detail');
+
 });
 
 Route::get('/dashboard', function () {
@@ -116,16 +124,14 @@ Route::get('/paypal/success', [PayPalController::class, 'success'])->name('paypa
 Route::get('/paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
 // NowPayment routes
-Route::get('/pay/now', [NowPaymentController::class, 'create'])->name('nowpayments.create');
+Route::post('/pay/now', [NowPaymentController::class, 'create'])->name('nowpayments.create');
 Route::post('/payment/now/callback', [NowPaymentController::class, 'callback'])->name('nowpayments.callback');
 Route::get('/payment/success', [NowPaymentController::class, 'success'])->name('nowpayments.success');
 Route::get('/payment/cancel', [NowPaymentController::class, 'cancel'])->name('nowpayments.cancel');
 
 // Stripe Checkout Routes
 Route::prefix('payment/stripe')->group(function () {
-
-    Route::post('/create-session', [StripeController::class, 'createCheckoutSession'])->name('stripe.session');
-
+    Route::post('/create-session', [StripeController::class, 'create'])->name('stripe.session');
     Route::get('/success', [StripeController::class, 'success'])->name('stripe.success');
     Route::get('/cancel', [StripeController::class, 'cancel'])->name('stripe.cancel');
 });

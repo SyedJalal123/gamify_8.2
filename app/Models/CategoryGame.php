@@ -12,7 +12,8 @@ class CategoryGame extends Model
 
     public function attributes()
     {
-        return $this->belongsToMany(Attribute::class, 'category_game_attribute', 'category_game_id', 'attribute_id');
+        return $this->belongsToMany(Attribute::class, 'category_game_attribute', 'category_game_id', 'attribute_id')
+                    ->withPivot('visible');
     }
     public function category()
     {

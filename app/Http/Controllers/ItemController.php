@@ -13,6 +13,9 @@ use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ItemController extends Controller
 {
@@ -69,7 +72,7 @@ class ItemController extends Controller
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
                 'images' => 'array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,bmp,svg|max:2048',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,bmp,svg|max:4048',
             ]);
     
             DB::beginTransaction(); // Start transaction
@@ -77,21 +80,32 @@ class ItemController extends Controller
             // Handle image uploads
             $imagePaths = [];
             $featureImagePath = null;
+            $cateId = $request->category_id;
     
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $index => $image) {
                     $randomNumber = rand(1, 99999);
                     $filename = time() . '.' . $randomNumber . '.' . pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $folderPath = 'uploads/items/';
                     $filePath = 'uploads/items/' . $filename;
                     $image->move(public_path('uploads/items'), $filename);
-                    $imagePaths[] = $filePath;
+
+                    // Resize Image
+                    $imgManager = new ImageManager(new Driver());
+
+                    $thumbImg = $imgManager->read($filePath);
+                    $thumbImg->cover(255, 255);
+                    $savePath = public_path('uploads/items/thumbnails/' . $filename);
+                    $thumbImg->save($savePath);
+                    
+                    $imagePaths[] = $filename;
     
                     if ($request->feature_image == $image->getClientOriginalName()) {
-                        $featureImagePath = $filePath;
+                        $featureImagePath = $filename;
                     }
     
                     if ($index === 0 && $featureImagePath === null) {
-                        $featureImagePath = $filePath;
+                        $featureImagePath = $filename;
                     }
                 }
             }
@@ -104,10 +118,11 @@ class ItemController extends Controller
                 'title'               => $request->title ?? null,
                 'images'              => !empty($imagePaths) ? json_encode($imagePaths) : null,
                 'feature_image'       => $featureImagePath ?? null,
+                'images_path'         => $folderPath ?? null,
                 'description'         => $request->description ?? null,
                 'delivery_time'       => $request->delivery_time ?? null,
-                'delivery_method'     => !empty($imagePaths) ? ($request->has('deliver_method') ? 'on' : 'off') : null,
-                'account_info'        => !empty($imagePaths) ? json_encode($request->account_info) : null,
+                'delivery_method'     => ($cateId == 2) ? $request->delivery_method : null,
+                'account_info'        => ($cateId == 2) ? json_encode($request->account_info) : null,
                 'quantity_available'  => $request->quantity_available ?? null,
                 'minimum_quantity'    => $request->minimum_quantity ?? null,
                 'price'               => $request->price,

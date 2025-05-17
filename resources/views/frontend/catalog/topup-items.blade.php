@@ -7,7 +7,7 @@
             @foreach ($item->attributes as $attribute)
                 @php if($attribute->topup == 1) {$topup_value = $attribute->pivot->value;} @endphp
             @endforeach
-            <div class="drop-box bg-white text-dark d-flex flex-column br-10 item-select cursor-pointer topup_boxes topup_box_{{$topup_value}} animate-class @if($i==1) topup_active @endif" data-id="{{ $item->id }}">
+            <div class="drop-box d-flex flex-column br-10 item-select cursor-pointer topup_boxes topup_box_{{$topup_value}} animate-class @if($i==1) topup_active @endif" data-id="{{ $item->id }}">
                 <div class="d-flex flex-column">
                     <img class="br-5"
                         src="{{ asset($item->feature_image !== null ? $item->feature_image : $item->categoryGame->feature_image) }}" width="40px">

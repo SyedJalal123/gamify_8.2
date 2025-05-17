@@ -2,26 +2,16 @@
 
 @section('css')
     <style>
-        /* section {
-            font-size: 14px;
-        }
-        .select2-container--default .select2-selection--single {
-            height: 39px !important;
-            font-size: 14px;
-        }
-        .d-none {
-            display: none !important;
-        }
-        @media (min-width: 768px) {
-            .d-md-block {
-                display: block !important;
-            }
-        } */
         .offers_img {
             position: absolute;
             top: -2px;
             right: -67px;
             width: 69%;
+        }
+        @media (max-width: 768px) { 
+            .section--first {
+                padding-top: 162px !important;
+            } 
         }
     </style>
 @endsection
@@ -95,6 +85,9 @@
                 </div>
             </div>
         </div>
+        <div id="pageOverlay">
+            <div class="spinner-border text-light" role="status"></div>
+        </div>
     </section>
 @endsection
 
@@ -162,6 +155,9 @@
             }
 
             if(valid == true){
+                const overlay = document.getElementById('pageOverlay');
+                overlay.style.display = 'flex';
+
                 $(`#${id}`).submit();
             }
         }

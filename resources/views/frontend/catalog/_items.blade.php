@@ -1,6 +1,6 @@
 
 <div class="col-12 mb-1 p-0 text-white" id="itemCount">
-    <p class="m-0 text-white-light fs-14">{{ $items->count() }} items found</p>
+    <p class="m-0 text-theme-grey fs-14">{{ $items->count() }} items found</p>
 </div>
 <div id="itemsContainer">
     @if ($items->count() > 0)
@@ -8,21 +8,21 @@
         @foreach ($items as $item)
         <div class="position-relative">
             <a href="{{ route('item.detail', $item->id) }}" class="text-dark text-decoration-none animate-class">
-                <div class="drop-box bg-white text-dark">
-                    <p class="text-black">
+                <div class="drop-box">
+                    <p class="">
                         @foreach ($item->attributes as $key => $attribute)
-                        @if ($attribute->applies_to == 1)
-                        <strong>@if ($key !== 0).@endif {{ $attribute->pivot->value }}</strong>
-                        @endif
+                            @if ($attribute->applies_to == 1)
+                                <strong>@if ($key !== 0).@endif {{ $attribute->pivot->value }}</strong>
+                            @endif
                         @endforeach
                     </p>
                     <div class="d-flex justify-content-between mb-4 fs-14 text-muted">
-                        <p class="two-line-ellipsis lh-1_2">{{ $item->title!=null ? $item->title : $item->categoryGame->title }}</p>
+                        <p class="two-line-ellipsis lh-1_2 mr-2">{{ $item->title!=null ? $item->title : $item->categoryGame->title }}</p>
                         <div class="mb-2 d-flex flex-column align-items-end">
-                            <img src="{{ asset($item->feature_image!==null ? $item->feature_image : $item->categoryGame->feature_image) }}" alt="" width="50px">
+                            <img src="{{ asset($item->feature_image!==null ? $item->images_path.'thumbnails/'.$item->feature_image : $item->categoryGame->feature_image) }}" alt="" width="50px">
                         </div>
                     </div>
-                    <p class="m-0 text-black ">
+                    <p class="m-0">
                         @php
                             $price = floor($item->price * 10000) / 10000;
                             $num = strlen(substr(strrchr($price, "."), 1));

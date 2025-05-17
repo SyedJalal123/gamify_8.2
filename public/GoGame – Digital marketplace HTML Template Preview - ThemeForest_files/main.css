@@ -333,7 +333,21 @@ body::-webkit-scrollbar-thumb {
   padding-left: 20px;
   position: relative;
 }
-.header__nav-menu a:before {
+/* .header__nav-menu a:before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10px;
+  background: url("../GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/arrow.svg") no-repeat left center;
+  background-size: 10px auto;
+  opacity: 0.5;
+  transition: 0.5s;
+} */
+
+.header__nav-menu .sm-arrow:before {
   content: '';
   position: absolute;
   display: block;
@@ -754,7 +768,7 @@ body::-webkit-scrollbar-thumb {
     width: 196px;
   }
   .header__nav-menu {
-    transform: translate3d(0px, 46px, 0px);
+    /* transform: translate3d(0px, 46px, 0px); */
     margin-top: 25px;
     border-top: none;
   }
@@ -4230,9 +4244,9 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   width: 100%;
   text-align: center;
 }
-.subscribe .form__btn {
+/* .subscribe .form__btn {
   width: 100%;
-}
+} */
 /*==============================
 	Cart
 ==============================*/
@@ -5053,15 +5067,16 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 44px;
+  /* width: 100%; */
+  /* height: 44px; */
   border-radius: 6px;
   background-color: #29b474;
   color: #fff;
   font-weight: 600;
   font-size: 13px;
+  padding: 0px 20px;
   letter-spacing: 0.6px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 }
 .form__btn:hover {
   background-color: #a782e9;
@@ -5092,9 +5107,9 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   .form--contacts {
     margin-bottom: 0;
   }
-  .form__btn {
+  /* .form__btn {
     width: 140px;
-  }
+  } */
 }
 @media (min-width: 992px) {
   .form--first {

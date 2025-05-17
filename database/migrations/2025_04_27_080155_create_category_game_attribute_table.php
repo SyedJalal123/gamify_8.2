@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('category_game_id');
             $table->unsignedBigInteger('attribute_id');
+            $table->integer('visible')->default('3');
             $table->timestamps();
         
             // Add foreign keys if you want

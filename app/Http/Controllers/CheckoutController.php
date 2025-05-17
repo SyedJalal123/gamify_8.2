@@ -7,23 +7,128 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Models\Game;
 use App\Models\Attribute;
+use App\Models\RequestOffer;
+use App\Models\Order;
+use App\Models\BuyerRequestConversation;
 use App\Models\ItemAttribute;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
     public function show(Request $request)
     {
-        $item = Item::with(['game', 'seller', 'attributes'])->findOrFail($request->item_id);
-        $quantity = max(1, (int) $request->quantity);
-        $price = $item->price * $quantity;
+        // dd($request->all());
+        if($request->offer_id){
+            $offer = RequestOffer::with(['buyerRequest.service.categoryGame', 'buyerRequest.attributes'])->findOrFail($request->offer_id);
+            $item = null;
+        }else {
+            $item = Item::with(['categoryGame.game', 'seller', 'attributes'])->findOrFail($request->item_id);
+            $offer = null;
+        }
 
-        return view('frontend.checkout', compact('item', 'quantity', 'price'));
+        $price = $request->price;
+        $discountPercentage = $request->discountPercentage;
+        $quantity = max(1, (int) $request->quantity);
+        $totalPrice = $request->totalPrice;
+
+        return view('frontend.checkout', compact('item', 'offer', 'quantity', 'discountPercentage', 'price', 'totalPrice'));
     }
+
     public function checkout(Request $request)
     {
         $item = Item::with(['attributes', 'game', 'category'])->findOrFail($request->item_id);
         $quantity = $request->quantity ?? null;
 
         return view('frontend.checkout', compact('item', 'quantity'));
+    }
+
+    public function create(Request $request) {
+        
+        // in Stripe and Nowpayment when customer pays if delivery method is automatic then add recieved in order_status then according to that show data on order-detail page
+        // dd($request->all());
+                
+        $validated = $request->validate([
+            'payment_method'      => 'required|in:stripe,nowpayments',
+            'total_price'         => 'required|numeric|min:0',
+            'item_id'             => 'nullable|integer|exists:items,id',
+            'offer_id'            => 'nullable|integer|exists:request_offers,id',
+            'product_name'        => 'required|string|max:255',
+            'quantity'            => 'required|integer|min:1',
+            'price'               => 'required|numeric|min:0',
+            'discountPercentage'  => 'nullable|numeric|min:0|max:100',
+            'payment_fees'        => 'nullable|numeric|min:0',
+            'delivery_type'       => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $order = Order::create([
+                'order_id'           => Str::uuid()->toString(),
+                'item_id'            => $validated['item_id'] ?? null,
+                'request_offer_id'   => $validated['offer_id'] ?? null,
+                'buyer_id'           => Auth::id(),
+                'title'              => $validated['product_name'],
+                'quantity'           => $validated['quantity'],
+                'price'              => $validated['price'],
+                'discount_in_per'    => $validated['discountPercentage'] ?? 0,
+                'payment_fees'       => $validated['payment_fees'] ?? 0,
+                'total_price'        => $validated['total_price'],
+                'payment_method'     => $validated['payment_method'],
+                'delivery_type'      => $validated['delivery_type'] ?? null,
+            ]);
+
+
+            // Creating conversation
+            if($request->offer_id){
+                $offer = RequestOffer::with('buyerRequest.buyerRequestConversation')->find($validated['offer_id']);
+
+                $offer = RequestOffer::with([
+                    'buyerRequest.buyerRequestConversation' => function ($query) use ($offer) {
+                            $query->where('seller_id', $offer->user_id)
+                                ->where('buyer_id', $offer->buyerRequest->user_id);
+                        }
+                    ])->find($validated['offer_id']);
+                $conversation = $offer->buyerRequest->buyerRequestConversation->first();
+
+                if($conversation == null){
+                    $conversation = BuyerRequestConversation::create([
+                        'buyer_request_id' => $offer->buyerRequest->id,
+                        'buyer_id' => $offer->buyerRequest->user_id,
+                        'seller_id' => $offer->user_id
+                    ]);
+                }
+            }else {
+                $item = Item::find($validated['item_id']);
+                $conversation = BuyerRequestConversation::create([
+                    'order_id' => $order->id,
+                    'buyer_id' => Auth::id(),
+                    'seller_id' => $item->seller_id
+                ]);
+            }
+
+            $request->merge(['order_id' => $order->id, 'conversation_id' => $conversation->id]);
+
+            DB::commit();
+
+            return match ($validated['payment_method']) {
+                'stripe'       => app(StripeController::class)->create($request),
+                'nowpayments'  => app(NowPaymentController::class)->create($request),
+            };
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Order creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
+        }
     }
 }

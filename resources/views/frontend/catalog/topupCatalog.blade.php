@@ -18,11 +18,16 @@
                 display: block !important;
             }
         }
+        @media (max-width: 768px) { 
+            .section--first {
+                padding-top: 162px !important;
+            } 
+        }
     </style>
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container mb-5" style="max-width: 1118px;">
             <div class="row col-12">
                 <img src="{{ asset($categoryGame->game->image) }}" style="width: 23px;height: max-content;">
@@ -69,6 +74,9 @@
                         <input type="hidden" id="item_id" name="item_id" value="">
                         <input type="hidden" id="item_value" name="item_value" value="">
                         <input type="hidden" id="item_price" name="price" value="">
+                        <input type="hidden" id="total-price" name="totalPrice" value="">
+                        <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
+
 
                         <div class="price-box text-black bg-white br-9 mt-4 mt-md-0">
                             @csrf
@@ -357,6 +365,7 @@
                             $('.price-box-form').removeClass('d-none');
                             $('#item_id').val(item.id);
                             $('#item_price').val(item.price);
+                            $('#total-price').val(item.price);
                             $('#item_value').val(item.topup);
                         }
                     });

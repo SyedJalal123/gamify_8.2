@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ItemAttribute extends Model
+class ItemAttribute extends Pivot
 {
     use HasFactory;
 
@@ -20,5 +21,11 @@ class ItemAttribute extends Model
     public function attribute()
     {
         return $this->belongsTo(Attribute::class);
+    }
+
+    public function categoryGameAttribute()
+    {
+        return $this->hasOne(CategoryGameAttribute::class, 'attribute_id', 'attribute_id')
+            ->where('category_game_id', $this->item->category_game_id);
     }
 }

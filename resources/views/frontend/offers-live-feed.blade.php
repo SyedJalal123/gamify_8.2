@@ -23,12 +23,17 @@
                 <strong class="f-15">${{$offer->price}}</strong>
             </div>
             @if($buyerRequest->user_id == auth()->user()->id)
-            <div class="col-12 col-md-3 d-flex justify-content-start justify-content-md-end border-bottom-0_5 border-md-none mt-1 p-2 pb-3 p-md-0">
+            <form method="GET" action="{{ route('checkout') }}" class="col-12 col-md-3 d-flex justify-content-start justify-content-md-end border-bottom-0_5 border-md-none mt-1 p-2 pb-3 p-md-0">
+                @csrf
+                <input type="hidden" name="offer_id" value="{{ $offer->id }}">
+                <input type="hidden" name="price" value="{{ $offer->price }}">
+                <input type="hidden" id="total-price" name="totalPrice" value="{{ $offer->price }}">
+                
                 @if(count($buyerRequest->buyerRequestConversation->where('seller_id', $offer->user_id)) == 0)
-                <button onclick="Livewire.dispatch('start-chat', { buyerId: {{ $buyerRequest->user_id }}, sellerId: {{ $offer->user->id }} });HideById('chat-btn-{{ $key }}');scrollToClass('live-chat');" id="chat-btn-{{$offer->user->id}}" class="btn btn-secondary fs-14 p-2 px-3 mr-2">Chat</button>
+                <button type="button" onclick="Livewire.dispatch('start-chat', { buyerId: {{ $buyerRequest->user_id }}, sellerId: {{ $offer->user->id }} });HideById('chat-btn-{{ $key }}');scrollToClass('live-chat');" id="chat-btn-{{$offer->user->id}}" class="btn btn-secondary fs-14 p-2 px-3 mr-2">Chat</button>
                 @endif
-                <button class="btn btn-dark fs-14 p-2 px-3">Checkout</button>
-            </div>
+                <button type="submit" class="btn btn-dark fs-14 p-2 px-3">Checkout</button>
+            </form>
             @endif
         </div>
     @endforeach

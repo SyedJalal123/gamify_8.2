@@ -26,3 +26,47 @@ function shortTimeAgo($datetime) {
     if ($diff->i > 0) return $diff->i . 'm';
     return 'now';
 }
+
+if (!function_exists('timeToSec')) {
+    function timeToSec(string $time): int
+    {
+        $map = [
+            'min'  => 60,
+            'h'    => 3600,
+            'day'  => 86400,
+            'days' => 86400,
+        ];
+
+        // Match patterns like "5 h", "2 days", etc.
+        if (preg_match('/(\d+)\s*(min|h|day|days)/', strtolower($time), $matches)) {
+            $value = (int) $matches[1];
+            $unit = $matches[2];
+
+            return $value * ($map[$unit] ?? 0);
+        }
+
+        return 0; // Fallback if format is invalid
+    }
+}
+
+
+if (!function_exists('durationBreakdown')) {
+    function durationBreakdown(int $seconds): array
+    {
+        $isNegative = $seconds < 0;
+        $seconds = abs($seconds);
+
+        $days = floor($seconds / 86400);
+        $hours = floor(($seconds % 86400) / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $secs = $seconds % 60;
+
+        return [
+            'negative' => $isNegative,
+            'days' => $days,
+            'hours' => $hours,
+            'minutes' => $minutes,
+            'seconds' => $secs,
+        ];
+    }
+}

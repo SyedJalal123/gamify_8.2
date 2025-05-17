@@ -19,6 +19,7 @@
         <link rel="stylesheet" href="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/main.css')}}">
         <!-- Select2 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{asset('css/colors.css')}}">
         <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
         <!-- Favicons -->
@@ -38,10 +39,10 @@
         <style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
 
         @yield('css')
-    @vite(['resources/js/app.js'])
+        @vite(['resources/js/app.js'])
         @livewireStyles
     </head>
-    <body>
+    <body class="dark-theme">
         
         <!-- header -->
         <header class="header">
@@ -183,14 +184,13 @@
                                             </span>
                                         </a> --}}
                                         <li class="header__nav-item mr-2 mr-md-3">
-                                            <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
-                                                <i class="bi bi-chat-left-text fs-21"></i>
+                                            <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                                                <i class="bi bi-chat-left-text fs-16"></i>
                                             </a>
-                                            
                                         </li>
                                         <li class="header__nav-item mr-2 mr-md-3">
-                                            <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
-                                                <i class="bi bi-bell fs-21"></i>
+                                            <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                                                <i class="bi bi-bell fs-16"></i>
                                                 <span class="top-tag bg-yellow text-black count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>
                                             </a>
                                             <ul class="dropdown-menu notification-dropdown header__nav-menu p-0 mCustomScrollbar _mCS_1" aria-labelledby="dropdownMenu4" style="overflow: visible;">
@@ -235,7 +235,6 @@
                                                         </a>
                                                     @endforeach
                                                 </li>
-                                                
                                                 <li class="mt-4">
                                                     <a href="#" class="pb-2 p-0 justify-content-center">
                                                         <button class="btn btn-dark fs-14">View all (<span class="count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>)</button>
@@ -244,7 +243,7 @@
                                             </ul>
                                         </li>
                                         <li class="header__nav-item">
-                                            <a  href="#" role="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                                            <a  href="#" role="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
                                                 {{ strtoupper(substr(auth()->user()->name,0,1)) }}
                                             </a>
                                             <ul class="dropdown-menu header__nav-menu  mCustomScrollbar _mCS_1" aria-labelledby="dropdownMenu3" style="overflow: visible;min-width: 279px;">
@@ -268,11 +267,11 @@
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li><a href="{{url('profile')}}" class="pb-2 light-border-black">Profile</a></li>
-                                                <li><a href="#">Orders</a></li>
-                                                <li><a href="#">Offers</a></li>
-                                                <li><a href="#" class="pb-2 light-border-black">Boosting</a></li>
-                                                <li>    
+                                                <li class="sm-arrow"><a href="{{url('profile')}}" class="pb-2 light-border-black">Profile</a></li>
+                                                <li class="sm-arrow"><a href="#">Orders</a></li>
+                                                <li class="sm-arrow"><a href="#">Offers</a></li>
+                                                <li class="sm-arrow"><a href="#" class="pb-2 light-border-black">Boosting</a></li>
+                                                <li class="sm-arrow">    
                                                     <a href="#">
                                                         <form method="POST" action="{{ route('logout') }}">
                                                             @csrf
@@ -472,7 +471,8 @@
         <script src="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/nouislider.min.js.download')}}"></script>
         <script src="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/jquery.mousewheel.min.js.download')}}"></script>
         <script src="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/jquery.mCustomScrollbar.min.js.download')}}"></script>
-        <script src="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/main.js.download')}}"></script>        
+        <script src="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/main.js.download')}}"></script>   
+
         <!-- Select2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><script> var publicPath = "{{ asset('/') }}"; </script>
         <script>
@@ -484,208 +484,7 @@
         @livewireScripts
 
         @yield('js')
-
-        <script>
-            $('#myModal').on('shown.bs.modal', function () {
-                $('#myInput').trigger('focus');
-            });
-
-            // Custom Search Bar Js
-
-                const customSearchInput = document.getElementById('customSearchInput');
-                const customDropdown = document.getElementById('customSearchDropdown');
-                const customOverlay = document.getElementById('customSearchOverlay');
-            
-                customSearchInput.addEventListener('focus', () => {
-                    customDropdown.classList.add('show');
-                    customOverlay.classList.add('show');
-                });
-            
-                customOverlay.addEventListener('click', () => {
-                    customDropdown.classList.remove('show');
-                    customOverlay.classList.remove('show');
-                    customSearchInput.blur();
-                });
-            //
-
-            // Live AJAX Search
-                document.addEventListener('DOMContentLoaded', function () {
-                    const customSearchInput = document.getElementById('customSearchInput');
-                    const customDropdown = document.getElementById('customSearchDropdown');
-                    const customOverlay = document.getElementById('customSearchOverlay');
-                    const customContainer = document.querySelector('.custom-search-container');
-                    let timeout = null;
-            
-                    if (!customSearchInput || !customDropdown || !customOverlay || !customContainer) return;
-            
-                    // Show dropdown and overlay when input is focused
-                    customSearchInput.addEventListener('focus', () => {
-                        customDropdown.classList.add('show');
-                        customOverlay.classList.add('show');
-                        customContainer.classList.add('active');
-            
-                        // Trigger default fetch if input is empty
-                        if (!customSearchInput.value.trim()) {
-                            fetchResults('');
-                        }
-                    });
-            
-                    // Hide dropdown and overlay on overlay click
-                    customOverlay.addEventListener('click', () => {
-                        customDropdown.classList.remove('show');
-                        customOverlay.classList.remove('show');
-                        customSearchInput.blur();
-                        customContainer.classList.remove('active');
-                    });
-            
-                    // Keyup live search
-                    customSearchInput.addEventListener('keyup', () => {
-                        clearTimeout(timeout);
-                        const query = customSearchInput.value.trim();
-            
-                        // Show loading
-                        customDropdown.innerHTML = `<div style="padding: 20px; color: #ccc;">Loading...</div>`;
-            
-                        timeout = setTimeout(() => {
-                            fetchResults(query);
-                        }, 200);
-                    });
-            
-                    function fetchResults(query = '') {
-                        fetch(`/live-search?q=${encodeURIComponent(query)}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                if (!data.length) {
-                                    customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">No results found.</div>';
-                                    return;
-                                }
-            
-                                const title = query ? 'SEARCH RESULTS' : 'POPULAR CATEGORIES';
-                                console.log(data);
-                                customDropdown.innerHTML = `
-                                    <h4>${title}</h4>
-                                    ${data.map(item => `
-                                        <a href="${item.link}" class="custom-search-category" style="text-decoration: none;">
-                                            <img src="${item.image}" alt="${item.name}" />
-                                            ${item.name}
-                                        </a>
-                                    `).join('')}
-                                `;
-                            })
-                            .catch(() => {
-                                customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">Something went wrong.</div>';
-                            });
-                    }
-                });
-            //
-
-            $('input[type="number"]').on('wheel', function(e) {
-                $(this).blur();
-            });
-
-            function animateDetachedOverlay(element) {
-                const rect = element.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-                const overlay = document.createElement('div');
-                overlay.classList.add('price-overlay');
-
-                // Set absolute position based on document scroll
-                overlay.style.position = 'absolute';
-                overlay.style.top = `${rect.top + scrollTop}px`;
-                overlay.style.left = `${rect.left + scrollLeft}px`;
-                overlay.style.width = `${rect.width}px`;
-                overlay.style.height = `${rect.height}px`;
-                overlay.style.pointerEvents = 'none';
-                overlay.style.transition = 'opacity 0.3s ease';
-                overlay.style.zIndex = 99;
-                overlay.style.opacity = '1';
-
-                document.body.appendChild(overlay);
-
-                // Animate out and remove
-                setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => overlay.remove(), 300);
-                }, 1000);
-            }
-
-            $('select').on('select2:open', function() {
-                const searchBox = $('.select2-container--open .select2-search__field');
-                
-                // Simple mobile device check
-                const isMobile = /iPhone|Android|iPad|iPod|Mobile/i.test(navigator.userAgent);
-
-                if (!isMobile && searchBox.length) {
-                    if (!searchBox.is(':focus')) {
-                        searchBox[0].focus(); // Access the raw DOM element
-                    }
-                }
-            });
-
-            // Define the shortTimeAgo function
-            function shortTimeAgo(date) {
-                const time = new Date(date);
-                const now = new Date();
-                const diffInSeconds = Math.floor((now - time) / 1000);
-                const diffInMonths = (now.getFullYear() - time.getFullYear()) * 12 + (now.getMonth() - time.getMonth());
-                const diffInYears = now.getFullYear() - time.getFullYear();
-
-                if (diffInYears >= 1) {
-                    return time.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); // Mar 12, 2023
-                }
-
-                if (diffInMonths >= 1) {
-                    return time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); // Mar 12
-                }
-
-                const times = [
-                    { label: "d", seconds: 86400 },
-                    { label: "h", seconds: 3600 },
-                    { label: "m", seconds: 60 },
-                    { label: "s", seconds: 1 },
-                ];
-
-                for (let i = 0; i < times.length; i++) {
-                    const timeUnit = times[i];
-                    const timeValue = Math.floor(diffInSeconds / timeUnit.seconds);
-
-                    if (timeValue >= 1) {
-                        return `${timeValue}${timeUnit.label} ago`;
-                    }
-                }
-
-                return "now";
-            }
-
-
-            function scroll_bottom(id) {
-                const $chatBody = $(id);
-                if ($chatBody.length) {
-                    $chatBody.scrollTop($chatBody[0].scrollHeight);
-                }
-            }
-
-            function HideById(id){
-                $('#'+id).hide();
-            }
-
-            function scrollToClass(className, index = 0, delay = 1200) { 
-                setTimeout(() => {
-                    const elements = document.querySelectorAll(`.${className}`);
-                    if (elements.length > index) {
-                        elements[index].scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start',
-                            inline: 'nearest'
-                        });
-                    } else {
-                        console.warn(`No element found with class "${className}" at index ${index}`);
-                    }
-                }, delay);
-            }
-        </script>
+        <script src="{{asset('js/custom.js')}}"></script>        
 
         {{-- Notification Sound --}}
         @auth
@@ -769,6 +568,28 @@
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <a href="{{url('seller-verification')}}" class="btn btn-primary">Verify</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Show Live Image Modal -->
+        <div class="modal fade" id="liveMediaModal" tabindex="-1" role="dialog" aria-labelledby="liveMediaModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="liveMediaModalLabel">Media</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="liveMediaContent">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a id="downloadBtn" href="#" class="btn btn-primary" download target="_blank"><i class="bi-download"></i> Download</a>
                     </div>
                 </div>
             </div>

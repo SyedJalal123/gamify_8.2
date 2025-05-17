@@ -205,6 +205,7 @@ function addLastStepVisibility() {
         steps[steps.length - 1].classList.add('d-none', steps.length === 1);
     }
 }
+
 function removeLastStepVisibility() {
     
     let steps = document.querySelectorAll('.step'); // Select all step elements
@@ -214,6 +215,19 @@ function removeLastStepVisibility() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const manualMethodRadio = document.getElementById('manual_method');
+    const automaticMethodRadio = document.getElementById('automatic_method');
+    const manualSection = document.getElementById('manual_method_show');
+
+    manualMethodRadio.addEventListener('click', () => {
+        manualSection.style.display = 'block'; // Show
+    });
+
+    automaticMethodRadio.addEventListener('click', () => {
+        manualSection.style.display = 'none'; // Hide
+    });
+});
 
 // Get data and other functions
 
@@ -526,31 +540,6 @@ function updateFeaturedImage(filename) {
     }
 }
 
-//  Volume Discount Script 
-
-function updatePlusMinus() {
-    document.querySelectorAll('.btn-minus').forEach(btn => {
-        btn.onclick = function() {
-            const input = this.nextElementSibling;
-            if (input.value > input.min) {
-                input.value--;
-            }
-        };
-    });
-    document.querySelectorAll('.btn-plus').forEach(btn => {
-        btn.onclick = function() {
-            const input = this.previousElementSibling.previousElementSibling;
-            input.value++;
-        };
-    });
-    document.querySelectorAll('.delete-row').forEach(btn => {
-            btn.onclick = function() {
-            this.closest('.discount-row').remove();
-        };
-    });
-}
-
-updatePlusMinus();
 
 document.getElementById('addRow').addEventListener('click', function() {
     const lastDiscountRow = document.querySelector('.discount-row:last-child');

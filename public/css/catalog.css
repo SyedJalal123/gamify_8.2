@@ -60,18 +60,18 @@
     }
 }
 
-.select2-container--default .select2-selection--single {
+/* .select2-container--default .select2-selection--single {
     height: 33px !important;
     font-size: 14px;
-}
+} */
 
 #deliveryInstructions {
     white-space: pre-line;  /* Preserves line breaks and collapses extra spaces */
 }
 
 .topup_active {
-    border: 2px solid rgb(255, 208, 0) !important;
-    background-color: #feffde !important;
+    border: 1px solid var(--border-active) !important;
+    background: linear-gradient(0deg, #8b6aff26, #8b6aff26) !important;
 }
 .price-box-form {
     position: relative;

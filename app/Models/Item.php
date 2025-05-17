@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use HasFactory;
-    protected $fillable = ['seller_id', 'category_game_id', 'title', 'images', 'feature_image', 'description', 'delivery_time', 'delivery_method', 'account_info', 'quantity_available', 'minimum_quantity', 'price', 'discount'];
+    protected $fillable = ['seller_id', 'category_game_id', 'title', 'images', 'feature_image', 'images_path', 'description', 'delivery_time', 'delivery_method', 'account_info', 'quantity_available', 'minimum_quantity', 'price', 'discount'];
 
     protected $casts = [
         'images' => 'array',
@@ -44,7 +44,8 @@ class Item extends Model
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class, 'item_attributes')
-                    ->withPivot('value') // If you have extra column(s) in pivot
-                    ->withTimestamps();   // If you have timestamps in pivot
+                ->using(ItemAttribute::class)
+                ->withPivot('value')          // Include pivot columns
+                ->withTimestamps();            // Include timestamps (if any)
     }
 }

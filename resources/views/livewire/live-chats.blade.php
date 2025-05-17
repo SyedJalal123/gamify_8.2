@@ -41,7 +41,7 @@
                         @if (str_starts_with($message->file_type, 'image/') || str_starts_with($message->file_type, 'video/'))
                             @if (str_starts_with($message->file_type, 'video/'))
                                 <div class="position-relative d-inline-block cursor-pointer" style="width: 312px; height: auto;"data-toggle="modal" 
-                                data-target="#mediaModal" onclick="showImageModal('{{ asset($message->file_path) }}', 'video')">
+                                data-target="#liveMediaModal" onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'video')">
                                     <video class="img-fluid rounded" width="312" muted>
                                         <source src="{{ asset($message->file_path) }}" type="{{ $message->file_type }}">
                                         Your browser does not support the video tag.
@@ -52,10 +52,12 @@
                                     </span>
                                 </div>
                             @else
-                                <img data-toggle="modal" data-target="#mediaModal"  src="{{ asset($message->file_path) }}" 
-                                onclick="showImageModal('{{ asset($message->file_path) }}', 'image')"
+                                <img data-toggle="modal" data-target="#liveMediaModal"  src="{{ asset($message->file_path) }}" 
+                                onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
                                 class="img-fluid rounded cursor-pointer" style="width: 312px;" alt="Image">
-                                <i class="bi-arrows-fullscreen" style="position: absolute;right: 0;top: 0;padding: 2px 8px;color: #a5a5a5;"></i>
+                                <i class="bi-arrows-fullscreen cursor-pointer" style="position: absolute;right: 0;top: 0;padding: 2px 8px;color: #a5a5a5;" 
+                                onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
+                                data-toggle="modal" data-target="#liveMediaModal"></i>
                             @endif
                         @elseif ($message->file_type != null)
                             @php $parts = explode('.', $message->file_path); @endphp
@@ -70,7 +72,9 @@
                         @endif
                         <div class="message-box d-flex flex-row justify-content-between align-items-end">
                             <span class="message-formatting">{{$message->message}}</span>     
+                            @if($message->sender_id == auth()->id())
                             <i class="fs-10 fw-bold px-1 text-black-40" style="letter-spacing: -2.5px;">✓@if($message->read_at !== null)✓@endif</i>
+                            @endif
                         </div>
                         <span class="msg_time_send">{{shortTimeAgo($message->created_at)}}</span>
                     </div>
@@ -91,7 +95,7 @@
                         @if (str_starts_with($message->file_type, 'image/') || str_starts_with($message->file_type, 'video/'))
                             @if (str_starts_with($message->file_type, 'video/'))
                                 <div class="position-relative d-inline-block cursor-pointer" style="width: 150px; height: auto;"data-toggle="modal" 
-                                data-target="#mediaModal" onclick="showImageModal('{{ asset($message->file_path) }}', 'video')">
+                                data-target="#liveMediaModal" onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'video')">
                                     <video class="img-fluid rounded" width="150" muted>
                                         <source src="{{ asset($message->file_path) }}" type="{{ $message->file_type }}">
                                         Your browser does not support the video tag.
@@ -102,8 +106,8 @@
                                     </span>
                                 </div>
                             @else
-                                <img data-toggle="modal" data-target="#mediaModal"  src="{{ asset($message->file_path) }}" 
-                                onclick="showImageModal('{{ asset($message->file_path) }}', 'image')"
+                                <img data-toggle="modal" data-target="#liveMediaModal"  src="{{ asset($message->file_path) }}" 
+                                onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
                                 class="img-fluid rounded cursor-pointer" style="width: 150px;" alt="Image">
                                 <i class="bi-arrows-fullscreen" style="position: absolute;right: 0;top: 0;padding: 2px 8px;color: #a5a5a5;"></i>
                             @endif

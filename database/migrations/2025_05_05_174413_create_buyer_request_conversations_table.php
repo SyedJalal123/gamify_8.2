@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('buyer_request_conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('buyer_request_id')->constrained('buyer_requests')->onDelete('cascade');
+            $table->foreignId('buyer_request_id')->nullable()->constrained('buyer_requests')->onDelete('cascade');
+            $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('cascade');
             $table->foreignId('buyer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

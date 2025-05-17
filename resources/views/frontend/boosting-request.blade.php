@@ -27,7 +27,7 @@
             ? $buyerRequest->buyerRequestConversation
             : $buyerRequest->buyerRequestConversation->where('seller_id', auth()->id());
     @endphp
-    <section class="section section--bg section--first">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container mb-5 p-0" style="max-width: 1118px;">
             <div class="row d-flex flex-row justify-content-between align-items-center mb-5 px-3">
                 <div class="d-flex flex-row align-items-center col-md-8">
@@ -137,7 +137,7 @@
                                     </div>
                                 </div>
                                 <div class="live-chats col-md-8 m-0 p-0 chat">
-                                    @livewire('Openchat', ['buyerRequestConversation' => $conversations->first(), 'identity' => $identity, 'buyerRequest' => $buyerRequest,])
+                                    @livewire('Openchat', ['buyerRequestConversation' => $conversations->first(), 'identity' => $identity, 'buyerRequest' => $buyerRequest])
                                 </div>
                             </div>
                         </div>
@@ -273,27 +273,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Create offer</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Show Image Modal -->
-    <div class="modal fade" id="mediaModal" tabindex="-1" role="dialog" aria-labelledby="mediaModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="mediaModalLabel">Media</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="mediaContent">
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a id="downloadBtn" href="#" class="btn btn-primary" download target="_blank"><i class="bi-download"></i> Download</a>
                 </div>
             </div>
         </div>
@@ -446,41 +425,6 @@
                 }
             }
         });
-
-        function showImageModal(url, type) {
-            const mediaContent = document.getElementById('mediaContent');
-
-            // Stop/reset existing video if present
-            const existingVideo = document.querySelector('#mediaModal video');
-            if (existingVideo) {
-                existingVideo.pause();
-                existingVideo.currentTime = 0;
-            }
-
-            // Set new content
-            if (type === 'image') {
-                mediaContent.innerHTML = `<img src="${url}" class="img-fluid" alt="Image">`;
-            } else if (type === 'video') {
-                mediaContent.innerHTML = `
-                    <video class="img-fluid" controls autoplay>
-                        <source src="${url}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>`;
-            }
-
-            // Set download button URL
-            document.getElementById('downloadBtn').href = url;
-
-            // Attach one-time event to stop/reset video when modal is closed
-            $('#mediaModal').one('hidden.bs.modal', function () {
-                const video = document.querySelector('#mediaModal video');
-                if (video) {
-                    video.pause();
-                    video.currentTime = 0;
-                }
-                mediaContent.innerHTML = '';
-            });
-        }
     </script>
 
 

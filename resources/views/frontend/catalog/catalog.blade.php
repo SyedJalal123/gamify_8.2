@@ -1,14 +1,18 @@
 @extends('frontend.app')
 
 @section('css')
-<link rel="stylesheet" href="{{asset('css/catalog.css')}}">
-<style>
-
-</style>
+    <link rel="stylesheet" href="{{asset('css/catalog.css')}}">
+    <style>
+        @media (max-width: 768px) { 
+            .section--first {
+                padding-top: 162px !important;
+            } 
+        }
+    </style>
 @endsection
 
 @section('content')
-<section class="section section--bg section--first">
+<section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
     <!-- MOBILE FILTER DRAWER -->
     <div id="filterDrawer" class="filter-drawer d-md-none">
         <div class="d-flex justify-content-between mx-3 mb-3 align-items-center">
@@ -34,7 +38,7 @@
                     </select>
                 </div>
             @endforeach
-            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-dark w-100">Clear Filters</a>
+            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme-1 w-100">Clear Filters</a>
         </form>
     </div>
     <!-- END MOBILE FILTER DRAWER -->
@@ -47,7 +51,7 @@
                 </div>
                 <!-- PC FILTER DRAWER -->
                 <div class="d-block d-md-none mb-3">
-                    <button type="button" class="btn btn-dark w-100" onclick="toggleFilters()">Filters</button>
+                    <button type="button" class="btn btn-theme-1 w-100" onclick="toggleFilters()">Filters</button>
                 </div>
                 <div class="d-none d-md-block mb-4 fade-in-delay-small">
                     <form method="GET" id="desktopFilterForm">
@@ -64,7 +68,7 @@
                                     </select>
                                 </div>
                             @endforeach
-                            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-dark btn-sm">
+                            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme-1 btn-sm">
                                 Clear Filters
                             </a>
                         </div>

@@ -10,6 +10,7 @@ class BuyerRequestConversation extends Model
     use HasFactory;
     protected $fillable = [
         'buyer_request_id',
+        'order_id',
         'buyer_id',
         'seller_id',
     ];
@@ -26,10 +27,15 @@ class BuyerRequestConversation extends Model
         return $this->belongsTo(BuyerRequest::class, 'buyer_request_id', 'id');
     }
 
+    public function order (){
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
+
     public function unreadMessages()
     {
         return $this->hasMany(Message::class)->where('read_at', null);

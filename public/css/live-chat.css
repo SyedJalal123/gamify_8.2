@@ -302,6 +302,7 @@
     }
 
     .message-formatting {
+        max-width: 275px;
         word-wrap: break-word;
         white-space: normal;
         margin: 0;

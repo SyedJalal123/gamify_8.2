@@ -6,7 +6,7 @@
 
 @section('content')
     <!-- home -->
-    <section class="section section--bg section--first" data-bg="GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg" style="background: url(&quot;GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg&quot;) center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container">
             <div class="row">
                 <!-- title -->
@@ -36,8 +36,7 @@
                                     </div>
                                 @endif
 
-                            </div>
-                            
+                            </div>                            
                         </div>
                         
                         <!-- One "tab" for each step in the form: -->
@@ -199,7 +198,18 @@
 
                                     <!-- Delivery Method -->
                                     <div class="card-section">
-                                        <div class="currency topup mb-3 currency_class topup_class items_class">
+                                        <div class="accounts accounts_class">
+                                            <label class="form-label">Delivery method</label>
+                                            <div>
+                                                <input type="radio" name="delivery_method" value="automatic" class="w-auto" checked id="automatic_method">
+                                                <label for="automatic_method">Automatic</label>
+                                            </div>
+                                            <div>
+                                                <input type="radio" name="delivery_method" value="manual" class="w-auto" id="manual_method">
+                                                <label for="manual_method">Manual</label>
+                                            </div>
+                                        </div>
+                                        <div id="manual_method_show" class="currency topup mb-3 currency_class topup_class items_class">
                                             <label class="form-label">Guaranteed Delivery Time</label>
                                             <select class="form-select currency_r topup_r items_r" id="delivery_time" name="delivery_time" required>
                                                 <option disabled selected value="">Choose Delivery Time</option>
@@ -219,18 +229,7 @@
                                             <label class="form-label">Delivery method</label>
                                             <input type="text" class="form-control items_r" required value="In-game delivery" disabled>
                                         </div>
-                                        <div class="accounts accounts_class">
-                                            <label class="form-label">Delivery method</label>
-                                            <div>
-                                                <input type="radio" name="deliver_method" class="w-auto" checked id="automatic_method">
-                                                <label for="automatic_method">Automatic</label>
-                                            </div>
-                                            <div>
-                                                <input type="radio" name="deliver_method" class="w-auto" id="manual_method">
-                                                <label for="manual_method">Manual</label>
-                                            </div>
-                                            <small class="form-text">When the buyer purchases your account, Gamify will instantly deliver the account details so you don't even have to be online!</small>
-                                        </div>
+                                        <small class="form-text accounts accounts_class">When the buyer purchases your account, Gamify will instantly deliver the account details so you don't even have to be online!</small>
                                     </div>
 
                                     <!-- Account Information -->

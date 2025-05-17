@@ -12,6 +12,14 @@ class NowPaymentController extends Controller
      */
     public function create(Request $request)
     {
+        // dd($request->all());
+        if(isset($request->product_name)){
+            $description = $request->product_name;
+        }else {
+            $description = 'Order #---';
+
+        }
+
         $validatedData = $request->validate([
             'total_price' => 'required|numeric|min:0.01',
             // 'price_currency' => 'required|string',
@@ -20,18 +28,20 @@ class NowPaymentController extends Controller
         ]);
 
         $response = Http::withHeaders([
-            'x-api-key' => env('NOWPAYMENTS_API_KEY')
+            'x-api-key' => env('NOWPAYMENTS_API_KEY'),  
+            'x-nowpayments-sandbox' => 'true',
         ])->post('https://api.nowpayments.io/v1/invoice', [
             'price_amount' => $validatedData['total_price'],
             'price_currency' => 'usd',
             'order_id' => uniqid(),
-            'order_description' => 'Test Laravel Order',
+            'order_description' => $description,
             'ipn_callback_url' => route('nowpayments.callback'),
-            'success_url' => route('nowpayments.success'),
+            'success_url' => route('nowpayments.success', ['order_id' => $request->order_id]),
             'cancel_url' => route('nowpayments.cancel'),
         ]);
 
         $invoice = $response->json();
+
 
         if (isset($invoice['invoice_url'])) {
             return redirect($invoice['invoice_url']);
@@ -56,8 +66,9 @@ class NowPaymentController extends Controller
     /**
      * Handle successful payment redirect
      */
-    public function success()
+    public function success(Request $request)
     {
+        dd($request->all());
         return redirect()->back()->with('success','Payment was successful! Thank you.');
     }
 
