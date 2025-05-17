@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 
 class SellerVerificationComponent extends Component
 {
@@ -18,16 +19,21 @@ class SellerVerificationComponent extends Component
     }
 
     #[On('deliverOrder')]
-    public function deliverOrder()
+    public function deliverOrder($orderStatus)
     {
         if (is_null($this->order->delivered_at)) {
             $this->order->update([
                 'delivered_at' => now(),
+                'order_status' => $orderStatus,
             ]);
-
-            $this->order->refresh(); // ensure latest data
-            $this->dispatch('orderDelivered'); // notify other components
+        }else {
+            $this->order->update([
+                'order_status' => $orderStatus,
+            ]);
         }
+
+        $this->order->refresh(); // ensure latest data
+        $this->dispatch('orderDelivered', orderStatus: $orderStatus); // notify other components
     }
 
     public function render()

@@ -1,9 +1,13 @@
+<style>
+    @media (max-width: 768px) {
+        .card {
+            height: 507px !important;
+        }
+    }
+</style>
+
 <div class="card m-0 p-0">
     @if($conversation != null)
-    <div class="d-flex d-md-none px-3 py-2 fs-16 text-white cursor-pointer back">
-        <i class="bi-caret-left-fill"></i>
-        <span class="ml-2">Inbox</span>
-    </div>
     <div class="card-header msg_head">
         <div class="d-flex bd-highlight">
             <div class="img_cont">

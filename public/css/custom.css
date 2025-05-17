@@ -17,6 +17,10 @@
     font-size: 55px;
 }
 
+.fs-50 {
+    font-size: 50px;
+}
+
 .fs-40 {
     font-size: 40px;
 }
@@ -84,6 +88,19 @@
     font-size: 6px;
 }
 @media (min-width: 768px) {
+    
+    .fs-md-55 {
+        font-size: 55px;
+    }
+
+    .fs-md-50 {
+        font-size: 50px;
+    }
+
+    .fs-md-40 {
+        font-size: 40px;
+    }
+    
     .fs-md-22 {
         font-size: 22px;
     }
@@ -1329,6 +1346,7 @@
 }
 
 .big-icon-bg {
+    min-width: 80px;
     width: 80px;
     height: 80px;
     display: flex;
@@ -1341,6 +1359,15 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .big-icon-bg {
+        min-width: 48px;
+        width: 48px;
+        height: 48px;
+        font-size: 25px;
+    }
 }
 
 .invalid {

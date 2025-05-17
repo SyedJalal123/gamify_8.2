@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Order;
 use Carbon\Carbon;
+use Livewire\Attributes\On;
 
 class CountdownComponent extends Component
 {
@@ -47,6 +48,8 @@ class CountdownComponent extends Component
         $this->order->refresh();
         $this->isDelivered = true;
         $this->calculateTimeRemaining();
+
+        
     }
 
     public function render()

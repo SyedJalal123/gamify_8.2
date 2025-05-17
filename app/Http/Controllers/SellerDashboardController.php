@@ -28,10 +28,16 @@ class SellerDashboardController extends Controller
         
         if($conversation->seller_id == auth()->user()->id){
             $identity = 'seller';
-        }else {
+        }elseif($conversation->buyer_id == auth()->user()->id) {
             $identity = 'buyer';
+        }else {
+            $identity = 'unknown';
         }
         
-        return view('frontend.order-detail', compact('order', 'item', 'offer', 'categoryGame', 'identity', 'conversation', 'maxDeliveryTime'));
+        if($identity == 'unknown'){
+            return redirect('/')->with('error', 'You are not authorized to perform this action.');
+        }else {
+            return view('frontend.order-detail', compact('order', 'item', 'offer', 'categoryGame', 'identity', 'conversation', 'maxDeliveryTime'));
+        }
     }
 }

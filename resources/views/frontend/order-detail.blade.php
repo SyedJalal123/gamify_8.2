@@ -10,6 +10,14 @@
                 padding-top: 144px !important;
             } 
         }
+        .d-none {
+            display: none !important;
+        }
+        @media (min-width: 768px) {
+            .d-md-block {
+                display: block !important;
+            }
+        }
     </style>
     <script src="https://js.stripe.com/v3/"></script>
     <link rel="stylesheet" href="{{asset('css/live-chat.css')}}">
@@ -45,13 +53,13 @@
                                 <span class="text-theme-secondary fs-14 d-none d-md-block">Order ID: {{ $order->order_id }}</span>
                             </div>
                             <div class="d-flex align-items-center d-md-none">
-                                <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill @endif text-capitalize">
+                                <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill @endif text-capitalize pill-order-status">
                                     {{ $order->order_status }}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="d-md-flex align-items-center d-none">
-                        <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill  @endif text-capitalize">
+                    <div class="d-md-flex align-items-center d-none d-md-block">
+                        <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill  @endif text-capitalize pill-order-status">
                             {{ $order->order_status }}</span>
                     </div>
                 </div>
@@ -70,13 +78,11 @@
                     </div>
                     @endif
 
-                    {{-- @if($order->order_status == 'pending delivery') --}}
                     <livewire:seller-verification-component :order="$order" :identity="$identity" />
-                    {{-- @endif --}}
-
-                    @if($order->order_status != 'pending delivery')
-                    <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary p-4 br-7 mb-3">
-                        <form method="post" action="#" class="order-feedback-container d-flex flex-column align-items-center">
+                    
+                    @if($identity == 'buyer')
+                    <div class="@if($order->order_status == 'pending delivery' || $order->order_status == 'delivered') d-none @endif order-feedback-container d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary p-4 br-7 mb-3">
+                        <form method="post" action="#" class="d-flex flex-column align-items-center">
                             <h5 class="fw-bold">Leave feedback for the seller</h5>
                             <div class="d-flex flex-row align-items-center mb-3">
                                 <i class="fa-solid fa-crown mr-2"></i>
@@ -117,7 +123,7 @@
                 </div>
                 <div class="col-lg-4 d-flex flex-column">
                     <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-2 px-3 br-7 h-fit mb-3">
-                        <span class="fw-bold mb-3">{{ $order->delivered_at ? 'Delivery time' : 'Guaranteed delivery time'}}</span>
+                        <span class="fw-bold mb-3" id="delivery-time-title">{{ $order->delivered_at ? 'Delivery time' : 'Guaranteed delivery time'}}</span>
                         <div class="text-center fs-18 pb-4">
                             @if($item !== null && $item->delivery_method == 'automatic') 
                                <i class="bi bi-lightning-charge-fill text-light-blue mr-2"></i><span>Instant delivery</span>
@@ -130,7 +136,7 @@
                     <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 pb-4 br-7 h-fit mb-3">
                         <div class="d-flex flex-row justify-content-between align-items-center mb-3">
                             <span class="fw-bold">Order details</span>
-                            <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-default  @endif text-capitalize">
+                            <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-default  @endif text-capitalize pill-order-status">
                                 {{ $order->order_status }}</span>
                         </div>
                         <div class="d-flex flex-column gap-12px">
@@ -182,28 +188,37 @@
 
     <!-- Order Confirmation Modal -->
     <div class="modal fade" id="orderConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="orderConfirmationModalLabel">Seller verification required</h5>
+                <h5 class="modal-title" id="orderConfirmationModalLabel">Order recieved confirmation</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container">
-                        <div class="container__top d-flex align-items-center flex-column">
-                            <img class="app-image" alt="Seller Details review" height="47" width="47" loading="eager" fetchpriority="auto" ng-img="true" src="https://w9g7dlhw3kaank.www.eldorado.gg/WDlx5231QLHO4pNG8aWDLC6fwyjcgZYq1rK6yiNBBlMlTqwI5oZAqBlyRUmA07HH6oAYiZxmF6PrQLDdoG4x7M6i7mNzNoQx80fB84tuP1nmjA0kdWLI5YVxsT5YbpbXPbr" srcset="https://assetsdelivery.eldorado.gg/v7/_assets_/miscellaneous/v6/id-verification.svg?w=47 1x, https://assetsdelivery.eldorado.gg/v7/_assets_/miscellaneous/v6/id-verification.svg?w=94 2x">
-                            <strong>Seller Verification</strong>
-                            <div role="status" tabindex="0" aria-label="Documents required">
-                                <span class="badge badge-pill badge-danger">Documents required</span>
-                            </div>
+                    <div class="d-flex flex-column">
+                        <div class="form-check mb-2">
+                            <input class="w-auto form-check-input" type="checkbox" id="orderRecievedConfirmation" name="orderRecievedConfirmation" required>
+                            <label class="form-check-label fs-13 fs-md-15">
+                                <p>By clicking "Mark as received", I confirm that I fully received my order, and the product matches the offer description.</p>
+                                
+                                <p class="fs-13 fs-md-15">After this, you are no longer eligible for a refund. Never confirm early, even if the seller has asked you to.</p>
+                                <p id="orderRecievedConfirmationError" class="text-theme-cherry d-none">Please confirm you received your order before continuing.</p>
+                            </label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a href="#" onclick="Livewire.dispatch('deliverOrder');" class="btn btn-primary">Verify</a>
+                <button onclick="
+                    if (document.getElementById('orderRecievedConfirmation').checked) {
+                        Livewire.dispatch('deliverOrder', { orderStatus: 'recieved' });
+                        $('#orderConfirmationModal').modal('hide'); // jQuery-based close
+                    } else {
+                        $('#orderRecievedConfirmationError').removeClass('d-none');
+                    }
+                " class="btn btn-primary">Verify</button>
                 </div>
             </div>
         </div>
@@ -313,6 +328,16 @@
                     scroll_bottom('.msg_card_body');
                 }
             }, 0.1);
+        });
+
+        Livewire.on('orderDelivered', (data) => {
+            $('#delivery-time-title').text('Delivery time');
+            $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-blue');
+
+            if(data['orderStatus'] == 'recieved' || data['orderStatus'] == 'completed'){
+                $('.order-feedback-container').removeClass('d-none');
+            }
+
         });
     </script>
 
