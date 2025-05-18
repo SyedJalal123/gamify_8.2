@@ -38,7 +38,7 @@
                     </select>
                 </div>
             @endforeach
-            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme-1 w-100">Clear Filters</a>
+            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme btn-theme-default w-100">Clear Filters</a>
         </form>
     </div>
     <!-- END MOBILE FILTER DRAWER -->
@@ -51,7 +51,7 @@
                 </div>
                 <!-- PC FILTER DRAWER -->
                 <div class="d-block d-md-none mb-3">
-                    <button type="button" class="btn btn-theme-1 w-100" onclick="toggleFilters()">Filters</button>
+                    <button type="button" class="btn btn-theme btn-theme-default w-100" onclick="toggleFilters()">Filters</button>
                 </div>
                 <div class="d-none d-md-block mb-4 fade-in-delay-small">
                     <form method="GET" id="desktopFilterForm">
@@ -68,7 +68,7 @@
                                     </select>
                                 </div>
                             @endforeach
-                            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme-1 btn-sm">
+                            <a href="{{ route('catalog.index', [$categoryGame->id]) }}" class="btn btn-theme btn-theme-default btn-sm">
                                 Clear Filters
                             </a>
                         </div>

@@ -10,25 +10,27 @@ wire:poll.1s
             @if($duration['days'] > 0)
             <div class="d-flex flex-column px-4 dividor-border-theme-right">
                 <span class="fs-18">{{ $duration['days'] }}</span>
-                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Days</span>
+                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Day{{$duration['days'] !== 1.0 ? 's' : ''}}</span>
             </div>
             @endif
             @if($duration['hours'] > 0)
             <div class="d-flex flex-column px-4 dividor-border-theme-right">
                 <span class="fs-18">{{ $duration['hours'] }}</span>
-                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Hours</span>
+                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Hour{{$duration['hours'] !== 1.0 ? 's' : ''}}</span>
             </div>
             @endif
-            @if($duration['minutes'] > 0)
-            <div class="d-flex flex-column px-4 dividor-border-theme-right">
-                <span class="fs-18">{{ $duration['minutes'] }}</span>
-                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Minutes</span>
-            </div>
-            @endif
+            {{-- @if($duration['minutes'] > 0) --}}
             <div class="d-flex flex-column px-4">
-                <span class="fs-18">{{ $duration['seconds'] }}</span>
-                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Seconds</span>
+                <span class="fs-18">{{ $duration['minutes'] }}</span>
+                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Minute{{$duration['minutes'] !== 1.0 ? 's' : ''}}</span>
             </div>
+            {{-- @endif --}}
+            @if ($duration['seconds'] > 0)
+            <div class="d-flex flex-column px-4 dividor-border-theme-left">
+                <span class="fs-18">{{ $duration['seconds'] }}</span>
+                <span class="fs-12  {{ $deadline < $timeRemaining ? 'text-theme-cherry-light' : 'text-theme-secondary' }}">Second{{$duration['seconds'] !== 1.0 ? 's' : ''}}</span>
+            </div>
+            @endif
         </div>
     @else
         <span>

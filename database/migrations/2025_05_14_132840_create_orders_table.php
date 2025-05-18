@@ -30,7 +30,13 @@ return new class extends Migration
             $table->string('delivery_type')->nullable();
             $table->string('payment_status')->default('pending');
             $table->string('order_status')->default('pending delivery');
+
+            $table->integer('cancelation_reason')->default('1');
+            $table->text('cancelation_details')->nullable();
+            
+
             $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

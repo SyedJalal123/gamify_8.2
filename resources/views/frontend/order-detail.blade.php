@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-    
+    {{-- Live events for other user, order cancel part, reviews --}}
     @php
         $quantity = $order->quantity;
         $unitPrice = $order->price;
@@ -34,7 +34,6 @@
         $discountPercentage = $order->discount_in_per;
         $loyaltyPoints = floor($totalPrice * 100);
     @endphp
-
     <section class="section section--bg section--first fs-14" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container pb-5"> 
 
@@ -52,14 +51,32 @@
                                 <span class="mb-2 text-theme-primary fw-bold fs-14 two-line-ellipsis">{{ $order->title }}</span>
                                 <span class="text-theme-secondary fs-14 d-none d-md-block">Order ID: {{ $order->order_id }}</span>
                             </div>
+                            @php
+                                if($order->order_status == 'pending delivery')
+                                {
+                                    $order_pill_class = 'btn-theme-pill-yellow';
+                                } 
+                                elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') 
+                                {
+                                    $order_pill_class = 'btn-theme-pill-blue';
+                                }
+                                elseif($order->order_status == 'cancelled') 
+                                {
+                                    $order_pill_class = 'btn-theme-pill-red';
+                                }
+                                else
+                                {
+                                    $order_pill_class = 'btn-theme-pill-default';
+                                } 
+                            @endphp
                             <div class="d-flex align-items-center d-md-none">
-                                <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill @endif text-capitalize pill-order-status">
+                                <span class="btn-theme-pill {{ $order_pill_class }} text-capitalize pill-order-status">
                                     {{ $order->order_status }}</span>
                             </div>
                         </div>
                     </div>
                     <div class="d-md-flex align-items-center d-none d-md-block">
-                        <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-pill  @endif text-capitalize pill-order-status">
+                        <span class="btn-theme-pill {{ $order_pill_class }} text-capitalize pill-order-status">
                             {{ $order->order_status }}</span>
                     </div>
                 </div>
@@ -67,18 +84,34 @@
 
             <div class="d-flex row">
                 <div class="col-lg-8 d-flex flex-column mb-3">
-                    @if($item !== null && $item->account_info != null)
-                    <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 br-7 mb-3">
-                        <h4 class="fw-bold">Account details:</h4>
-                        <div class="border-theme-1 background-theme-card br-7 p-2">
-                            @foreach (json_decode($item->account_info) as $account)
-                                <div style="white-space: pre-line; overflow: hidden;">{!! $account !!}</div>
-                            @endforeach
-                        </div>
-                    </div>
+                    @if($item !== null && $item->delivery_method == 'automatic' && $item->account_info != null)
+                        @if ($identity == 'seller')
+                            <div class="d-flex flex-row border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 br-7 mb-3">
+                                <div class="d-flex big-icon-bg mr-3">
+                                    <i class="bi bi-check2 fs-md-50 brand-theme-dark"></i>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    <h4 class="fw-bold">Order {{ $order->order_status }}:</h4>
+                                    <div class="border-theme-1 background-theme-card br-7 p-2">
+                                        @foreach (json_decode($item->account_info) as $account)
+                                            <div style="white-space: pre-line; overflow: hidden;">{!! $account !!}</div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 br-7 mb-3">
+                                <h4 class="fw-bold">Account details:</h4>
+                                <div class="border-theme-1 background-theme-card br-7 p-2">
+                                    @foreach (json_decode($item->account_info) as $account)
+                                        <div style="white-space: pre-line; overflow: hidden;">{!! $account !!}</div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        <livewire:seller-verification-component :order="$order" :identity="$identity" />
                     @endif
-
-                    <livewire:seller-verification-component :order="$order" :identity="$identity" />
                     
                     @if($identity == 'buyer')
                     <div class="@if($order->order_status == 'pending delivery' || $order->order_status == 'delivered') d-none @endif order-feedback-container d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary p-4 br-7 mb-3">
@@ -111,7 +144,7 @@
                                 <!---->
                             </div>
                             <div>
-                                <button id="submit-button" class="btn btn-theme-1 fw-bold">Leave Feedback</button>
+                                <button id="submit-button" class="btn btn-theme btn-theme-default fw-bold">Leave Feedback</button>
                             </div>
                         </form>
                     </div>
@@ -122,7 +155,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 d-flex flex-column">
-                    <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-2 px-3 br-7 h-fit mb-3">
+                    <div id="delivery-time-container" class="@if($order->cancelled_at !== null) d-none @endif d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-2 px-3 br-7 h-fit mb-3">
                         <span class="fw-bold mb-3" id="delivery-time-title">{{ $order->delivered_at ? 'Delivery time' : 'Guaranteed delivery time'}}</span>
                         <div class="text-center fs-18 pb-4">
                             @if($item !== null && $item->delivery_method == 'automatic') 
@@ -136,7 +169,7 @@
                     <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 pb-4 br-7 h-fit mb-3">
                         <div class="d-flex flex-row justify-content-between align-items-center mb-3">
                             <span class="fw-bold">Order details</span>
-                            <span class="@if($order->order_status == 'pending delivery') btn-theme-pill-yellow @elseif($order->order_status == 'recieved' || $order->order_status == 'delivered') btn-theme-pill-blue @else btn-theme-default  @endif text-capitalize pill-order-status">
+                            <span class="btn-theme-pill {{ $order_pill_class }} text-capitalize pill-order-status">
                                 {{ $order->order_status }}</span>
                         </div>
                         <div class="d-flex flex-column gap-12px">
@@ -175,7 +208,7 @@
                             <p class="m-0 text-theme-secondary">Have questions or issues with your order? Contact the seller directly – they're ready to assist!</p>
                         </div>
                         <div class="d-flex">
-                            <button class="btn btn-theme-1 w-100 py-2">Contact Seller</button>
+                            <button class="btn btn-theme btn-theme-default w-100 py-2">Contact Seller</button>
                         </div>
                     </div>
                 </div>
@@ -219,6 +252,77 @@
                         $('#orderRecievedConfirmationError').removeClass('d-none');
                     }
                 " class="btn btn-primary">Verify</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Cancelation Modal -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Cancel order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div x-data class="d-flex flex-column fs-14">
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="1" class="w-auto mr-2" checked="" id="radio_account_incorrect_info">
+                            <label class="m-0" for="radio_account_incorrect_info">Buyer has provided incorrect account information</label>
+                        </div>
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="2" class="w-auto mr-2" id="radio_out_of_stock">
+                            <label class="m-0" for="radio_out_of_stock">Out of stock</label>
+                        </div>
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="3" class="w-auto mr-2" id="radio_buyer_doesnt_meet_criteria">
+                            <label class="m-0" for="radio_buyer_doesnt_meet_criteria">Buyer does not meet criteria for the order</label>
+                        </div>
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="4" class="w-auto mr-2" id="radio_buyer_is_unresponsive">
+                            <label class="m-0" for="radio_buyer_is_unresponsive">Buyer is unresponsive</label>
+                        </div>
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="5" class="w-auto mr-2" id="radio_buyer_doesnt_need_it">
+                            <label class="m-0" for="radio_buyer_doesnt_need_it">Buyer does not need it anymore</label>
+                        </div>
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="6" class="w-auto mr-2" id="radio_mutual_agreement">
+                            <label class="m-0" for="radio_mutual_agreement">Mutual agreement</label>
+                        </div>
+                        <div class="form-check pb-2 mb-2 d-flex align-items-center dividor-border-theme-bottom">
+                            <input type="radio" name="cancelation_reason" value="7" class="w-auto mr-2" id="radio_other">
+                            <label class="m-0" for="radio_other">Other</label>
+                        </div>
+                        <div class="form-check textarea-box w-100 mb-2">
+                            <div class="textarea-head d-flex flex-row justify-content-between">
+                                <label>Share details</label>
+                                <span class="text-black-70"> 0/500</span>
+                            </div>
+                            <textarea id="cancelation_details" class="textarea input-theme-1 form-control" placeholder="Tell us what happened" aria-label="Tell us what happened" maxlength="500" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="
+                    if (document.getElementById('cancelation_details').value !== '') {
+                        Livewire.dispatch('cancelOrder', { 
+                            reason: document.querySelector('input[name=cancelation_reason]:checked').value, 
+                            orderStatus: 'cancelled',
+                            details: document.getElementById('cancelation_details').value,
+                        });
+                        $('#cancelation_details').removeClass('invalid');
+                        $('#cancelOrderModal').modal('hide'); // jQuery-based close
+                    } else {
+                        $('#cancelation_details').addClass('invalid');
+                    }
+                "
+                class="btn btn-danger"
+                >Cancel Order</button>
                 </div>
             </div>
         </div>
@@ -337,6 +441,14 @@
             if(data['orderStatus'] == 'recieved' || data['orderStatus'] == 'completed'){
                 $('.order-feedback-container').removeClass('d-none');
             }
+        });
+
+        Livewire.on('orderCancelled', (data) => {
+            $('#delivery-time-title').text('Delivery time');
+            $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-red');
+
+            $('.order-feedback-container').removeClass('d-none');
+            $('#delivery-time-container').addClass('d-none');
 
         });
     </script>
@@ -361,4 +473,4 @@
         </script>
     @endauth
 
-    @endsection
+@endsection

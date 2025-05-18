@@ -22,6 +22,9 @@ class Order extends Model
         'delivery_type',
         'payment_status',
         'order_status',
+        'cancelation_reason',
+        'cancelation_details',
+        'cancelled_at',
         'delivered_at',
         'created_at',
     ];

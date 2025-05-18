@@ -36,6 +36,21 @@ class SellerVerificationComponent extends Component
         $this->dispatch('orderDelivered', orderStatus: $orderStatus); // notify other components
     }
 
+    #[On('cancelOrder')]
+    public function cancelOrder($reason, $details, $orderStatus)
+    {
+        if (is_null($this->order->cancelled_at)) {
+            $this->order->update([
+                'cancelled_at' => now(),
+                'cancelation_reason' => $reason,
+                'cancelation_details' => $details,
+                'order_status' => $orderStatus,
+            ]);
+        }
+        $this->order->refresh(); // ensure latest data
+        $this->dispatch('orderCancelled', orderStatus: $orderStatus); // notify other components
+    }
+
     public function render()
     {
         return view('livewire.seller-verification-component');

@@ -1185,6 +1185,7 @@
 
 /* Default Colors */
 
+/* Theme text */
 .text-theme-secondary {
     color: var(--text-secondary);    
 }
@@ -1213,6 +1214,7 @@
     color: var(--brand-dark);
 }
 
+/* Theme backgrounds */
 .background-theme-body-1 {
     background-color: var(--background-body-1);
 }
@@ -1225,6 +1227,7 @@
     background-color: var(--background-card-yellow);
 }
 
+/* Theme borders */
 .border-theme-yellow-1 {
     border: 1px solid var(--border-yellow-1-active);
 }
@@ -1241,33 +1244,38 @@
     border-left: 1px solid var(--dividor-border);
 }
 
+.dividor-border-theme-bottom {
+    border-bottom: 1px solid var(--dividor-border);
+}
+
 .border-theme-active {
     border: 1px solid var(--border-active);
 }
 
-.btn-theme-1 {
-    box-shadow: none;
+/* Theme buttons */
+.btn-theme {
+    box-shadow: none !important;
+    font-size: 14px;
+    font-weight: 600;
+    height: fit-content;
+}
+
+.btn-theme-default {
     color: var(--text-primary);
     background-color: var(--background-card);
     border: 1px solid var(--border-1);
-    font-size: 14px;
-    font-weight: 600;
 }
 
-.btn-theme-1:hover, .btn-theme-1:focus {
-    box-shadow: none;
+.btn-theme-default:hover, .btn-theme-default:focus {
     color: var(--text-primary) !important;
     border: 1px solid var(--border-active) !important;
     background-color: var(--background-card-dark);
 }
 
 .btn-theme-red {
-    box-shadow: none;
     color: var(--text-primary);
     background-color: var(--background-card-red);
     border: 1px solid var(--border-red-1);
-    font-size: 14px;
-    font-weight: 600;
 }
 
 .btn-theme-red:hover, .btn-theme-red:focus {
@@ -1279,56 +1287,46 @@
 
 
 .btn-theme-green {
-    box-shadow: none;
     color: var(--text-primary);
     background-color: var(--background-card-green) !important;
     border: 1px solid var(--border-green-1) !important;
-    font-size: 14px;
-    font-weight: 600;
 }
 
 .btn-theme-green:hover, .btn-theme-green:focus {
-    box-shadow: none;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-green-1-active) !important;
     background-color: var(--background-card-green-dark) !important;
 }
 
-
+/* Theme pills */
 .btn-theme-pill {
-    color: var(--text-primary);
-    background-color: var(--background-card-dark);
-    border: 1px solid var(--border-active);
     padding: 5px 11px;
     font-size: 13px;
     border-radius: 7px;
+}
+
+.btn-theme-pill-default {
+    color: var(--text-primary);
+    background-color: var(--background-card-dark);
+    border: 1px solid var(--border-active);
 }
 
 .btn-theme-pill-yellow {
     color: var(--text-primary);
     background-color: var(--background-card-yellow);
     border: 1px solid var(--border-yellow-1-active);
-    padding: 5px 11px;
-    font-size: 13px;
-    border-radius: 7px;
 }
 
 .btn-theme-pill-blue {
     color: var(--text-primary);
     background-color: var(--background-card-blue);
     border: 1px solid var(--border-blue-1-active);
-    padding: 5px 11px;
-    font-size: 13px;
-    border-radius: 7px;
 }
 
 .btn-theme-pill-red {
     color: var(--text-primary);
-    background-color: var(--background-card-red);
-    border: 1px solid var(--border-red-1);
-    padding: 5px 11px;
-    font-size: 13px;
-    border-radius: 7px;
+    background-color: var(--background-card-red-dark);
+    border: 1px solid var(--border-red-1-active);
 }
 
 .input-theme-1 {

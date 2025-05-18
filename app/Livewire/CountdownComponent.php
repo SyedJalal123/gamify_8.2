@@ -48,7 +48,6 @@ class CountdownComponent extends Component
         $this->order->refresh();
         $this->isDelivered = true;
         $this->calculateTimeRemaining();
-
         
     }
 
