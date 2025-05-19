@@ -496,7 +496,7 @@
                 // Initialize Echo private channel listener for user notifications
                 Echo.private(`App.Models.User.${userId}`)
                     .notification((notification) => {  
-                        console.log(notification);
+                        // console.log(notification);
                         if(notification.category == 'notification'){
                             // Play sound (handle autoplay restrictions)
                             const audio = new Audio('/sounds/notification.mp3');

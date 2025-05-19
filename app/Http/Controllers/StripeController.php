@@ -7,6 +7,8 @@ use Stripe\Stripe;
 use Stripe\Charge;
 use Stripe\Checkout\Session;
 use App\Models\Order;
+use App\Notifications\BoostingOfferNotification;
+use Illuminate\Support\Facades\Notification;
 use Stripe\Checkout\Session as CheckoutSession;
 use Carbon\Carbon;
 
@@ -67,7 +69,24 @@ class StripeController extends Controller
         
 
         // Marking order as paid
-        $order = Order::with('item')->find($order_id);
+        $order = Order::with('buyer', 'item.seller', 'offer.user', 'item.categoryGame.game', 'item.categoryGame.category', 'offer.buyerRequest.service.categoryGame.game', 'offer.buyerRequest.service.categoryGame.category')->find($order_id);
+
+        if($order->item_id == null){
+            $seller = $order->offer->user;
+            $categoryGame = $order->offer->buyerRequest->service->categoryGame;
+        }else {
+            $seller = $order->item->seller;
+            $categoryGame = $order->item->categoryGame;
+        }
+
+        $data = [
+            'title' => 'New Order',
+            'data1' => $categoryGame->game->name.' - '.$categoryGame->category->name,
+            'data2' => 'Buyer: '.$order->buyer->name,
+            'link' => url('order/' . $order->order_id),
+        ];
+
+        Notification::send($seller, new BoostingOfferNotification($data));
 
         if($order->item_id != null && $order->item->delivery_method == 'automatic'){
             $order->update(['payment_status' => 'paid', 'order_status' => 'received']);

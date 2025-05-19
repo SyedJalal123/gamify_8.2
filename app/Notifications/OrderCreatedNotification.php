@@ -6,20 +6,17 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-use Carbon\Carbon;
 
-class BoostingOfferNotification extends Notification implements ShouldQueue
+class OrderCreatedNotification extends Notification
 {
     use Queueable;
-    public $data;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($data)
+    public function __construct()
     {
-        $this->data = $data;
+        //
     }
 
     /**
@@ -29,7 +26,7 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['mail'];
     }
 
     /**
@@ -50,18 +47,8 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        // dd($this->boostingOffer);
         return [
-            'title' => $this->data['title'],
-            'data1' => $this->data['data1'],
-            'data2' => $this->data['data2'],
-            'link' => $this->data['link'],
-            'category' => 'notification',
+            //
         ];
-    }
-
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage($this->toArray($notifiable));
     }
 }
