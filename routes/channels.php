@@ -17,17 +17,23 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chat-channel.{recieverId}', function ($user, $recieverId) {
-    return (int) $user->id === (int) $recieverId;
-    // echi is sending from main id but not receiving from other ids
+Broadcast::channel('chat-channel.{buyerRequestId}', function ($user, $buyerRequestId) {
+    return \App\Models\BuyerRequest::where('id', $buyerRequestId)->exists();
+});
+
+Broadcast::channel('order-chat-channel.{conversationId}', function ($user, $conversationId) {
+    return \App\Models\BuyerRequestConversation::where('id', $conversationId)->exists();
 });
 
 Broadcast::channel('chat-creation-channel.{recieverId}', function ($user, $recieverId) {
     return (int) $user->id === (int) $recieverId;
-    // echi is sending from main id but not receiving from other ids
 });
 
 Broadcast::channel('message-seen.{recieverId}', function ($user, $recieverId) {
     return (int) $user->id === (int) $recieverId;
-    // echi is sending from main id but not receiving from other ids
 });
+
+Broadcast::channel('order-page-update.{orderId}', function ($user, $orderId) {
+    return \App\Models\Order::where('id', $orderId)->exists();
+});
+

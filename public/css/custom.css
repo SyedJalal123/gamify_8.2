@@ -25,6 +25,14 @@
     font-size: 40px;
 }
 
+.fs-30 {
+    font-size: 30px;
+}
+
+.fs-25 {
+    font-size: 25px;
+}
+
 .fs-22 {
     font-size: 22px;
 }
@@ -100,7 +108,15 @@
     .fs-md-40 {
         font-size: 40px;
     }
-    
+
+    .fs-md-30 {
+        font-size: 30px;
+    }
+
+    .fs-md-25 {
+        font-size: 25px;
+    }
+
     .fs-md-22 {
         font-size: 22px;
     }
@@ -324,7 +340,47 @@
 }
 
 
+.top-0 {
+    top: 0;
+}
+.top-1 {
+    top: 1;
+}
+.top-2 {
+    top: 2;
+}
+.top-3 {
+    top: 3;
+}
 
+.right-auto {
+    right: auto;
+}
+.right-0 {
+    right: 0;
+}
+.right-1 {
+    right: 1;
+}
+.right-2 {
+    right: 2;
+}
+.right-3 {
+    right: 3;
+}
+
+.left-0 {
+    left: 0;
+}
+.left-1 {
+    left: 1;
+}
+.left-2 {
+    left: 2;
+}
+.left-3 {
+    left: 3;
+}
 
 .border-bottom-0_5 {
     border-bottom: 2px solid rgb(119, 119, 119);
@@ -1088,7 +1144,7 @@
 }
 
 #pageOverlay {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.5); z-index: 9;
     display: none; justify-content: center; align-items: center;
 }
@@ -1164,184 +1220,197 @@
 }
 
 .rating-icons .positive{
-    border: 1px solid #009f3a;
-    color: #009f3a;
+    border: 1px solid var(--brand-teal);
+    color: var(--brand-teal);
 }
 
 .rating-icons .positive.active{
-    background-color: #009f3a;
+    background-color: var(--brand-teal);
     color: white;
 }
 
 .rating-icons .negative{
-    border: 1px solid #ef0000;
-    color: #ef0000;
+    border: 1px solid var(--brand-cherry);
+    color: var(--brand-cherry);
 }
 
 .rating-icons .negative.active{
-    background-color: #ef0000;
+    background-color: var(--brand-cherry);
     color: white;
 }
 
 /* Default Colors */
 
 /* Theme text */
-.text-theme-secondary {
-    color: var(--text-secondary);    
-}
+    .text-theme-secondary {
+        color: var(--text-secondary);    
+    }
 
-.text-theme-primary {
-    color: var(--text-primary);
-}
+    .text-theme-primary {
+        color: var(--text-primary);
+    }
 
-.text-theme-grey {
-    color: var(--text-grey);
-}
+    .text-theme-grey {
+        color: var(--text-grey);
+    }
 
-.text-default {
-    color: var(--text-default);
-}
+    .text-default {
+        color: var(--text-default);
+    }
 
-.text-theme-cherry {
-    color: var(--text-cherry);
-}
+    .text-theme-cherry {
+        color: var(--brand-cherry);
+    }
 
-.text-theme-cherry-light {
-    color: var(--text-cherry-light);
-}
+    .text-theme-cherry-light {
+        color: var(--brand-cherry-light);
+    }
 
-.brand-theme-dark {
-    color: var(--brand-dark);
-}
+    .brand-theme-dark {
+        color: var(--brand-dark);
+    }
+
+    .text-theme-teal {
+        color: var(--brand-teal);
+    }
 
 /* Theme backgrounds */
-.background-theme-body-1 {
-    background-color: var(--background-body-1);
-}
+    .background-theme-body-1 {
+        background-color: var(--background-body-1);
+    }
 
-.background-theme-card {
-    background-color: var(--background-card);
-}
+    .background-theme-card {
+        background-color: var(--background-card);
+    }
 
-.background-card-yellow {
-    background-color: var(--background-card-yellow);
-}
+    .background-card-yellow {
+        background-color: var(--background-card-yellow);
+    }
+
+    .background-theme-cherry {
+        background-color: var(--brand-cherry);
+    }
+
+    .background-theme-teal {
+        background-color: var(--brand-teal);
+    }
 
 /* Theme borders */
-.border-theme-yellow-1 {
-    border: 1px solid var(--border-yellow-1-active);
-}
+    .border-theme-yellow-1 {
+        border: 1px solid var(--border-yellow-1-active);
+    }
 
-.border-theme-1 {
-    border: 1px solid var(--border-1);
-}
+    .border-theme-1 {
+        border: 1px solid var(--border-1);
+    }
 
-.dividor-border-theme-right {
-    border-right: 1px solid var(--dividor-border);
-}
+    .dividor-border-theme-right {
+        border-right: 1px solid var(--dividor-border);
+    }
 
-.dividor-border-theme-left {
-    border-left: 1px solid var(--dividor-border);
-}
+    .dividor-border-theme-left {
+        border-left: 1px solid var(--dividor-border);
+    }
 
-.dividor-border-theme-bottom {
-    border-bottom: 1px solid var(--dividor-border);
-}
+    .dividor-border-theme-bottom {
+        border-bottom: 1px solid var(--dividor-border);
+    }
 
-.border-theme-active {
-    border: 1px solid var(--border-active);
-}
+    .border-theme-active {
+        border: 1px solid var(--border-active);
+    }
 
 /* Theme buttons */
-.btn-theme {
-    box-shadow: none !important;
-    font-size: 14px;
-    font-weight: 600;
-    height: fit-content;
-}
+    .btn-theme {
+        box-shadow: none !important;
+        font-size: 14px;
+        font-weight: 600;
+        height: fit-content;
+    }
 
-.btn-theme-default {
-    color: var(--text-primary);
-    background-color: var(--background-card);
-    border: 1px solid var(--border-1);
-}
+    .btn-theme-default {
+        color: var(--text-primary);
+        background-color: var(--background-card);
+        border: 1px solid var(--border-1);
+    }
 
-.btn-theme-default:hover, .btn-theme-default:focus {
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-active) !important;
-    background-color: var(--background-card-dark);
-}
+    .btn-theme-default:hover, .btn-theme-default:focus {
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-active) !important;
+        background-color: var(--background-card-dark);
+    }
 
-.btn-theme-red {
-    color: var(--text-primary);
-    background-color: var(--background-card-red);
-    border: 1px solid var(--border-red-1);
-}
+    .btn-theme-red {
+        color: var(--text-primary);
+        background-color: var(--background-card-red);
+        border: 1px solid var(--border-red-1);
+    }
 
-.btn-theme-red:hover, .btn-theme-red:focus {
-    box-shadow: none;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-red-1-active) !important;
-    background-color: var(--background-card-red-dark) !important;
-}
+    .btn-theme-red:hover, .btn-theme-red:focus {
+        box-shadow: none;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-red-1-active) !important;
+        background-color: var(--background-card-red-dark) !important;
+    }
 
 
-.btn-theme-green {
-    color: var(--text-primary);
-    background-color: var(--background-card-green) !important;
-    border: 1px solid var(--border-green-1) !important;
-}
+    .btn-theme-green {
+        color: var(--text-primary);
+        background-color: var(--background-card-green) !important;
+        border: 1px solid var(--border-green-1) !important;
+    }
 
-.btn-theme-green:hover, .btn-theme-green:focus {
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-green-1-active) !important;
-    background-color: var(--background-card-green-dark) !important;
-}
+    .btn-theme-green:hover, .btn-theme-green:focus {
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-green-1-active) !important;
+        background-color: var(--background-card-green-dark) !important;
+    }
 
 /* Theme pills */
-.btn-theme-pill {
-    padding: 5px 11px;
-    font-size: 13px;
-    border-radius: 7px;
-}
+    .btn-theme-pill {
+        padding: 5px 11px;
+        font-size: 13px;
+        border-radius: 7px;
+    }
 
-.btn-theme-pill-default {
-    color: var(--text-primary);
-    background-color: var(--background-card-dark);
-    border: 1px solid var(--border-active);
-}
+    .btn-theme-pill-default {
+        color: var(--text-primary);
+        background-color: var(--background-card-dark);
+        border: 1px solid var(--border-active);
+    }
 
-.btn-theme-pill-yellow {
-    color: var(--text-primary);
-    background-color: var(--background-card-yellow);
-    border: 1px solid var(--border-yellow-1-active);
-}
+    .btn-theme-pill-yellow {
+        color: var(--text-primary);
+        background-color: var(--background-card-yellow);
+        border: 1px solid var(--border-yellow-1-active);
+    }
 
-.btn-theme-pill-blue {
-    color: var(--text-primary);
-    background-color: var(--background-card-blue);
-    border: 1px solid var(--border-blue-1-active);
-}
+    .btn-theme-pill-blue {
+        color: var(--text-primary);
+        background-color: var(--background-card-blue);
+        border: 1px solid var(--border-blue-1-active);
+    }
 
-.btn-theme-pill-red {
-    color: var(--text-primary);
-    background-color: var(--background-card-red-dark);
-    border: 1px solid var(--border-red-1-active);
-}
+    .btn-theme-pill-red {
+        color: var(--text-primary);
+        background-color: var(--background-card-red-dark);
+        border: 1px solid var(--border-red-1-active);
+    }
 
-.input-theme-1 {
-    box-shadow: none !important;
-    background: var(--background-card) !important;
-    border: 1px solid var(--border-1) !important;
-    color: var(--text-primary-2) !important;
-}
+/* Theme inputs */
+    .input-theme-1 {
+        box-shadow: none !important;
+        background: var(--background-card) !important;
+        border: 1px solid var(--border-1) !important;
+        color: var(--text-primary-2) !important;
+    }
 
-.input-theme-1:focus {
-    box-shadow: none !important;
-    background: var(--background-card) !important;
-    border: 1px solid var(--border-active) !important;
-    color: var(--text-primary-2) !important;
-}
+    .input-theme-1:focus {
+        box-shadow: none !important;
+        background: var(--background-card) !important;
+        border: 1px solid var(--border-active) !important;
+        color: var(--text-primary-2) !important;
+    }
 
 .big-icon-bg {
     min-width: 80px;

@@ -70,7 +70,7 @@ class StripeController extends Controller
         $order = Order::with('item')->find($order_id);
 
         if($order->item_id != null && $order->item->delivery_method == 'automatic'){
-            $order->update(['payment_status' => 'paid', 'order_status' => 'recieved']);
+            $order->update(['payment_status' => 'paid', 'order_status' => 'received']);
         }else {
             $order->update(['payment_status' => 'paid', 'created_at' => Carbon::now()]);
         }

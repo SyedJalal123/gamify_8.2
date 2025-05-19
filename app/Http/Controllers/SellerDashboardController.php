@@ -9,7 +9,8 @@ use App\Models\BuyerRequestConversation;
 
 class SellerDashboardController extends Controller
 {
-    public function orderDetail($order_id, Request $request) {
+    public function orderDetail($order_id, Request $request) 
+    {
         $order = Order::where('order_id', $order_id)->with('item.attributes', 'item.seller', 'item.categoryGame.game', 'item.categoryGame.attributes', 'chat', 'offer', 'offer.buyerRequest.service.categoryGame', 'offer.buyerRequest.attributes', 'offer.buyerRequest.buyerRequestConversation', 'offer.user')->firstOrFail();
         
         $item = null; $offer = null;
@@ -39,5 +40,18 @@ class SellerDashboardController extends Controller
         }else {
             return view('frontend.order-detail', compact('order', 'item', 'offer', 'categoryGame', 'identity', 'conversation', 'maxDeliveryTime'));
         }
+    }
+
+    public function saveReview(Request $request) 
+    {
+        // dd($request->all());
+        $order = Order::find($request->order_id);
+        
+        $order->update([
+            'feedback' => $request->feedback,
+            'feedback_comment' => $request->feedback_comment ?? 'GGWP!',
+        ]);
+
+        return redirect()->back();
     }
 }

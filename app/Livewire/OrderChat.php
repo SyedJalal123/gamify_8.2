@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\BuyerRequest;
 use App\Models\Message;
 use App\Events\MessageSeenEvent;
-use App\Events\MessageSentEvent;
+use App\Events\OrderMessageSentEvent;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
@@ -60,7 +60,7 @@ class OrderChat extends Component
 
             $this->chatMessages[] = $sentMessage;
 
-            broadcast(new MessageSentEvent($sentMessage));
+            broadcast(new OrderMessageSentEvent($sentMessage));
             
             $this->dispatch('message-updated');
         }

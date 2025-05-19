@@ -48,7 +48,6 @@ class CheckoutController extends Controller
 
     public function create(Request $request) {
         
-        // in Stripe and Nowpayment when customer pays if delivery method is automatic then add recieved in order_status then according to that show data on order-detail page
         // dd($request->all());
                 
         $validated = $request->validate([

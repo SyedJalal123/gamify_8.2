@@ -7,10 +7,11 @@ body.dark-theme {
     --text-primary: #ffffff;
     --text-primary-2: #dddddd;
     --text-secondary: #8a869d;
-    --brand-dark: #14131a;
     --text-grey: #898a93;
-    --text-cherry: #e81b16;
-    --text-cherry-light: #e81b167a;
+    --brand-dark: #14131a;
+    --brand-teal: #20c997;
+    --brand-cherry: #e81b16;
+    --brand-cherry-light: #e81b167a;
 
     --background-card: rgba(167,130,233,0.03);
     --background-card-dark: #a782e926;

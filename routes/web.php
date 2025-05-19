@@ -97,7 +97,8 @@ Route::middleware('verified')->group(function () {
 
 
     // Orders Route
-    Route::get('order/{order_id}', [SellerDashboardController::class, 'orderDetail'])->name('order-detail');
+    Route::get('order/{order_id}', [SellerDashboardController::class, 'orderDetail'])->name('order-detail')->middleware(['auth']);
+    Route::post('save_review', [SellerDashboardController::class, 'saveReview'])->name('save-review')->middleware(['auth']);
 
 });
 

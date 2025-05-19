@@ -76,7 +76,7 @@
                             <i class="fs-10 fw-bold px-1 text-black-40" style="letter-spacing: -2.5px;">✓@if($message->read_at !== null)✓@endif</i>
                             @endif
                         </div>
-                        <span class="msg_time_send">{{shortTimeAgo($message->created_at)}}</span>
+                        <span class="msg_time_send @if($message->sender_id == auth()->id()) text-right right-0 @endif">{{shortTimeAgo($message->created_at)}}</span>
                     </div>
                     <!-- <div class="img_cont_msg">
                         <div class="user_img seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">

@@ -30,12 +30,18 @@ return new class extends Migration
             $table->string('delivery_type')->nullable();
             $table->string('payment_status')->default('pending');
             $table->string('order_status')->default('pending delivery');
+            $table->boolean('disputed')->default('0');
 
-            $table->integer('cancelation_reason')->default('1');
+            $table->integer('cancelation_reason')->nullable();
             $table->text('cancelation_details')->nullable();
-            
+            $table->integer('dispute_reason')->nullable();
+            $table->text('dispute_details')->nullable();
+
+            $table->integer('feedback')->default('0');
+            $table->text('feedback_comment')->default('GGWP!');
 
             $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('disputed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

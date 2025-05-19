@@ -10,22 +10,25 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MessageSentEvent implements ShouldBroadcastNow
+class OrderEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
-    public $buyerRequestId;
+    public $order_id;
+    public $reciever_id;
+    public $sender_id;
+    public $action;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($message, $buyerRequestId)
+    public function __construct($order_id, $reciever_id, $sender_id, $action)
     {
-        $this->message = $message->load('sender:id,name', 'reciever:id,name');
-        $this->buyerRequestId = $buyerRequestId;
+        $this->order_id = $order_id;
+        $this->reciever_id = $reciever_id;
+        $this->sender_id = $sender_id;
+        $this->action = $action;
     }
 
     /**
@@ -36,7 +39,7 @@ class MessageSentEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('chat-channel.' . $this->buyerRequestId),
+            new PrivateChannel('order-page-update.' . $this->order_id),
         ];
     }
 }

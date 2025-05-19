@@ -433,6 +433,8 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
+                const buyerRequestId = {{ $buyerRequest->id }};
+
                 let unreadCount = parseInt(document.querySelector('.count-notifications').textContent) || 0;
         
                 Echo.private(`App.Models.User.${userId}`)
@@ -442,8 +444,9 @@
                         }                 
                     });
 
-                Echo.private(`chat-channel.${userId}`)
+                Echo.private(`chat-channel.${buyerRequestId}`)
                     .listen('MessageSentEvent', (e) => {
+                        if(e['message']['sender_id'] != userId)
                         Livewire.dispatch('message-received', [e.message]);
                     });
 

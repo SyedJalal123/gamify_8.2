@@ -87,7 +87,7 @@ class Openchat extends Component
 
             $this->chatMessages[] = $sentMessage;
 
-            broadcast(new MessageSentEvent($sentMessage));
+            broadcast(new MessageSentEvent($sentMessage, $this->buyerRequest->id));
             
             $this->dispatch('message-updated');
         }
