@@ -5,11 +5,10 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
-use Carbon\Carbon;
+use Illuminate\Notifications\Notification;
 
-class BoostingOfferNotification extends Notification implements ShouldQueue
+class BoostingRequestNotification extends Notification
 {
     use Queueable;
     public $data;
@@ -52,11 +51,12 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
     {
         // dd($this->boostingOffer);
         return [
-            'title' => $this->data['title'],
-            'data1' => $this->data['data1'],
-            'data2' => $this->data['data2'],
-            'link' => $this->data['link'],
-            'category' => 'notification',
+            'title'     => $this->data['title'],
+            'data1'     => $this->data['data1'],
+            'data2'     => $this->data['data2'],
+            'link'      => $this->data['link'],
+            'category'  => 'notification',
+            'id'        => $this->data['id'],
         ];
     }
 

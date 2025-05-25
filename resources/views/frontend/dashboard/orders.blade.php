@@ -184,6 +184,7 @@
                     },
                     { data: 'mobile_summary', name: 'title', className: 'dtr-control mobile-only', responsivePriority: 1, orderable: false },
                 ],
+                order: [[3, 'desc']],
                 createdRow: function (row, data) {
                     // Make whole row clickable
                     $(row).css('cursor', 'pointer').attr('title', 'Order details');

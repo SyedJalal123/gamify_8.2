@@ -232,7 +232,7 @@
                                                     <i class="arrow-icon bi bi-chevron-down mr-1"></i>
                                                 </div>
 
-                                                <div class="collapse {{ request()->path() == 'orders/purchased' ? 'show' : '' }} {{ request()->path() == 'orders/sold' ? 'show' : '' }}" id="headbarOptions_1">
+                                                <div class="collapse {{ in_array(request()->path(), ['orders/purchased', 'orders/sold']) ? 'show' : '' }}" id="headbarOptions_1">
                                                     <div class="d-flex flex-column ml-3">
                                                         <a wire:navigate href="{{ url('orders/purchased') }}" class="sidebar-item {{ request()->path() == 'orders/purchased' ? 'active' : '' }}">Purchased orders</a>
                                                         <a wire:navigate href="{{ url('orders/sold') }}" class="sidebar-item {{ request()->path() == 'orders/sold' ? 'active' : '' }}">Sold orders</a>
@@ -250,12 +250,12 @@
                                                     <i class="arrow-icon bi bi-chevron-down mr-1"></i>
                                                 </div>
 
-                                                <div class="collapse" id="headbarOptions_2">
+                                                <div class="collapse {{ in_array(request()->path(), ['offers/Currency', 'offers/Accounts', 'offers/Top%20Up', 'offers/Items']) ? 'show' : '' }}" id="headbarOptions_2">
                                                     <div class="d-flex flex-column ml-3">
-                                                        <a href="#" class="sidebar-item">Currency</a>
-                                                        <a href="#" class="sidebar-item">Accounts</a>
-                                                        <a href="#" class="sidebar-item">Top Up</a>
-                                                        <a href="#" class="sidebar-item">Items</a>
+                                                        <a wire:navigate href="{{ url('offers/Currency') }}" class="sidebar-item {{ request()->path() == 'offers/Currency' ? 'active' : '' }}">Currency</a>
+                                                        <a wire:navigate href="{{ url('offers/Accounts') }}" class="sidebar-item {{ request()->path() == 'offers/Accounts' ? 'active' : '' }}">Accounts</a>
+                                                        <a wire:navigate href="{{ url('offers/Top Up') }}" class="sidebar-item {{ request()->path() == 'offers/Top%20Up' ? 'active' : '' }}">Top Up</a>
+                                                        <a wire:navigate href="{{ url('offers/Items') }}" class="sidebar-item {{ request()->path() == 'offers/Items' ? 'active' : '' }}">Items</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -270,10 +270,10 @@
                                                     <i class="arrow-icon bi bi-chevron-down mr-1"></i>
                                                 </div>
 
-                                                <div class="collapse" id="headbarOptions_3">
+                                                <div class="collapse{{ in_array(request()->path(), ['boosting/my-requests', 'boosting/received-requests']) ? 'show' : '' }}" id="headbarOptions_3">
                                                     <div class="d-flex flex-column ml-3">
-                                                        <a href="#" class="sidebar-item">My Requests</a>
-                                                        <a href="#" class="sidebar-item">Received requests</a>
+                                                        <a wire:navigate href="{{ url('boosting/my-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/my-requests' ? 'active' : '' }}">My Requests</a>
+                                                        <a wire:navigate href="{{ url('boosting/received-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/received-requests' ? 'active' : '' }}">Received requests</a>
                                                         <a href="#" class="sidebar-item">Boosting subscriptions</a>
                                                     </div>
                                                 </div>
@@ -289,7 +289,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu d-none d-lg-block mt-1">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a wire:navigate href="{{ url('offers/Currency') }}" class="sidebar-title p-1">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-tag fs-20 mr-2"></i>
                                                         <div>
@@ -299,7 +299,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu d-none d-lg-block mt-1">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a wire:navigate href="{{ url('boosting/my-requests') }}" class="sidebar-title p-1">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-chevron-double-up fs-20 mr-2"></i>
                                                         <div>

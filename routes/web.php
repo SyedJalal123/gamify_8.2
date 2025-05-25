@@ -105,6 +105,7 @@ Route::middleware('verified')->group(function () {
     Route::get('/orders/{tag}', [SellerDashboardController::class, 'orders'])->name('seller-dashboard.orders')->middleware(['auth']);
     Route::get('/offers/{category}', [SellerDashboardController::class, 'offers'])->name('seller-dashboard.offers')->middleware(['auth']);
     Route::get('/offers/edit/{offer_id}', [SellerDashboardController::class, 'editOffer'])->name('seller-dashboard.offers.edit')->middleware(['auth']);
+    Route::get('/boosting/{tag}', [SellerDashboardController::class, 'boosting'])->name('seller-dashboard.boosting')->middleware(['auth']);
 
 
 });

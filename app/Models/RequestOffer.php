@@ -31,4 +31,8 @@ class RequestOffer extends Model
     public function conversation() {
         return $this->hasOne(BuyerRequestConversation::class, 'buyer_request_id', 'buyer_request_id');
     }
+
+    public function order() {
+        return $this->hasOne(Order::class, 'request_offer_id', 'id');
+    }
 }

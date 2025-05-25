@@ -97,6 +97,11 @@ class CheckoutController extends Controller
             if($request->offer_id){
                 $offer = RequestOffer::with('buyerRequest.buyerRequestConversation')->find($validated['offer_id']);
 
+                $offer->update([
+                    'seller_id' => $seller_id,
+                    'status' => 'closed',
+                ]);
+
                 $offer = RequestOffer::with([
                     'buyerRequest.buyerRequestConversation' => function ($query) use ($offer) {
                             $query->where('seller_id', $offer->user_id)
@@ -113,6 +118,7 @@ class CheckoutController extends Controller
                         'seller_id' => $offer->user_id
                     ]);
                 }
+                
             }else {
                 $item = Item::find($validated['item_id']);
                 $conversation = BuyerRequestConversation::create([

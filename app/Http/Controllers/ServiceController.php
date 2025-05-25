@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\CategoryGame;
 use App\Models\BuyerRequestAttribute;
 use App\Notifications\BoostingOfferUpdate;
+use App\Notifications\BoostingRequestNotification;
 use App\Notifications\BoostingOfferNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,7 @@ class ServiceController extends Controller
             $request->validate([
                 'service_id' => 'required',
             ]);
-            // dd(Carbon::now()->addDays(20));
+
             DB::beginTransaction(); // Start transaction
     
             // Save item
@@ -80,9 +81,10 @@ class ServiceController extends Controller
                 'data1' => $boostingOffer->attributes[0]->pivot->value,
                 'data2' => $boostingOffer->attributes[1]->pivot->value,
                 'link' => url('boosting-request/' . $boostingOffer->id),
+                'id' => $boostingOffer->id,
             ];
 
-            Notification::send($users, new BoostingOfferNotification($data));
+            Notification::send($users, new BoostingRequestNotification($data));
 
 
             return redirect('boosting-request/'.$buyerRequest->id);
@@ -140,6 +142,7 @@ class ServiceController extends Controller
             'service.categoryGame.game',
             'attributes',
             'requestOffers.user',
+            'requestOffers.order',
             'buyerRequestConversation' => function ($query) {
                 $query->with(['buyer', 'seller', 'messages.sender','messages.reciever']);
             },

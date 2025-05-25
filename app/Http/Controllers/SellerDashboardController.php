@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\CategoryGame;
 use App\Models\Game;
 use App\Models\Category;
+use App\Models\BuyerRequest;
 use App\Models\Order;
 use App\Models\BuyerRequestConversation;
 use Yajra\DataTables\Facades\DataTables;
@@ -62,9 +63,9 @@ class SellerDashboardController extends Controller
     public function orders(Request $request, $tag) {
 
         if($tag == 'purchased'){
-            $orders = Order::where('buyer_id', auth()->user()->id)->with('categoryGame.game', 'categoryGame.category', 'buyer', 'seller')->orderBy('created_at', 'desc');
+            $orders = Order::where('buyer_id', auth()->user()->id)->with('categoryGame.game', 'categoryGame.category', 'buyer', 'seller');
         }else {
-            $orders = Order::where('seller_id', auth()->user()->id)->with('categoryGame.game', 'categoryGame.category', 'buyer', 'seller')->orderBy('created_at', 'desc');
+            $orders = Order::where('seller_id', auth()->user()->id)->with('categoryGame.game', 'categoryGame.category', 'buyer', 'seller');
         } 
 
         if($request->ajax()){
@@ -224,6 +225,20 @@ class SellerDashboardController extends Controller
 
 
         return view('frontend.dashboard.offers', compact('offers', 'category', 'games'));
+    }
+
+    public function boosting(Request $request, $tag) {
+
+        if($tag == 'my-requests') {
+            $boostingRequests = BuyerRequest::with('requestOffers')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
+        }else if($tag == 'received-requests') {
+            $boostingRequests = auth()->user()
+                ->notifications()
+                ->where('type', 'App\Notifications\BoostingRequestNotification')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+        return view('frontend.dashboard.boosting', compact('boostingRequests', 'tag'));
     }
 
     public function editOffer(Request $request, $offer_id) {

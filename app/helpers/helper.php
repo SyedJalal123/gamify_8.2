@@ -2,6 +2,7 @@
 use App\Models\Category;
 use App\Models\Seller;
 use App\Models\Item;
+use App\Models\BuyerRequest;
 use App\Models\Order;
 use Carbon\Carbon;
 
@@ -99,4 +100,11 @@ function countOffers($offers, $status) {
     $offers = $offers->where('pause', $status);
     
     return $offers->count();
+}
+
+function getBuyerRequest($id) {
+    return BuyerRequest::with([
+        'service.categoryGame.category',
+        'service.categoryGame.game',
+    ])->find($id);
 }
