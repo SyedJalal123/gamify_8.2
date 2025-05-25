@@ -16,7 +16,9 @@ return new class extends Migration
             $table->uuid('order_id')->unique();
             $table->foreignId('item_id')->nullable()->constrained();
             $table->foreignId('request_offer_id')->nullable()->constrained();
+            $table->foreignId('category_game_id')->nullable()->constrained();
             $table->foreignId('buyer_id')->constrained('users');
+            $table->foreignId('seller_id')->constrained('users');
 
             $table->string('title')->nullable();
             $table->integer('quantity')->default('1');

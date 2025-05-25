@@ -19,7 +19,6 @@
             }
         }
     </style>
-    <script src="https://js.stripe.com/v3/"></script>
     <link rel="stylesheet" href="{{asset('css/live-chat.css')}}">
 @endsection
 
@@ -38,7 +37,7 @@
 
             <div class="top-bar-page text-white mt-2 mb-4">
                 <div class="d-flex flex-row justify-content-between align-items-center gap-4">
-                    <a href="{{ url()->previous() }}" class="text-muted d-inline-block">&larr;&nbsp;Back</a>
+                    <a wire:navigate href="{{ url()->previous() }}" class="text-muted d-inline-block">&larr;&nbsp;Back</a>
                     <div class="text-theme-secondary fs-14 d-md-none one-line-ellipsis"><span class="">Order ID: {{ $order->order_id }}</span></div>
                     <button class="btn btn-small-1 d-md-none">Copy</button>
                 </div>
@@ -83,7 +82,7 @@
 
             <div class="d-flex row">
                 <div class="col-lg-8 d-flex flex-column mb-3">
-                    @if($item !== null && $item->delivery_method == 'automatic' && $item->account_info != null)
+                    @if($item !== null && $item->delivery_method == 'automatic' && $item->account_info != null) 
                         <!-- For Accounts -->
                         @if ($identity == 'seller')
                             <div class="d-flex flex-row border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 br-7 mb-3">
@@ -511,13 +510,12 @@
             }
 
             return valid; // return the valid status
-            alert();
         }
 
         $(document).ready(function() {
             setTimeout(() => {
                 scroll_bottom('.msg_card_body');
-            }, 0.1);
+            }, 500);
             
         });
 
@@ -559,7 +557,7 @@
     <!-- Initialize Echo private channel listener for user notifications -->
     @auth
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            $(document).ready(function() {
                 const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
                 const orderId = {{ $order->id }};
                 const conversationId = {{ $conversation->id }};

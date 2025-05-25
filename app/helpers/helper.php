@@ -1,6 +1,8 @@
 <?php
 use App\Models\Category;
 use App\Models\Seller;
+use App\Models\Item;
+use App\Models\Order;
 use Carbon\Carbon;
 
 function categories(){
@@ -69,4 +71,32 @@ if (!function_exists('durationBreakdown')) {
             'seconds' => $secs,
         ];
     }
+}
+
+function countOrders($status, $orders) {
+    $statusOrders = clone $orders;
+
+    $conditions = [
+        'pending delivery' => ['order_status' => 'pending delivery', 'disputed' => '0'],
+        'delivered'        => ['order_status' => 'delivered', 'disputed' => '0'],
+        'disputed'         => ['disputed' => '1'],
+        'received'         => ['order_status' => 'received'],
+        'completed'        => ['order_status' => 'completed'],
+        'cancelled'        => ['order_status' => 'cancelled'],
+    ];
+
+    if (isset($conditions[$status])) {
+        foreach ($conditions[$status] as $field => $value) {
+            $statusOrders = $statusOrders->where($field, $value);
+        }
+        $statusOrders = $statusOrders->get();
+    }
+
+    return count($statusOrders);
+}
+
+function countOffers($offers, $status) {
+    $offers = $offers->where('pause', $status);
+    
+    return $offers->count();
 }

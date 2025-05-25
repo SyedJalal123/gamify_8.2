@@ -76,6 +76,7 @@ Route::middleware('verified')->group(function () {
     // Item Routes
     Route::get('/items/create', [ItemController::class, 'create'])->name('items.create')->middleware(['auth']);
     Route::post('/items/store', [ItemController::class, 'store'])->name('items.store')->middleware(['auth']);
+    Route::post('/items/update', [ItemController::class, 'update'])->name('items.update')->middleware(['auth']);
     Route::get('/toggle-service', [ItemController::class, 'toggleService'])->name('service.toggle')->middleware(['auth']);
 
     // Catalog Routes
@@ -96,9 +97,15 @@ Route::middleware('verified')->group(function () {
     Route::post('/order', [CheckoutController::class, 'create'])->name('checkout.create')->middleware(['auth']);
 
 
-    // Orders Route
+    // Orders Routes
     Route::get('order/{order_id}', [SellerDashboardController::class, 'orderDetail'])->name('order-detail')->middleware(['auth']);
     Route::post('save_review', [SellerDashboardController::class, 'saveReview'])->name('save-review')->middleware(['auth']);
+
+    // Dashboard Routes
+    Route::get('/orders/{tag}', [SellerDashboardController::class, 'orders'])->name('seller-dashboard.orders')->middleware(['auth']);
+    Route::get('/offers/{category}', [SellerDashboardController::class, 'offers'])->name('seller-dashboard.offers')->middleware(['auth']);
+    Route::get('/offers/edit/{offer_id}', [SellerDashboardController::class, 'editOffer'])->name('seller-dashboard.offers.edit')->middleware(['auth']);
+
 
 });
 

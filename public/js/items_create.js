@@ -9,13 +9,13 @@ var currentTab = 0; // Current tab is set to be the first tab (0)
 showTab(currentTab); // Display the current tab
 
 function showTab(n) {
-    
+
     // This function will display the specified tab of the form ...
     var x = document.getElementsByClassName("tab");
 
-    if(x.length == 3){
+    if (x.length == 3) {
         addLastStepVisibility();
-    }else{
+    } else {
         removeLastStepVisibility();
     }
     x[n].style.display = "block";
@@ -25,7 +25,7 @@ function showTab(n) {
     } else {
         document.getElementById("prevBtn").style.display = "inline";
     }
-    
+
     if (n == (x.length - 1)) {
         document.getElementById("nextBtn").innerHTML = "Submit";
     } else {
@@ -41,7 +41,7 @@ function nextPrev(n) {
 
         // Exit the function if any field in the current tab is invalid:
         if ((n == 1 && !validateForm()) || (currentTab + n >= x.length && !validateForm2())) {
-            if((currentTab + n >= x.length && !validateForm2()) || (n == 1 && !validateForm())){
+            if ((currentTab + n >= x.length && !validateForm2()) || (n == 1 && !validateForm())) {
                 return false;
             }
             return false;
@@ -52,7 +52,7 @@ function nextPrev(n) {
             //...the form gets submitted:
             document.getElementById("loadingScreen").style.display = "flex";
             document.getElementById("regForm").submit();
-            return false; 
+            return false;
         } else {
             // Hide the current tab:
             x[currentTab].style.display = "none";
@@ -72,18 +72,18 @@ function validateForm2() {
     const quantityAvailable = parseFloat($('#quantity_available').val());
     var valid = true;
 
-    if(categoryId == 1 || categoryId == 3 || categoryId == 4){
-        if(quantityAvailable <= 0 || (quantityAvailable < minimumQuantity)){
+    if (categoryId == 1 || categoryId == 3 || categoryId == 4) {
+        if (quantityAvailable <= 0 || (quantityAvailable < minimumQuantity)) {
             $('#quantity_available').addClass("invalid");
             $('.quanity_must_error').removeClass("d-none");
             valid = false;
-        }else{
+        } else {
             $('.quanity_must_error').addClass("d-none");
         }
     }
-    
-    
-    if(categoryId == 1 || categoryId == 4){
+
+
+    if (categoryId == 1 || categoryId == 4) {
         $('.discount-row').each(function(index) {
             const discountAmount = parseFloat($(`#discount_amont_${index}`).val());
             const discountApplied = parseFloat($(`#discount_applied_${index}`).val());
@@ -130,11 +130,11 @@ function validateForm() {
     for (i = 0; i < checkboxes.length; i++) {
         // If a field is empty...
         if ($(checkboxes[i]).attr('required') && $(checkboxes[i]).attr('type') == 'checkbox' && !$(checkboxes[i]).is(':checked')) {
-            if(checkboxes[i].name == 'termsService' || checkboxes[i].name == 'sellerRules'){
+            if (checkboxes[i].name == 'termsService' || checkboxes[i].name == 'sellerRules') {
                 $('.rules_error').removeClass("d-none");
             }
             valid = false;
-        }else if($(checkboxes[i]).attr('required')){
+        } else if ($(checkboxes[i]).attr('required')) {
             $('.rules_error').addClass("d-none");
         }
     }
@@ -145,13 +145,13 @@ function validateForm() {
             y[i].classList.add("invalid");
             valid = false;
 
-            if(y[i].name == "feature_image"){
+            if (y[i].name == "feature_image") {
                 $('.images_section').addClass("invalid");
             }
-        }else {
+        } else {
             y[i].classList.remove("invalid");
 
-            if(y[i].name == "feature_image"){
+            if (y[i].name == "feature_image") {
                 $('.images_section').removeClass("invalid");
             }
         }
@@ -160,11 +160,11 @@ function validateForm() {
     for (i = 0; i < z.length; i++) {
         // If a field is empty...
         if (z[i].value == "" && $(z[i]).attr('required')) {
-            $('#'+z[i].id).next('.select2-container').find('.select2-selection').css('border', '1px solid red');
+            $('#' + z[i].id).next('.select2-container').find('.select2-selection').css('border', '1px solid red');
             // and set the current valid status to false:
             valid = false;
-        }else {
-            $('#'+z[i].id).next('.select2-container').find('.select2-selection').css('border', '1px solid #aaaaaa');
+        } else {
+            $('#' + z[i].id).next('.select2-container').find('.select2-selection').css('border', '1px solid #aaaaaa');
         }
     }
     // text areas
@@ -175,7 +175,7 @@ function validateForm() {
             t[i].classList.add("invalid");
             // and set the current valid status to false:
             valid = false;
-        }else {
+        } else {
             t[i].classList.remove("invalid");
         }
     }
@@ -198,7 +198,7 @@ function fixStepIndicator(n) {
 }
 
 function addLastStepVisibility() {
-    
+
     let steps = document.querySelectorAll('.step'); // Select all step elements
 
     if (steps.length > 0) {
@@ -207,7 +207,7 @@ function addLastStepVisibility() {
 }
 
 function removeLastStepVisibility() {
-    
+
     let steps = document.querySelectorAll('.step'); // Select all step elements
 
     if (steps.length > 0) {
@@ -215,7 +215,7 @@ function removeLastStepVisibility() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function() {
     const manualMethodRadio = document.getElementById('manual_method');
     const automaticMethodRadio = document.getElementById('automatic_method');
     const manualSection = document.getElementById('manual_method_show');
@@ -235,124 +235,126 @@ function selectCategory(categoryId) {
     // Set the selected category ID in the hidden input field
     $('#selectedCategory').val(categoryId);
 
-    
+
     let titleInput = $('input[name="title"]');
 
     // for hiding and showing the category classes
-        let selectedCategoryClass;
-        let selectedCategoryRequiredClass;
-        let tab2 = document.querySelector('.tab_2');
-        let tab3 = document.querySelector('.tab_3');
+    let selectedCategoryClass;
+    let selectedCategoryRequiredClass;
+    let tab2 = document.querySelector('.tab_2');
+    let tab3 = document.querySelector('.tab_3');
 
-        if(categoryId == 5){
-            tab2.firstElementChild.classList.remove('tab');
-            tab3.firstElementChild.classList.remove('tab');
+    if (categoryId == 5) {
+        tab2.firstElementChild.classList.remove('tab');
+        tab3.firstElementChild.classList.remove('tab');
 
-            tab2.classList.add('d-none');
-            tab3.classList.add('d-none');
-        }else{
-            tab2.firstElementChild.classList.add('tab');
-            tab3.firstElementChild.classList.add('tab');
+        tab2.classList.add('d-none');
+        tab3.classList.add('d-none');
+    } else {
+        tab2.firstElementChild.classList.add('tab');
+        tab3.firstElementChild.classList.add('tab');
 
-            tab2.classList.remove('d-none');
-            tab3.classList.remove('d-none');
-        }
+        tab2.classList.remove('d-none');
+        tab3.classList.remove('d-none');
+    }
 
-        switch (categoryId) {
-            case 1:
-                selectedCategoryClass = 'currency_class';
-                selectedCategoryRequiredClass = 'currency_r';
-                break;
-            case 2:
-                selectedCategoryClass = 'accounts_class';
-                selectedCategoryRequiredClass = 'accounts_r';
-                break;
-            case 3:
-                selectedCategoryClass = 'topup_class';
-                selectedCategoryRequiredClass = 'topup_r';
-                break;
-            case 4:
-                selectedCategoryClass = 'items_class';
-                selectedCategoryRequiredClass = 'items_r';
-                break;
-            default:
-                selectedCategoryClass = 'boosting_class';
-                selectedCategoryRequiredClass = '';
-        }
+    switch (categoryId) {
+        case 1:
+            selectedCategoryClass = 'currency_class';
+            selectedCategoryRequiredClass = 'currency_r';
+            break;
+        case 2:
+            selectedCategoryClass = 'accounts_class';
+            selectedCategoryRequiredClass = 'accounts_r';
+            break;
+        case 3:
+            selectedCategoryClass = 'topup_class';
+            selectedCategoryRequiredClass = 'topup_r';
+            break;
+        case 4:
+            selectedCategoryClass = 'items_class';
+            selectedCategoryRequiredClass = 'items_r';
+            break;
+        default:
+            selectedCategoryClass = 'boosting_class';
+            selectedCategoryRequiredClass = 'boosting_r';
+    }
 
-        // Get all elements that may contain these categories
-        const allElements = document.querySelectorAll('.currency_class, .accounts_class, .topup_class, .items_class, .boosting_class');
+    // Get all elements that may contain these categories
+    const allElements = document.querySelectorAll('.currency_class, .accounts_class, .topup_class, .items_class, .boosting_class');
 
-        // Hide all elements first
-        allElements.forEach(element => {
-            element.style.display = 'none';
-        });
+    // Hide all elements first
+    allElements.forEach(element => {
+        element.style.display = 'none';
+    });
 
-        // Show only the elements with the selected category class
-        const selectedElements = document.querySelectorAll(`.${selectedCategoryClass}`);
-        selectedElements.forEach(element => {
-            element.style.display = 'block';
-        });
+    // Show only the elements with the selected category class
+    const selectedElements = document.querySelectorAll(`.${selectedCategoryClass}`);
+    selectedElements.forEach(element => {
+        element.style.display = 'block';
+    });
 
-        // Now handle the required attribute
-        const allRequiredElements = document.querySelectorAll('.currency_r, .accounts_r, .topup_r, .items_r');
+    // Now handle the required attribute
+    const allRequiredElements = document.querySelectorAll('.currency_r, .accounts_r, .topup_r, .items_r');
 
-        // Remove 'required' from all first
-        allRequiredElements.forEach(element => {
-            element.removeAttribute('required');
-        });
+    // Remove 'required' from all first
+    allRequiredElements.forEach(element => {
+        element.removeAttribute('required');
+    });
 
-        // Add 'required' only to the selected category _r class
-        const selectedRequiredElements = document.querySelectorAll(`.${selectedCategoryRequiredClass}`);
-        selectedRequiredElements.forEach(element => {
-            element.setAttribute('required', 'required');
-        });
+    // Add 'required' only to the selected category _r class
+    const selectedRequiredElements = document.querySelectorAll(`.${selectedCategoryRequiredClass}`);
+    selectedRequiredElements.forEach(element => {
+        element.setAttribute('required', 'required');
+    });
     //
 }
-$(document).ready(function () {
-    $('.category-item').click(function () {
+$(document).ready(function() {
+    $('.category-item').click(function() {
         let categoryId = $(this).data('category-id');
         $('#selectedCategory').val(categoryId);
 
         $('#games-dropdown').html('<option value="" disabled selected>Select a Game</option>');
-        $('#games-container').hide();
+        // $('#games-container').hide();
+        $('.skeleton-overlay-start').removeClass('d-none');
         $('#category-attributes-list').empty();
 
         // Populate games
-        $.get('/get-games', { category_id: categoryId }, function (data) {
+        $.get('/get-games', { category_id: categoryId }, function(data) {
             if (data.categoryGames.length > 0) {
                 data.categoryGames.forEach(categoryGame => {
                     $('#games-dropdown').append(`<option value="${categoryGame.id}">${categoryGame.game.name}</option>`);
                 });
-                $('#games-container').show();
+                // $('#games-container').show();
+                $('.skeleton-overlay-start').addClass('d-none');
             }
             // Apply Select2 to all select elements
-                $('select').select2({
-                    dropdownPosition: 'below',
-                });
+            $('select').select2({
+                dropdownPosition: 'below',
+            });
             //
         });
 
         // Game change listener
-        $('#games-dropdown').off('change').on('change', function () {
+        $('#games-dropdown').off('change').on('change', function() {
             let categoryGameId = $(this).val();
             $('#category_game_id').val(categoryGameId);
-            $.get('/get-attributes', { categoryGameId: categoryGameId }, function (data) {
+            $.get('/get-attributes', { categoryGameId: categoryGameId }, function(data) {
                 $('#game-attributes-list').empty();
                 $('#category-attributes-list').empty();
 
                 renderAttributes(data.gameAttributes, 'game-attributes-list');
-                
+
                 // adding feature values
-                    $('.feature_details').text('');
+                $('.feature_details').text('');
 
-                    // Set common values
-                    $('.feature_image').attr("src", publicPath + data.categoryGame.feature_image);
-                    $('.feature_currency').text(data.categoryGame.title);
+                // Set common values
+                $('.feature_image').attr("src", publicPath + data.categoryGame.feature_image);
+                $('.feature_currency').text(data.categoryGame.title);
 
-                    // Set currency type based on categoryId
-                    $('.feature_currency__default_amount').toggleClass('hidden', categoryId !== 1);
-                    $('.feature_currency_type').text((categoryId == 1) ? data.categoryGame.currency_type : 'unit');
+                // Set currency type based on categoryId
+                $('.feature_currency__default_amount').toggleClass('hidden', categoryId !== 1);
+                $('.feature_currency_type').text((categoryId == 1) ? data.categoryGame.currency_type : 'unit');
                 //
             });
 
@@ -361,6 +363,7 @@ $(document).ready(function () {
         $('.attributes-container').show();
     });
 });
+
 function renderAttributes(attributes, targetId) {
 
     let tab3 = document.querySelector('.tab_3');
@@ -374,7 +377,7 @@ function renderAttributes(attributes, targetId) {
     attributes.forEach(attr => {
         let inputField = '';
 
-        if(attr.title == 1){
+        if (attr.title == 1) {
             $('input[name="title"]').val(attr.name);
         }
 
@@ -384,9 +387,9 @@ function renderAttributes(attributes, targetId) {
 
             let selectClass = attr.topup === 1 ? 'topup_select_boxes' : 'attribute_select_boxes';
             let onchangeFunction = attr.topup === 1 ? 'updateTopupBox(this)' : 'updateTextBox()';
-            
-            let options = `<option value="" disabled selected>Select `+attr.name+`</option>` + // Add the default "Select" option
-            attr.options.map(option => `<option value="${option}">${option}${attr.topup === 1 ? ' ' + attr.name : ''}</option>`).join('');
+
+            let options = `<option value="" disabled selected>Select ` + attr.name + `</option>` + // Add the default "Select" option
+                attr.options.map(option => `<option value="${option}">${option}${attr.topup === 1 ? ' ' + attr.name : ''}</option>`).join('');
             inputField = `<select name="attribute_${attr.id}" id="attribute_${attr.id}" class="form-control ${selectClass} select2" onchange="${onchangeFunction}" required>${options}</select>`;
         }
 
@@ -399,21 +402,21 @@ function renderAttributes(attributes, targetId) {
     });
 
     // Selet2 Initialization
-        $('select').select2({
-            dropdownPosition: 'below',
-        });
-        $('select').on('select2:open', function() {
-            const searchBox = $('.select2-container--open .select2-search__field');
-            
-            // Simple mobile device check
-            const isMobile = /iPhone|Android|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    $('select').select2({
+        dropdownPosition: 'below',
+    });
+    $('select').on('select2:open', function() {
+        const searchBox = $('.select2-container--open .select2-search__field');
 
-            if (!isMobile && searchBox.length) {
-                if (!searchBox.is(':focus')) {
-                    searchBox[0].focus(); // Access the raw DOM element
-                }
+        // Simple mobile device check
+        const isMobile = /iPhone|Android|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+        if (!isMobile && searchBox.length) {
+            if (!searchBox.is(':focus')) {
+                searchBox[0].focus(); // Access the raw DOM element
             }
-        });
+        }
+    });
     ////
 }
 // Function to append the select box value to the text box
@@ -421,7 +424,7 @@ function updateTextBox() {
     var category = $('#selectedCategory').val();
     let selectedValues = [];
 
-    
+
     // Loop through all select boxes with class .attribute_select_boxes
     $('.attribute_select_boxes').each(function() {
         const selectedValue = $(this).val();
@@ -434,10 +437,12 @@ function updateTextBox() {
 
     $('.feature_details').text(selectedValues.join(' - '));
 }
-function updateTopupBox(selectElement){
+
+function updateTopupBox(selectElement) {
     let selectedText = $(selectElement).find('option:selected').text();
     $('.feature_topup').text(selectedText);
 }
+
 $(document).ready(function() {
     // Apply Select2 to all select elements
     $('select').select2({
@@ -447,8 +452,9 @@ $(document).ready(function() {
 
 
 // Images Script
-
-let selectedFiles = [];
+if (!window.selectedFiles) {
+    window.selectedFiles = [];
+}
 
 document.getElementById('uploadBtn').addEventListener('click', function() {
     document.getElementById('imageInput').click();
@@ -543,11 +549,11 @@ function updateFeaturedImage(filename) {
 
 document.getElementById('addRow').addEventListener('click', function() {
     const lastDiscountRow = document.querySelector('.discount-row:last-child');
-    
+
     if (lastDiscountRow && lastDiscountRow.id) {
         const idParts = lastDiscountRow.id.split('_');
         var lastNumber = parseInt(idParts[2], 10) + 1;
-    }else {
+    } else {
         var lastNumber = 0;
     }
 
@@ -586,9 +592,9 @@ document.getElementById('addRow').addEventListener('click', function() {
 
 
 // Accounts Script
-
-let accountCounter = 1;
-
+if (!window.accountCounter) {    
+    window.accountCounter = 1;
+}
 $('#addAccountBtn').click(function() {
     accountCounter++;
     const newAccount = `
@@ -610,19 +616,19 @@ $(document).on('click', '.btn-remove-account', function() {
 
 
 // Toggle button css Boosting
-const collapseEl = document.getElementById('serviceOptions');
-const headerEl = collapseEl.previousElementSibling;
-const icon = headerEl.querySelector('.arrow-icon');
+// const collapseEl = document.getElementById('serviceOptions');
+// const headerEl = collapseEl.previousElementSibling;
+// const icon = headerEl.querySelector('.arrow-icon');
 
-$('#serviceOptions').on('show.bs.collapse', function () {
-    icon.classList.remove('bi-chevron-down');
-    icon.classList.add('bi-chevron-up');
-});
+// $('#serviceOptions').on('show.bs.collapse', function () {
+//     icon.classList.remove('bi-chevron-down');
+//     icon.classList.add('bi-chevron-up');
+// });
 
-$('#serviceOptions').on('hide.bs.collapse', function () {
-    icon.classList.remove('bi-chevron-up');
-    icon.classList.add('bi-chevron-down');
-});
+// $('#serviceOptions').on('hide.bs.collapse', function () {
+//     icon.classList.remove('bi-chevron-up');
+//     icon.classList.add('bi-chevron-down');
+// });
 
 
 function toggleService(element) {
@@ -640,9 +646,9 @@ function toggleService(element) {
             const subscriptionData = document.querySelector(`.subscription-data-${key}`);
             subscriptionData.textContent = data.subscribedText;
             subscriptionData.classList.add(data.class);
-            if(data.class == "text-success"){
+            if (data.class == "text-success") {
                 subscriptionData.classList.remove("text-muted");
-            }else{
+            } else {
                 subscriptionData.classList.remove("text-success");
             }
         } else {

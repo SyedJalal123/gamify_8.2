@@ -32,7 +32,7 @@ class LiveChat extends Component
 
     public function sendMessage() 
     {
-        dd($this->message);
+        // dd($this->message);
     }
     
     

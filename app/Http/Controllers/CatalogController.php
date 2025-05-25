@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\CategoryGame;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CatalogController extends Controller
 {
@@ -69,22 +70,34 @@ class CatalogController extends Controller
                     }
                 }
             }
-            
+            // dd($grouped);
             // Sort by topup value
             $sortedItems = $grouped->sortBy(
                 fn($item) => $item->attributes->first(fn($attr) => $attr->topup == 1)->pivot->value ?? PHP_INT_MAX
             );
 
+            $page = request()->get('page', 1);
+            $perPage = 30;
+            
+            $paginatedItems = new LengthAwarePaginator(
+                $sortedItems->slice(($page - 1) * $perPage, $perPage)->values(),
+                $sortedItems->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
+
             // Handle AJAX for category 3
             if ($request->ajax()) {
-                $main = view('frontend.catalog.topup-items', compact('sortedItems'))->render();
+                $main = view('frontend.catalog.topup-items', compact('sortedItems', 'paginatedItems'))->render();
 
                 return response()->json([
                     'main' => $main,
                 ]);
             }
+            
     
-            return view('frontend.catalog.topupCatalog', compact('categoryGame', 'attributes', 'sortedItems', 'items'));
+            return view('frontend.catalog.topupCatalog', compact('categoryGame', 'attributes', 'sortedItems', 'items', 'paginatedItems'));
         }else if ($categoryGame->category->id == 5){
             return view('frontend.catalog.boostingCatalog', compact('categoryGame'));
         }
@@ -210,8 +223,6 @@ class CatalogController extends Controller
     public function itemDetail(Item $item)
     {
         $item->load(['attributes','categoryGame.game', 'categoryGame.attributes']);
-
-        // dd($item->attributes[0]->pivot->categoryGameAttribute);
 
         // Detect if category is explicitly 'Gold'
         $isCurrency = strtolower($item->categoryGame->category->id) == 1;

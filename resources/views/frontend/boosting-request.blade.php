@@ -281,7 +281,6 @@
 
 @section('js')
     <script>
-        // Select 2
         $(document).ready(function() {
             // Apply Select2 to all select elements
             $('select').select2({
@@ -291,9 +290,8 @@
             $('#action_menu_btn').click(function() {
                 $('.action_menu').toggle();
             });
-        });
-        
-        document.addEventListener("DOMContentLoaded", function() {
+
+            // Rearranging Format
             let userId = @json(auth()->user()->id);  // Get user ID dynamically from Laravel
             let buyerRequestId = @json($buyerRequest->user_id);
 
@@ -350,6 +348,12 @@
             }
         });
 
+        $(document).ready(function() {
+            setTimeout(() => {
+                scroll_bottom('.msg_card_body');
+            }, 500);
+        });
+
         Livewire.on('sidebar-updated', () => {
             setTimeout(() => {
                 scroll_bottom('.msg_card_body');
@@ -376,7 +380,6 @@
                     scroll_bottom('.msg_card_body');
                     Livewire.dispatch('sidebar-update');
                 }
-
             }, 0.1);
         });
 
@@ -431,7 +434,7 @@
     <!-- Initialize Echo private channel listener for user notifications -->
     @auth
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            $(document).ready(function() {
                 const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
                 const buyerRequestId = {{ $buyerRequest->id }};
 

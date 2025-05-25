@@ -55,7 +55,7 @@ $(document).ready(function () {
 		$('.header__nav').toggleClass('header__nav--active');
 
 		if( $('.header__nav').hasClass('header__nav--active') ) {
-			disableScrolling();
+			// disableScrolling();
 		} else {
 			enableScrolling();
 		}

@@ -21,7 +21,6 @@ class CheckoutController extends Controller
 {
     public function show(Request $request)
     {
-        // dd($request->all());
         if($request->offer_id){
             $offer = RequestOffer::with(['buyerRequest.service.categoryGame', 'buyerRequest.attributes'])->findOrFail($request->offer_id);
             $item = null;
@@ -40,6 +39,7 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
+        // dd($request->all());
         $item = Item::with(['attributes', 'game', 'category'])->findOrFail($request->item_id);
         $quantity = $request->quantity ?? null;
 
@@ -49,7 +49,16 @@ class CheckoutController extends Controller
     public function create(Request $request) {
         
         // dd($request->all());
-                
+        if($request->item_id){
+            $item = Item::with('categoryGame')->find($request->item_id);
+            $categoryGameId = $item->category_game_id;
+            $seller_id = $item->seller_id;
+        }else {
+            $offer = RequestOffer::with('buyerRequest.service.categoryGame')->find($request->offer_id);
+            $categoryGameId = $offer->buyerRequest->service->categoryGame->id;
+            $seller_id = $offer->user_id;
+        }
+
         $validated = $request->validate([
             'payment_method'      => 'required|in:stripe,nowpayments',
             'total_price'         => 'required|numeric|min:0',
@@ -70,7 +79,9 @@ class CheckoutController extends Controller
                 'order_id'           => Str::uuid()->toString(),
                 'item_id'            => $validated['item_id'] ?? null,
                 'request_offer_id'   => $validated['offer_id'] ?? null,
+                'category_game_id'   => $categoryGameId,
                 'buyer_id'           => Auth::id(),
+                'seller_id'          => $seller_id,
                 'title'              => $validated['product_name'],
                 'quantity'           => $validated['quantity'],
                 'price'              => $validated['price'],
@@ -97,6 +108,7 @@ class CheckoutController extends Controller
                 if($conversation == null){
                     $conversation = BuyerRequestConversation::create([
                         'buyer_request_id' => $offer->buyerRequest->id,
+                        'order_id' => $order->id,
                         'buyer_id' => $offer->buyerRequest->user_id,
                         'seller_id' => $offer->user_id
                     ]);

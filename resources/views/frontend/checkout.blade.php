@@ -42,10 +42,9 @@
             } 
         }
     </style>
-    <script src="https://js.stripe.com/v3/"></script>
-    @endsection
+@endsection
 
-    @section('content')
+@section('content')
     
     @php
         $quantity = request()->get('quantity', 1);
@@ -80,7 +79,7 @@
             </div>
 
             <div class="top-bar-page px-3">
-                <a href="{{ url()->previous() }}" class="text-muted mb-4 d-inline-block">&larr; Back</a>
+                <a wire:navigate href="{{ url()->previous() }}" class="text-muted mb-4 d-inline-block">&larr; Back</a>
                 <h3 class="mb-4 color-white">Checkout</h3>
             </div>
 
@@ -313,6 +312,8 @@
         <div class="spinner-border text-light" role="status"></div>
     </div>
 
+    <script src="https://js.stripe.com/v3/"></script>
+
     <script>
         document.getElementById('submit-button').addEventListener('click', () => {
             // Check if the form is valid
@@ -407,6 +408,7 @@
             });
         });
     </script>
+
     <script>
         const stripe = Stripe('{{ config('services.stripe.key') }}');
 
@@ -425,4 +427,5 @@
             .catch(error => console.error('Error:', error));
         });
     </script>
-    @endsection
+
+@endsection

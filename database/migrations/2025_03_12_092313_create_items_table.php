@@ -27,6 +27,8 @@ return new class extends Migration
             $table->integer('minimum_quantity')->nullable();;
             $table->float('price');
             $table->json('discount')->nullable();
+            $table->boolean('pause')->default('0');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

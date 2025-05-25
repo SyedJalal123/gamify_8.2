@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
     use HasFactory;
-    protected $fillable = ['seller_id', 'category_game_id', 'title', 'images', 'feature_image', 'images_path', 'description', 'delivery_time', 'delivery_method', 'account_info', 'quantity_available', 'minimum_quantity', 'price', 'discount'];
+    use SoftDeletes;
+    
+    protected $fillable = ['seller_id', 'category_game_id', 'title', 'images', 'feature_image', 'images_path', 'description', 'delivery_time', 'delivery_method', 'account_info', 'quantity_available', 'minimum_quantity', 'price', 'discount', 'pause', 'expires_at'];
 
     protected $casts = [
         'images' => 'array',

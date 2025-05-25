@@ -10,7 +10,9 @@ class Order extends Model
         'order_id',
         'item_id',
         'request_offer_id',
+        'category_game_id',
         'buyer_id',
+        'seller_id',
         'title',
         'quantity',
         'price',
@@ -50,8 +52,18 @@ class Order extends Model
         return $this->belongsTo(User::class, 'buyer_id');
     }
 
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
     public function chat()
     {
         return $this->hasOne(BuyerRequestConversation::class);
+    }
+
+    public function categoryGame()
+    {
+        return $this->belongsTo(CategoryGame::class, 'category_game_id');
     }
 }

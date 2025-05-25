@@ -7,7 +7,7 @@
     <div class="row-3-2-1">
         @foreach ($items as $item)
         <div class="position-relative">
-            <a href="{{ route('item.detail', $item->id) }}" class="text-dark text-decoration-none animate-class">
+            <a wire:navigate href="{{ route('item.detail', $item->id) }}" class="text-dark text-decoration-none animate-class">
                 <div class="drop-box">
                     <p class="">
                         @foreach ($item->attributes as $key => $attribute)
@@ -34,11 +34,31 @@
                         @endif
                     </p>
                 </div>
+               <div class="drop-box skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1;">
+                   <p class="">
+                       <strong class="skeleton px-2 br-4">&nbsp;</strong>
+                       <strong class="skeleton px-2 br-4">&nbsp;</strong>
+                       <strong class="skeleton px-2 br-4">&nbsp;</strong>
+                   </p>
+                   <div class="d-flex justify-content-between mb-4 fs-14 text-muted">
+                       <div class="d-flex flex-column w-100">
+                           <p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>
+                           <p class="skeleton skeleton-text mt-0">&nbsp;</p>
+                       </div>
+                       <div class="mb-2 d-flex flex-column align-items-end">
+                           <div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>
+                       </div>
+                   </div>
+                   <p class="m-0">
+                       <strong class="fs-20 px-5 skeleton">&nbsp</strong>
+                   </p>
+               </div>
             </a>
         </div>
         @endforeach
     </div>
     @else
+        <div class="row-3-2-1"></div>
         <div class="col-12 text-center text-muted py-5">
             <h5>No results found.</h5>
         </div>

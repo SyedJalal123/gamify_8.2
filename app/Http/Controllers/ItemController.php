@@ -120,10 +120,10 @@ class ItemController extends Controller
                 'feature_image'       => $featureImagePath ?? null,
                 'images_path'         => $folderPath ?? null,
                 'description'         => $request->description ?? null,
-                'delivery_time'       => $request->delivery_time ?? null,
                 'delivery_method'     => ($cateId == 2) ? $request->delivery_method : null,
+                'delivery_time'       => ($request->delivery_time && $request->delivery_method == 'manual') ? $request->delivery_time : 'instant',
                 'account_info'        => ($cateId == 2) ? json_encode($request->account_info) : null,
-                'quantity_available'  => $request->quantity_available ?? null,
+                'quantity_available'  => ($cateId == 2) ? count($request->account_info) : $request->quantity_available,
                 'minimum_quantity'    => $request->minimum_quantity ?? null,
                 'price'               => $request->price,
             ]);
@@ -167,6 +167,106 @@ class ItemController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    public function update(Request $request) 
+    {
+        // dd($request->all());
+        try {
+            // Validate the input
+            $request->validate([
+                'category_id' => 'required|exists:categories,id',
+                'title' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'images' => 'array',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp,bmp,svg|max:4048',
+            ]);
+            
+            DB::beginTransaction(); // Start transaction
+            
+            // Handle image uploads
+            $imagePaths = [];
+            $existingImages = $request->existing_images ?? null;
+            $featureImagePath = $request->feature_image ?? null;
+
+            $cateId = $request->category_id;
+
+            if($existingImages != null){
+                foreach($existingImages as $image) {
+                    $imagePaths[] = $image;
+                }
+            }
+
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $randomNumber = rand(1, 99999);
+                    $filename = time() . '.' . $randomNumber . '.' . pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $folderPath = 'uploads/items/';
+                    $filePath = 'uploads/items/' . $filename;
+                    $image->move(public_path('uploads/items'), $filename);
+
+                    // Resize Image
+                    $imgManager = new ImageManager(new Driver());
+
+                    $thumbImg = $imgManager->read($filePath);
+                    $thumbImg->cover(255, 255);
+                    $savePath = public_path('uploads/items/thumbnails/' . $filename);
+                    $thumbImg->save($savePath);
+                    
+                    $imagePaths[] = $filename;
+    
+                    if ($request->feature_image == $image->getClientOriginalName()) {
+                        $featureImagePath = $filename;
+                    }
+    
+                    if ($index === 0 && $featureImagePath === null) {
+                        $featureImagePath = $filename;
+                    }
+                }
+            }
+            
+
+            // Save item
+            $item = Item::with('categoryGame.category')->find($request->offer_id);
+            $item->update([
+                'category_id'         => $request->category_id,
+                'seller_id'           => Auth::id(),
+                'category_game_id'    => $request->category_game_id,
+                'title'               => $request->title ?? null,
+                'images'              => !empty($imagePaths) ? json_encode($imagePaths) : null,
+                'feature_image'       => $featureImagePath ?? null,
+                'description'         => $request->description ?? null,
+                'delivery_method'     => ($cateId == 2) ? $request->delivery_method : null,
+                'delivery_time'       => ($request->delivery_time && $request->delivery_method == 'manual') ? $request->delivery_time : 'instant',
+                'account_info'        => ($cateId == 2) ? json_encode($request->account_info) : null,
+                'quantity_available'  => $request->quantity_available,
+                'minimum_quantity'    => $request->minimum_quantity ?? 1,
+                'price'               => $request->price,
+            ]);
+    
+            // Save discounts
+            if ($request->has('discount_amont') && $request->has('discount_applied')) {
+                $discountData = [];
+                foreach ($request->discount_amont as $index => $amount) {
+                    $discountData[] = [
+                        'amount' => $amount,
+                        'discount_percentage' => $request->discount_applied[$index],
+                    ];
+                }
+                $item->discount = json_encode($discountData);
+                $item->save();
+            }
+    
+            DB::commit(); // All done safely!
+    
+            return redirect('offers/'.$item->categoryGame->category->name)->with('success', 'Offer updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
 
     public function toggleService(Request $request)

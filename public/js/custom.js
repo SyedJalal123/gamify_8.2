@@ -1,9 +1,15 @@
-$('#myModal').on('shown.bs.modal', function () {
+// const { event } = require("jquery");
+
+$('#myModal').on('shown.bs.modal', function() {
     $('#myInput').trigger('focus');
 });
 
 // Custom Search Bar Js
 
+//
+
+// Live AJAX Search
+$(document).ready(function() {
     const customSearchInput = document.getElementById('customSearchInput');
     const customDropdown = document.getElementById('customSearchDropdown');
     const customOverlay = document.getElementById('customSearchOverlay');
@@ -18,77 +24,73 @@ $('#myModal').on('shown.bs.modal', function () {
         customOverlay.classList.remove('show');
         customSearchInput.blur();
     });
-//
 
-// Live AJAX Search
-    document.addEventListener('DOMContentLoaded', function () {
-        const customSearchInput = document.getElementById('customSearchInput');
-        const customDropdown = document.getElementById('customSearchDropdown');
-        const customOverlay = document.getElementById('customSearchOverlay');
-        const customContainer = document.querySelector('.custom-search-container');
-        let timeout = null;
+    const customContainer = document.querySelector('.custom-search-container');
+    let timeout = null;
 
-        if (!customSearchInput || !customDropdown || !customOverlay || !customContainer) return;
+    if (!customSearchInput || !customDropdown || !customOverlay || !customContainer) return;
 
-        // Show dropdown and overlay when input is focused
-        customSearchInput.addEventListener('focus', () => {
-            customDropdown.classList.add('show');
-            customOverlay.classList.add('show');
-            customContainer.classList.add('active');
+    // Show dropdown and overlay when input is focused
+    customSearchInput.addEventListener('focus', () => {
+        customDropdown.classList.add('show');
+        customOverlay.classList.add('show');
+        customContainer.classList.add('active');
 
-            // Trigger default fetch if input is empty
-            if (!customSearchInput.value.trim()) {
-                fetchResults('');
-            }
-        });
-
-        // Hide dropdown and overlay on overlay click
-        customOverlay.addEventListener('click', () => {
-            customDropdown.classList.remove('show');
-            customOverlay.classList.remove('show');
-            customSearchInput.blur();
-            customContainer.classList.remove('active');
-        });
-
-        // Keyup live search
-        customSearchInput.addEventListener('keyup', () => {
-            clearTimeout(timeout);
-            const query = customSearchInput.value.trim();
-
-            // Show loading
-            customDropdown.innerHTML = `<div style="padding: 20px; color: #ccc;">Loading...</div>`;
-
-            timeout = setTimeout(() => {
-                fetchResults(query);
-            }, 200);
-        });
-
-        function fetchResults(query = '') {
-            fetch(`/live-search?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.length) {
-                        customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">No results found.</div>';
-                        return;
-                    }
-
-                    const title = query ? 'SEARCH RESULTS' : 'POPULAR CATEGORIES';
-                    console.log(data);
-                    customDropdown.innerHTML = `
-                                        <h4>${title}</h4>
-                                        ${data.map(item => `
-                                            <a href="${item.link}" class="custom-search-category" style="text-decoration: none;">
-                                                <img src="${item.image}" alt="${item.name}" />
-                                                ${item.name}
-                                            </a>
-                                        `).join('')}
-                                    `;
-                })
-                .catch(() => {
-                    customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">Something went wrong.</div>';
-                });
+        // Trigger default fetch if input is empty
+        if (!customSearchInput.value.trim()) {
+            fetchResults('');
         }
     });
+
+    // Hide dropdown and overlay on overlay click
+    customOverlay.addEventListener('click', () => {
+        customDropdown.classList.remove('show');
+        customOverlay.classList.remove('show');
+        customSearchInput.blur();
+        customContainer.classList.remove('active');
+    });
+
+    // Keyup live search
+    customSearchInput.addEventListener('keyup', () => {
+        clearTimeout(timeout);
+        const query = customSearchInput.value.trim();
+
+        // Show loading
+        customDropdown.innerHTML = `<div style="padding: 20px; color: #ccc;">Loading...</div>`;
+
+        timeout = setTimeout(() => {
+            fetchResults(query);
+        }, 200);
+    });
+
+    function fetchResults(query = '') {
+                fetch(`/live-search?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                            if (!data.length) {
+                                customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">No results found.</div>';
+                                return;
+                            }
+
+                            const title = query ? 'SEARCH RESULTS' : 'POPULAR CATEGORIES';
+                            console.log(data);
+                            customDropdown.innerHTML = `
+            <h4>${title}</h4>
+            ${data.map(item => `
+                <a href="${item.link}" class="custom-search-category" style="text-decoration: none;">
+                    <img src="${item.image}" alt="${item.name}" />
+                    ${item.name}
+                </a>
+            `).join('')}
+        `;
+})
+.catch(() => {
+customDropdown.innerHTML = '<div style="padding: 20px; color: #ccc;">Something went wrong.</div>';
+});
+    }
+
+    $('[data-toggle="tooltip"]').tooltip();
+});
 //
 
 $('input[type="number"]').on('wheel', function (e) {
@@ -200,6 +202,27 @@ function scrollToClass(className, index = 0, delay = 1200) {
 
 updatePlusMinus();
 
+function btnPlus(id) {
+    const input = document.getElementById(id);
+    input.value = parseInt(input.value, 10) + 1;
+
+    if (parseInt(input.value, 10) < parseInt(input.min, 10)) {
+        input.value = input.min;
+    }
+}
+
+function btnMinus(id) {
+    const input = document.getElementById(id);
+
+    if (parseInt(input.value, 10) > parseInt(input.min, 10)) {
+        input.value = parseInt(input.value, 10) - 1;
+    }
+
+    if (parseInt(input.value, 10) < parseInt(input.min, 10)) {
+        input.value = input.min;
+    }
+}
+
 function updatePlusMinus() {
     document.querySelectorAll('.btn-minus').forEach(btn => {
         btn.onclick = function () {
@@ -213,6 +236,7 @@ function updatePlusMinus() {
             }
         };
     });
+
     document.querySelectorAll('.btn-plus').forEach(btn => {
         btn.onclick = function () {
             const input = this.previousElementSibling.previousElementSibling;
@@ -223,6 +247,7 @@ function updatePlusMinus() {
             }
         };
     });
+
     document.querySelectorAll('.delete-row').forEach(btn => {
         btn.onclick = function () {
             this.closest('.discount-row').remove();
@@ -300,5 +325,87 @@ function showLiveImageModal(url, type) {
             video.currentTime = 0;
         }
         mediaContent.innerHTML = "";
+    });
+}
+
+document.querySelectorAll('.dropdown-menu.stay-open').forEach(function (menu) {
+    menu.addEventListener('click', function (e) {
+        const tag = e.target.tagName.toLowerCase();
+        const isFormElement = ['input', 'textarea', 'select', 'label'].includes(tag);
+        const isInsideToggle = e.target.closest('[data-toggle="collapse"]');
+        const isCollapseTarget = e.target.closest('.collapse');
+
+        if (isFormElement || isInsideToggle || isCollapseTarget) {
+            setTimeout(() => {
+                $('#dropdownMenu3').click();
+            }, 0);
+        }
+    });
+});
+
+// Toast Notifications
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.addEventListener("toast.success", event => {   
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.success(event.detail.message);
+        // toastr["success"]("Clear itself?<br /><br /><button type='button' class='btn clear'>Yes</button>")
+    });
+
+    document.addEventListener("toast.changed", event => {   
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.changed(event.detail.message);
+    });
+
+    document.addEventListener("toast.info", event => {
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.info(event.detail.message);
+    });
+
+    document.addEventListener("toast.warning", event => {
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.warning(event.detail.message);
+    });
+
+    document.addEventListener("toast.error", event => {
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.error(event.detail.message);
+    });
+});
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+$(document).ready(function() {
+  const textareas = document.querySelectorAll('.auto-resize-textarea');
+  textareas.forEach(textarea => {
+    autoResize(textarea); // Resize on load
+    textarea.addEventListener('input', () => autoResize(textarea)); // Resize on input
+  });
+});
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.success('Copied to clipboard');
+    }, function(err) {
+        toastr.options = {
+            "closeButton": true,
+        }
+        toastr.error(err);
     });
 }

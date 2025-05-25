@@ -1,5 +1,5 @@
 <div 
-{{-- wire:poll.1s --}}
+wire:poll.1s
 >
     @if ($isDelivered)
         @php

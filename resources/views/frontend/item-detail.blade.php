@@ -28,12 +28,11 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <a href="{{ url()->previous() }}" class="text-muted mb-3 d-inline-block text-small">&larr; Back to all
-                        offers</a><br>
+                    <a wire:navigate href="{{ url()->previous() }}" class="text-muted mb-3 d-inline-block text-small">&larr; Back to all offers</a><br>
                     <div class="gold-badge mb-2 d-inline-flex align-items-center">
                         <img src="{{ asset($item->categoryGame->game->image) }}" width="24" class="mr-1">
                         <strong>{{ $item->categoryGame->game->name }} {{ $item->categoryGame->title }}</strong>
@@ -53,7 +52,7 @@
                     @endphp
 
                     @if ($isCurrency)
-                        <div class="row gold-layout mt-2 fade-in-delay-small">
+                        <div class="row gold-layout mt-2">
                             <div class="col-lg-7 p-0 px-md-3">
                                 <div class="seller-box rounded text-black bg-white mb-3">
                                     <div class="seller_details d-md-flex text-left border-m-bottom px-3 py-3 d-none">
@@ -246,7 +245,7 @@
                             </div>
                         </div>
                     @else
-                        <div class="row fade-in-delay-small">
+                        <div class="row">
                             <div class="col-lg-7 p-0 px-md-3">
                                 <div class="seller-box rounded text-black bg-white mb-3">
                                     <div class="d-flex flex-column flex-md-column">
@@ -657,29 +656,35 @@
             arrow.classList.toggle('open');
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        $(document).ready(function() {
             const gallery = document.querySelector('.item-gallery');
             const scrollLeftBtn = document.querySelector('.scroll-left');
             const scrollRightBtn = document.querySelector('.scroll-right');
 
-            scrollLeftBtn.addEventListener('click', () => {
-                gallery.scrollBy({
-                    left: -260,
-                    behavior: 'smooth'
-                }); // Scroll left
-            });
+            if (scrollLeftBtn) {
+                scrollLeftBtn.addEventListener('click', () => {
+                    gallery.scrollBy({
+                        left: -260,
+                        behavior: 'smooth'
+                    });
+                });
+            }
 
-            scrollRightBtn.addEventListener('click', () => {
-                gallery.scrollBy({
-                    left: 260,
-                    behavior: 'smooth'
-                }); // Scroll right
-            });
+            if (scrollRightBtn) {
+                scrollRightBtn.addEventListener('click', () => {
+                    gallery.scrollBy({
+                        left: 260,
+                        behavior: 'smooth'
+                    });
+                });
+            }
         });
 
-        let currentImageIndex = 0;
-        let images = [];
-
+        $(document).ready(function() {
+            let currentImageIndex = 0;
+            let images = [];
+        });
+        
         document.querySelectorAll('.open-modal').forEach(img => {
             img.addEventListener('click', function() {
                 images = JSON.parse(this.dataset.images);
@@ -765,7 +770,7 @@
         }
 
         // Call on page load to measure lines
-        window.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             measureLinesById('desc-'+{{ $item->id }});
             measureLinesById('desc-'+{{ $item->id }}+'-phone');
         });

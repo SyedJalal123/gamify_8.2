@@ -17,7 +17,7 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container mb-5" style="max-width: 1118px;">
             <div class="row col-12">
                 <img src="{{ asset($categoryGame->game->image) }}" style="width: 23px;height: max-content;">
@@ -44,14 +44,14 @@
                     </div>
                 @endif
             </div>
-            <div class="row fade-in-delay-small">
+            <div class="row">
                 <div class="col-md-7 m-0 p-0 mb-4 pt-4">
                     <div class="d-flex flex-column">
                         <h4 class="bg-blue text-white text-center p-0 px-md-10 py-3 m-0 fw-bold fs-16 fs-md-22">Best boosting deals in under 2 minutes</h4>
                         <div class="bg-white p-3 px-md-10 py-4">
                             <form action="{{url('save-service')}}" id="service_form" class="">
                                 <div class="pb-4">
-                                    <select name="service_id" id="service" class="select2" required>
+                                    <select name="service_id" id="service" class="select2 hidden-until-ready" required>
                                         <option value="" disabled selected>Choose a Service</option>
                                         @foreach ($categoryGame->services as $service)
                                             <option value="{{$service->id}}">{{$service->name}}</option>

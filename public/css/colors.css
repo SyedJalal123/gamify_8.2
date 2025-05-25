@@ -8,6 +8,7 @@ body.dark-theme {
     --text-primary-2: #dddddd;
     --text-secondary: #8a869d;
     --text-grey: #898a93;
+    --brand-marine: #4783ff;
     --brand-dark: #14131a;
     --brand-teal: #20c997;
     --brand-cherry: #e81b16;
@@ -35,6 +36,8 @@ body.dark-theme {
     --border-green-1: rgba(154, 233, 130, 0.212);
     --border-green-1-active: rgb(154 233 130 / 50%);
     --dividor-border: rgba(167, 130, 233, 0.06);
+
+    --shadow-1: #0000002e;
 }
 
 body.light-theme {
