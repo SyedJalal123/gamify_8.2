@@ -1398,6 +1398,10 @@
         color: var(--brand-marine);
     }
 
+    .text-theme-marine-light {
+        color: var(--brand-marine-light);
+    }
+
     .text-theme-emerald {
         color: var(--brand-emerald);
     }
@@ -1433,6 +1437,10 @@
         background-color: var(--brand-teal);
     }
     
+    .background-theme-marine-light {
+        background-color: var(--brand-marine-light);
+    }
+
     @media (min-width:768px) {
         .background-theme-md-body-1 {
             background-color: var(--background-body-1);

@@ -8,6 +8,7 @@ use App\Models\CategoryGame;
 use App\Models\Game;
 use App\Models\Category;
 use App\Models\BuyerRequest;
+use App\Models\EmailNotifications;
 use App\Models\Order;
 use App\Models\BuyerRequestConversation;
 use Yajra\DataTables\Facades\DataTables;
@@ -324,6 +325,12 @@ class SellerDashboardController extends Controller
         $notifications = auth()->user()->notifications()->paginate('20');
 
         return view('frontend.dashboard.notifications', compact('notifications'));
+    }
+
+    public function settings(Request $request) {
+        $user = auth()->user();
+        $email_notifications = EmailNotifications::all();
+        return view('frontend.dashboard.account-settings', compact('user','email_notifications'));
     }
 
     public function editOffer(Request $request, $offer_id) {

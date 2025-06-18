@@ -110,6 +110,7 @@ Route::middleware('verified')->group(function () {
     Route::get('/messages', [SellerDashboardController::class, 'messages'])->name('seller-dashboard.messages')->middleware(['auth']);
     Route::get('/notifications', [SellerDashboardController::class, 'notifications'])->name('seller-dashboard.notifications')->middleware(['auth']);
     Route::get('/feedback', [SellerDashboardController::class, 'feedback'])->name('seller-dashboard.feedback')->middleware(['auth']);
+    Route::get('/settings', [SellerDashboardController::class, 'settings'])->name('seller-dashboard.settings')->middleware(['auth']);
     
 
 });

@@ -2365,6 +2365,7 @@ pre code {
 .form-control:disabled,
 .form-control[readonly] {
     background-color: #e9ecef;
+    color: #8a869d !important;
     opacity: 1
 }
 

@@ -110,7 +110,7 @@
             </a>
         </div>
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title sidebar-item p-1">
+            <a wire:navigate href="{{url('settings')}}" class="sidebar-title sidebar-item p-1">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-gear fs-20 mr-2"></i>
                     <div>

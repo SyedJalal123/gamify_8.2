@@ -20,6 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'username',
+        'profile',
         'email',
         'password',
         'google_id',
@@ -47,6 +49,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function ($user) {
+            if (empty($user->username)) {
+                $user->username = generateUniqueGamifyUsername();
+            }
+        });
+    }
+
     public function seller()
     {
         return $this->hasOne(Seller::class);
@@ -65,5 +76,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function unreadMessages() 
     {
         $this->hasMany(Message::class, 'sender_id', 'id')->where('read_at', null);
+    }
+
+    public function emailNotifications()
+    {
+        return $this->belongsToMany(EmailNotification::class)
+                    ->withTimestamps();
     }
 }

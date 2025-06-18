@@ -5,7 +5,35 @@ use App\Models\Item;
 use App\Models\Game;
 use App\Models\BuyerRequest;
 use App\Models\Order;
+use App\Models\User;
 use Carbon\Carbon;
+
+function generateUniqueGamifyUsername(): string
+{
+    $prefixes = [
+        'Neo', 'Dark', 'Fast', 'Hyper', 'Cool', 'Zero', 'Ultra', 'Blue', 'Fire', 'Cloud', 'Nova', 'Bright', 'Alpha', 'Beta', 'Quick', 'Sky', 'Steel', 'Shadow', 'Lunar', 'Crimson',
+        'Jet', 'Silver', 'Iron', 'Flame', 'Lucky', 'Icy', 'Turbo', 'Glow', 'Solar', 'Tech', 'Game', 'Air', 'Echo', 'Pixel', 'Mono', 'Cosmic', 'Epic', 'Digital', 'Rogue', 'Swift',
+        'True', 'Golden', 'Electric', 'Free', 'Magic', 'Flex', 'Virtual', 'Next', 'Smart', 'Top', 'Rush', 'Volt', 'Flick', 'Auto', 'Rapid', 'Ultra', 'Flash', 'Spin', 'Mystic', 'Legend',
+        'Dream', 'Nova', 'Chill', 'Cyber', 'Bold', 'Frozen', 'Cloudy', 'Zen', 'Quantum', 'Core', 'AlphaX', 'Dash', 'Clean', 'SteelX', 'Orbit', 'SkyX', 'NextX', 'Byte', 'DarkX', 'Vortex', 'FireX',
+        'Max', 'Blitz', 'Code', 'Logic', 'Node', 'AI', 'Xeno', 'Rhino', 'Prime', 'Meta', 'Holo', 'Mode', 'Beam', 'Grid', 'Hack', 'Pulse', 'Ghost', 'IronX', 'Skyline', 'Drift'
+    ];
+
+    $suffixes = [
+        'Byte', 'Runner', 'Crush', 'Blast', 'Knight', 'Zone', 'Edge', 'Dash', 'Ghost', 'Jet', 'Boss', 'Spark', 'Trek', 'Wolf', 'Fire', 'Hero', 'Gear', 'Shift', 'Wave', 'Rider',
+        'Storm', 'Drive', 'Vibe', 'Champ', 'Drop', 'Loop', 'EdgeX', 'Hunter', 'Breaker', 'Tune', 'Beat', 'Core', 'Stack', 'Ninja', 'Track', 'King', 'Flow', 'Flash', 'Rock', 'Tune',
+        'Grid', 'Lock', 'Path', 'Rise', 'Sonic', 'BlastX', 'Power', 'Hack', 'FlowX', 'ZoneX', 'Hop', 'Jump', 'Boost', 'Tank', 'Forge', 'Glitch', 'Kick', 'Code', 'TuneX', 'ByteX',
+        'Skill', 'Rush', 'Echo', 'Ping', 'Warp', 'Sync', 'Hype', 'Unit', 'Aim', 'Seek', 'Shot', 'DropX', 'Jolt', 'Zoom', 'Mode', 'Vault', 'Mind', 'Clash', 'Hit', 'Boom', 'LoopX',
+        'Ace', 'Line', 'TuneZ', 'TrackX', 'Crash', 'ZoomX', 'Lift', 'Tide', 'Glide', 'Limit', 'Run', 'Craft', 'DriveX', 'SparkX', 'Raid', 'Beam', 'Node', 'CodeX', 'Trail', 'ZoneZ'
+    ];
+
+    do {
+        $username = $prefixes[array_rand($prefixes)]
+                  . $suffixes[array_rand($suffixes)]
+                  . rand(100, 9999); // optional: use UUID instead of rand for scale
+    } while (User::where('username', $username)->exists());
+
+    return $username;
+}
 
 function categories(){
     $categories = Category::with('categoryGames.game')->get();
@@ -202,3 +230,4 @@ function userFeedbackScore($userId) {
             return 0;
         }
 }
+
