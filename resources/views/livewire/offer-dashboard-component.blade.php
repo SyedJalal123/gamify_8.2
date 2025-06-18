@@ -1,5 +1,56 @@
 
 <div class="offer-container">
+    <div class="mb-0">
+        <form method="GET" id="desktopFilterForm">
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                <div class="mr-md-3 mb-2 select-2-dark position-relative p-w-100" style="min-width: 200px;">
+                    <select class="form-control filter-select select2" 
+                        onchange="Livewire.dispatch('game-filter', { 
+                            gameId: document.getElementById('filter-game').value, 
+                            pause: document.getElementById('filter-pause').value, 
+                            search: document.getElementById('filter-search').value 
+                        });" 
+                        id="filter-game" name="filterStatus">
+                        <option value="">All Games</option>
+                        @foreach ($games as $game)
+                        <option value="{{ $game->id }}">{{ $game->name }}</option>
+                        @endforeach
+                    </select>
+                    <div style="min-width: 50px;min-height: 38px;opacity:1;" class="skeleton-overlay skeleton-overlay-start background-theme-body-2 br-2 d-flex align-items-center">
+                        <div class="skeleton skeleton-text ml-2 py-2">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="mr-md-3 mb-2 select-2-dark position-relative p-w-100" style="min-width: 200px;">
+                    <select class="form-control filter-select select2" 
+                        onchange="Livewire.dispatch('game-filter', { 
+                            gameId: document.getElementById('filter-game').value, 
+                            pause: document.getElementById('filter-pause').value, 
+                            search: document.getElementById('filter-search').value 
+                        });" 
+                        id="filter-pause" name="filterDuration">
+                        <option value="">All offers</option>
+                        <option value="0">Active offers({{ countOffers($category, 0) }})</option>
+                        <option value="1">Paused offers({{ countOffers($category, 1) }})</option>
+                        <option value="2">Closed offers({{ countOffers($category, 2) }})</option>
+                    </select>
+                    <div style="min-width: 50px;min-height: 38px;opacity:1;" class="skeleton-overlay skeleton-overlay-start background-theme-body-2 br-2 d-flex align-items-center">
+                        <div class="skeleton skeleton-text ml-2 py-2">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="mr-md-3 @if($category->id == 3) d-none @endif mb-2 search-input-wrapper p-mw-100 p-w-100 h-38">
+                    <input type="text" 
+                        onkeyup="Livewire.dispatch('game-filter', { 
+                            gameId: document.getElementById('filter-game').value, 
+                            pause: document.getElementById('filter-pause').value, 
+                            search: document.getElementById('filter-search').value 
+                        });"
+                        name="search" class="dark" placeholder="Search" id="filter-search" />
+                    <i class="ml-2 fas fa-search"></i>
+                </div>
+            </div>
+        </form>
+    </div>
+
     @if (count($offers) != 0)    
         @foreach ($offers as $offer)
         <div class="d-flex flex-column offer-container background-theme-body-1 text-theme-primary border-theme-1 mb-2 drop-shadow-theme-1">

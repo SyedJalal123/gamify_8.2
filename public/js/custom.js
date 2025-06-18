@@ -409,3 +409,32 @@ function copyToClipboard(text) {
         toastr.error(err);
     });
 }
+
+function markNotificationAsRead(notificationId) {
+    Livewire.dispatch('mark-as-read', [notificationId]);
+}
+
+if (!window.notificationsCountUpdate) {
+    window.notificationsCountUpdate = true;
+
+    Livewire.on('notifications-count-update', (e) => {
+        $('.count-notifications').text(e.count);
+
+        if(e.count == 0){
+            $('#count-header-button').addClass('d-none');
+        }else {
+            $('#count-header-button').removeClass('d-none');
+        }
+
+    });
+}
+
+function handleNotificationClick(event, href) {
+    // If the click happened inside an element marked to ignore navigation
+    if (event.target.closest('[data-ignore-navigation]')) {
+        return;
+    }
+
+    // Otherwise navigate using Livewire’s router manually
+    Livewire.navigate(href);
+}

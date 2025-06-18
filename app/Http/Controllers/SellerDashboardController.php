@@ -17,7 +17,7 @@ class SellerDashboardController extends Controller
 {
     public function orderDetail($order_id, Request $request) 
     {
-        $order = Order::where('order_id', $order_id)->with('item.attributes', 'item.seller', 'item.categoryGame.game', 'item.categoryGame.attributes', 'chat', 'offer', 'offer.buyerRequest.service.categoryGame', 'offer.buyerRequest.attributes', 'offer.conversation', 'offer.user')->firstOrFail();
+        $order = Order::where('order_id', $order_id)->with('item.attributes', 'item.seller', 'item.categoryGame.game', 'item.categoryGame.attributes', 'chat.buyerRequest.service', 'offer', 'offer.buyerRequest.service.categoryGame', 'offer.buyerRequest.attributes', 'offer.conversation', 'offer.user')->firstOrFail();
         $conversation = $order->chat;
         $categoryGame = $order->categoryGame;
         
@@ -30,7 +30,6 @@ class SellerDashboardController extends Controller
             $item = $order->item;
             $maxDeliveryTime = $order->item->delivery_time;
         }
-        // dd($conversation);
         
         if($conversation->seller_id == auth()->user()->id){
             $identity = 'seller';
@@ -55,6 +54,7 @@ class SellerDashboardController extends Controller
         $order->update([
             'feedback' => $request->feedback,
             'feedback_comment' => $request->feedback_comment ?? 'GGWP!',
+            'feedback_at' => now(),
         ]);
 
         return redirect()->back();
@@ -230,15 +230,100 @@ class SellerDashboardController extends Controller
     public function boosting(Request $request, $tag) {
 
         if($tag == 'my-requests') {
-            $boostingRequests = BuyerRequest::with('requestOffers')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
+            $boostingRequests = BuyerRequest::with('requestOffers')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate('1');
         }else if($tag == 'received-requests') {
             $boostingRequests = auth()->user()
                 ->notifications()
                 ->where('type', 'App\Notifications\BoostingRequestNotification')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate('20');
         }
         return view('frontend.dashboard.boosting', compact('boostingRequests', 'tag'));
+    }
+
+    public function messages(Request $request) {
+        $messageType = $request->messageType;
+
+
+        if($messageType == 'Boosting') {
+            $conversations = BuyerRequestConversation::with('buyerRequest.service', 'order.categoryGame.category', 'messages')
+                ->where(function ($query) {
+                    $query->where('buyer_request_id', '!=', null)
+                        ->where('order_id', null)
+                        ->where(function ($q) {
+                            $q->where('buyer_id', auth()->id())
+                                ->orWhere('seller_id', auth()->id());
+                        });
+                })
+                ->get();
+        }elseif($messageType == 'Orders') {
+            $conversations = BuyerRequestConversation::with('buyerRequest.service', 'order.categoryGame.category', 'messages')
+                ->where(function ($query) {
+                    $query->where('order_id', '!=', null)
+                        ->where(function ($q) {
+                            $q->where('buyer_id', auth()->id())
+                                ->orWhere('seller_id', auth()->id());
+                        });
+                })
+                ->get();
+        }elseif($messageType == 'All'){
+            $conversations = BuyerRequestConversation::with('buyerRequest.service', 'order.categoryGame.category', 'messages')->where('buyer_id', auth()->id())->orWhere('seller_id', auth()->id())->get();
+        }else {
+            $conversations = BuyerRequestConversation::with('buyerRequest.service', 'order.categoryGame.category', 'messages')->where('buyer_id', '786fdsjf')->get();
+        }
+        
+        $conversations = $conversations->sortByDesc(function ($conversation) {
+            return optional($conversation->messages->sortByDesc('created_at')->first())->created_at 
+                ?? $conversation->created_at;
+        })->values();
+
+        return view('frontend.dashboard.messages', compact('messageType', 'conversations'));
+    }
+
+    public function feedback(Request $request) {
+        $feedbackRating = $request->feedbackRating;
+
+        if($feedbackRating == 'Positive') {
+            $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) {
+                    $query->where('feedback', 1)
+                        ->where(function ($q) {
+                            $q->where('buyer_id', auth()->id())
+                                ->orWhere('seller_id', auth()->id());
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+        }elseif($feedbackRating == 'Negative') {
+            $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) {
+                    $query->where('feedback', 2)
+                        ->where(function ($q) {
+                            $q->where('buyer_id', auth()->id())
+                                ->orWhere('seller_id', auth()->id());
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+        }elseif($feedbackRating == 'All'){
+            $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) {
+                    $query->where('feedback','!=', 0)
+                    ->where(function ($q) {
+                            $q->where('buyer_id', auth()->id())
+                                ->orWhere('seller_id', auth()->id());
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+        }
+
+        return view('frontend.dashboard.feedback', compact('feedbackRating', 'orders'));
+    }
+    public function notifications(Request $request) {    
+        $notifications = auth()->user()->notifications()->paginate('20');
+
+        return view('frontend.dashboard.notifications', compact('notifications'));
     }
 
     public function editOffer(Request $request, $offer_id) {

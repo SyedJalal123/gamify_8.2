@@ -6,10 +6,13 @@ use Livewire\Component;
 use App\Models\Game;
 use App\Models\Item;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Storage;
 
 class OfferDashboardComponent extends Component
 {
+    use WithPagination;
+
     public $offers;
     public $games;
     public $category;

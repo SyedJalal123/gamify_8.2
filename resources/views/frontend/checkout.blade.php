@@ -409,7 +409,7 @@
         });
     </script>
 
-    <script>
+    {{-- <script>
         const stripe = Stripe('{{ config('services.stripe.key') }}');
 
         document.getElementById('stripe-checkout-button').addEventListener('click', function () {
@@ -426,6 +426,6 @@
             })
             .catch(error => console.error('Error:', error));
         });
-    </script>
+    </script> --}}
 
 @endsection

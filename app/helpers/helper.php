@@ -2,6 +2,7 @@
 use App\Models\Category;
 use App\Models\Seller;
 use App\Models\Item;
+use App\Models\Game;
 use App\Models\BuyerRequest;
 use App\Models\Order;
 use Carbon\Carbon;
@@ -96,8 +97,13 @@ function countOrders($status, $orders) {
     return count($statusOrders);
 }
 
-function countOffers($offers, $status) {
-    $offers = $offers->where('pause', $status);
+function countOffers($category, $status) {
+
+    $offers = Item::where('seller_id', auth()->id())->with('categoryGame.attributes', 'categoryGame.game')->where('pause', $status)->whereHas('categoryGame', function ($query) use  ($category){
+            return $query->where('category_id', $category->id);
+        })->orderBy('created_at', 'desc');
+
+    // $offers = $offers->where('pause', $status);
     
     return $offers->count();
 }
@@ -107,4 +113,92 @@ function getBuyerRequest($id) {
         'service.categoryGame.category',
         'service.categoryGame.game',
     ])->find($id);
+}
+
+function getGames() {
+    return Game::all();
+}
+
+function getGame($id) {
+    return Game::find($id);
+}
+
+function userCompletedOrders($userId) {
+    $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) use ($userId) {
+                    $query->where('order_status', 'completed')
+                        ->where(function ($q) use ($userId) {
+                            $q->where('seller_id', $userId);
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+
+    return $orders;
+}
+
+function userPositiveFeebacks($userId) {
+    $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) use ($userId) {
+                    $query->where('feedback', 1)
+                        ->where(function ($q) use ($userId) {
+                            $q->where('buyer_id', $userId)
+                                ->orWhere('seller_id', $userId);
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+
+    return $orders;
+}
+
+function userNegativeFeebacks($userId) {
+    $orders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) use ($userId) {
+                    $query->where('feedback', 2)
+                        ->where(function ($q) use ($userId) {
+                            $q->where('buyer_id', $userId)
+                                ->orWhere('seller_id', $userId);
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+                ->get();
+
+    return $orders;
+}
+
+function userFeedbackScore($userId) {
+        $positiveOrders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) use ($userId) {
+                    $query->where('feedback', 1)
+                        ->where(function ($q) use ($userId) {
+                            $q->where('buyer_id', $userId)
+                                ->orWhere('seller_id', $userId);
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+        ->get();
+
+        $negativeOrders = Order::with('buyer','seller','categoryGame.category')
+                ->where(function ($query) use ($userId) {
+                    $query->where('feedback', 2)
+                        ->where(function ($q) use ($userId) {
+                            $q->where('buyer_id', $userId)
+                                ->orWhere('seller_id', $userId);
+                        });
+                })
+                ->orderBy('feedback_at', 'desc')
+        ->get();
+
+        $positive = count($positiveOrders);
+        $negative = count($negativeOrders);
+
+        $total = $positive + $negative;
+
+        if ($total > 0) {
+            $percentage = ($positive / $total) * 100;
+            return round($percentage, 2); // Outputs: 90.91%
+        } else {
+            return 0;
+        }
 }

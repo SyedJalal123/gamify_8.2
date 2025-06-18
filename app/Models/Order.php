@@ -31,6 +31,7 @@ class Order extends Model
         'dispute_details',
         'feedback',
         'feedback_comment',
+        'feedback_at',
         'disputed_at',
         'cancelled_at',
         'delivered_at',

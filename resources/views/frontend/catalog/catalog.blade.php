@@ -419,281 +419,286 @@
         $(`#${id} select`).on('change select2:select select2:unselect', () => applyAjaxFilters(id));
     });
 
+
     // Handle pagination link click
-    document.addEventListener('click', function (e) {
-        const link = e.target.closest('.pagination a');
-        if (link) {
-            e.preventDefault();
-            const url = link.getAttribute('href');
+    if (!window.paginationCatalogListener) {
+        window.paginationCatalogListener = true;
+        document.addEventListener('click', function (e) {
+            const link = e.target.closest('.pagination a');
+            if (link) {
+                e.preventDefault();
+                const url = link.getAttribute('href');
 
-            html = '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                html = '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="position-relative" style="min-height: 173px;">'+
-                        '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
-                            '<p class="">'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                                '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
-                            '</p>'+
-                            '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
-                                '<div class="d-flex flex-column w-100">'+
-                                    '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
-                                    '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                        '<div class="position-relative" style="min-height: 173px;">'+
+                            '<div class="drop-box skeleton-overlay h-100" style="opacity: 1;">'+
+                                '<p class="">'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                    '<strong class="skeleton px-2 mr-1 br-4">&nbsp;</strong>'+
+                                '</p>'+
+                                '<div class="d-flex justify-content-between mb-4 fs-14 text-muted">'+
+                                    '<div class="d-flex flex-column w-100">'+
+                                        '<p class="skeleton skeleton-text mt-2 mb-1">&nbsp;</p>'+
+                                        '<p class="skeleton skeleton-text mt-0">&nbsp;</p>'+
+                                    '</div>'+
+                                    '<div class="mb-2 d-flex flex-column align-items-end">'+
+                                        '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
+                                    '</div>'+
                                 '</div>'+
-                                '<div class="mb-2 d-flex flex-column align-items-end">'+
-                                    '<div style="width:50px;height:50px;" class="skeleton">&nbsp;</div>'+
-                                '</div>'+
+                                '<p class="m-0">'+
+                                    '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
+                                '</p>'+
                             '</div>'+
-                            '<p class="m-0">'+
-                                '<strong class="fs-20 px-5 skeleton">&nbsp</strong>'+
-                            '</p>'+
-                        '</div>'+
-            '</div>';
+                '</div>';
 
-            $('#itemsContainer div').empty();
-            $('#itemsContainer div:first').append(html);
+                $('#itemsContainer div').empty();
+                $('#itemsContainer div:first').append(html);
 
-            fetch(url, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.text())
-            .then(html => {
-                const doc = new DOMParser().parseFromString(html, 'text/html');
-                document.getElementById('itemsContainer').innerHTML = doc.getElementById('itemsContainer').innerHTML;
-                document.getElementById('itemCount').innerHTML = doc.getElementById('itemCount').innerHTML;
-                window.scrollTo({ top: document.getElementById('itemsContainer').offsetTop - 100, behavior: 'smooth' });
-            }).finally(() => $('.skeleton-overlay-start').css('opacity', '0'));
-        }
-    });
+                fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    document.getElementById('itemsContainer').innerHTML = doc.getElementById('itemsContainer').innerHTML;
+                    document.getElementById('itemCount').innerHTML = doc.getElementById('itemCount').innerHTML;
+                    window.scrollTo({ top: document.getElementById('itemsContainer').offsetTop - 100, behavior: 'smooth' });
+                }).finally(() => $('.skeleton-overlay-start').css('opacity', '0'));
+            }
+        });
+    }
+
 </script>
 
 @endsection

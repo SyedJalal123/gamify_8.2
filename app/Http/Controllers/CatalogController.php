@@ -70,12 +70,13 @@ class CatalogController extends Controller
                     }
                 }
             }
-            // dd($grouped);
+
             // Sort by topup value
             $sortedItems = $grouped->sortBy(
                 fn($item) => $item->attributes->first(fn($attr) => $attr->topup == 1)->pivot->value ?? PHP_INT_MAX
             );
 
+            // Paginating
             $page = request()->get('page', 1);
             $perPage = 30;
             

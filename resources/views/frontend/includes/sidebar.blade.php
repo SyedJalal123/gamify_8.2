@@ -75,12 +75,12 @@
                 <div class="d-flex flex-column ml-3">
                     <a wire:navigate href="{{ url('boosting/my-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/my-requests' ? 'active' : '' }}">My Requests</a>
                     <a wire:navigate href="{{ url('boosting/received-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/received-requests' ? 'active' : '' }}">Received requests</a>
-                    <a href="#" class="sidebar-item">Boosting subscriptions</a>
+                    <a wire:navigate href="{{ url('items/create') }}?category=boosting" class="sidebar-item">Boosting subscriptions</a>
                 </div>
             </div>
         </div>
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title p-1">
+            <a wire:navigate href="{{url('messages')}}?messageType=All" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'messages' ? 'active' : '' }}">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-chat-left-dots fs-20 mr-2"></i>
                     <div>
@@ -90,7 +90,7 @@
             </a>
         </div>
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title p-1">
+            <a wire:navigate href="{{url('notifications')}}" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'notifications' ? 'active' : '' }}">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-bell fs-20 mr-2"></i>
                     <div>
@@ -100,7 +100,7 @@
             </a>
         </div>
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title p-1">
+            <a wire:navigate href="{{url('feedback')}}?feedbackRating=All" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'feedback' ? 'active' : '' }}">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-star fs-20 mr-2"></i>
                     <div>
@@ -110,7 +110,7 @@
             </a>
         </div>
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title p-1">
+            <a href="#" class="sidebar-title sidebar-item p-1">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-gear fs-20 mr-2"></i>
                     <div>
@@ -124,7 +124,7 @@
 
     <div class="py-2 pl-2 pr-0">
         <div class="sidebar-menu mt-1">
-            <a href="#" class="sidebar-title p-1">
+            <a href="#" class="sidebar-title sidebar-item p-1">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-box-arrow-up-right fs-20 mr-2"></i>
                     <div>

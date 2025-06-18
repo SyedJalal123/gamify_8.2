@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Models\Game;
 use App\Models\Attribute;
+use App\Models\BuyerRequest;
 use App\Models\RequestOffer;
 use App\Models\Order;
 use App\Models\BuyerRequestConversation;
@@ -49,15 +50,15 @@ class CheckoutController extends Controller
     public function create(Request $request) {
         
         // dd($request->all());
-        if($request->item_id){
-            $item = Item::with('categoryGame')->find($request->item_id);
-            $categoryGameId = $item->category_game_id;
-            $seller_id = $item->seller_id;
-        }else {
-            $offer = RequestOffer::with('buyerRequest.service.categoryGame')->find($request->offer_id);
-            $categoryGameId = $offer->buyerRequest->service->categoryGame->id;
-            $seller_id = $offer->user_id;
-        }
+        // if($request->item_id){
+        //     $item = Item::with('categoryGame')->find($request->item_id);
+        //     $categoryGameId = $item->category_game_id;
+        //     $seller_id = $item->seller_id;
+        // }else {
+        //     $offer = RequestOffer::with('buyerRequest.service.categoryGame')->find($request->offer_id);
+        //     $categoryGameId = $offer->buyerRequest->service->categoryGame->id;
+        //     $seller_id = $offer->user_id;
+        // }
 
         $validated = $request->validate([
             'payment_method'      => 'required|in:stripe,nowpayments',
@@ -72,80 +73,85 @@ class CheckoutController extends Controller
             'delivery_type'       => 'nullable|string',
         ]);
 
-        DB::beginTransaction();
+        // DB::beginTransaction();
 
-        try {
-            $order = Order::create([
-                'order_id'           => Str::uuid()->toString(),
-                'item_id'            => $validated['item_id'] ?? null,
-                'request_offer_id'   => $validated['offer_id'] ?? null,
-                'category_game_id'   => $categoryGameId,
-                'buyer_id'           => Auth::id(),
-                'seller_id'          => $seller_id,
-                'title'              => $validated['product_name'],
-                'quantity'           => $validated['quantity'],
-                'price'              => $validated['price'],
-                'discount_in_per'    => $validated['discountPercentage'] ?? 0,
-                'payment_fees'       => $validated['payment_fees'] ?? 0,
-                'total_price'        => $validated['total_price'],
-                'payment_method'     => $validated['payment_method'],
-                'delivery_type'      => $validated['delivery_type'] ?? null,
-            ]);
+        // try {
+        //     $order = Order::create([
+        //         'order_id'           => Str::uuid()->toString(),
+        //         'item_id'            => $validated['item_id'] ?? null,
+        //         'request_offer_id'   => $validated['offer_id'] ?? null,
+        //         'category_game_id'   => $categoryGameId,
+        //         'buyer_id'           => Auth::id(),
+        //         'seller_id'          => $seller_id,
+        //         'title'              => $validated['product_name'],
+        //         'quantity'           => $validated['quantity'],
+        //         'price'              => $validated['price'],
+        //         'discount_in_per'    => $validated['discountPercentage'] ?? 0,
+        //         'payment_fees'       => $validated['payment_fees'] ?? 0,
+        //         'total_price'        => $validated['total_price'],
+        //         'payment_method'     => $validated['payment_method'],
+        //         'delivery_type'      => $validated['delivery_type'] ?? null,
+        //     ]);
 
 
-            // Creating conversation
-            if($request->offer_id){
-                $offer = RequestOffer::with('buyerRequest.buyerRequestConversation')->find($validated['offer_id']);
+        //     // Creating conversation
+        //     if($request->offer_id){
+        //         $buyerRequest = BuyerRequest::find($offer->buyer_request_id);
 
-                $offer->update([
-                    'seller_id' => $seller_id,
-                    'status' => 'closed',
-                ]);
+        //         $buyerRequest->update([
+        //             'seller_id' => $seller_id,
+        //             'status' => 'closed',
+        //         ]);
 
-                $offer = RequestOffer::with([
-                    'buyerRequest.buyerRequestConversation' => function ($query) use ($offer) {
-                            $query->where('seller_id', $offer->user_id)
-                                ->where('buyer_id', $offer->buyerRequest->user_id);
-                        }
-                    ])->find($validated['offer_id']);
-                $conversation = $offer->buyerRequest->buyerRequestConversation->first();
+        //         $offer = RequestOffer::with([
+        //             'buyerRequest.buyerRequestConversation' => function ($query) use ($offer) {
+        //                     $query->where('seller_id', $offer->user_id)
+        //                         ->where('buyer_id', $offer->buyerRequest->user_id);
+        //                 }
+        //             ])->find($validated['offer_id']);
 
-                if($conversation == null){
-                    $conversation = BuyerRequestConversation::create([
-                        'buyer_request_id' => $offer->buyerRequest->id,
-                        'order_id' => $order->id,
-                        'buyer_id' => $offer->buyerRequest->user_id,
-                        'seller_id' => $offer->user_id
-                    ]);
-                }
+        //         $conversation = $offer->buyerRequest->buyerRequestConversation->first();
+
+        //         if($conversation == null){
+        //             $conversation = BuyerRequestConversation::create([
+        //                 'buyer_request_id' => $offer->buyerRequest->id,
+        //                 'order_id' => $order->id,
+        //                 'buyer_id' => $offer->buyerRequest->user_id,
+        //                 'seller_id' => $offer->user_id
+        //             ]);
+        //         }else {
+        //             $conversation->update([
+        //                 'order_id' => $order->id,
+        //             ]);
+        //         }
                 
-            }else {
-                $item = Item::find($validated['item_id']);
-                $conversation = BuyerRequestConversation::create([
-                    'order_id' => $order->id,
-                    'buyer_id' => Auth::id(),
-                    'seller_id' => $item->seller_id
-                ]);
-            }
+        //     }else {
+        //         $item = Item::find($validated['item_id']);
+        //         $conversation = BuyerRequestConversation::create([
+        //             'order_id' => $order->id,
+        //             'buyer_id' => Auth::id(),
+        //             'seller_id' => $item->seller_id
+        //         ]);
+        //     }
 
-            $request->merge(['order_id' => $order->id, 'conversation_id' => $conversation->id]);
+        //     $request->merge(['order_id' => $order->id, 'conversation_id' => $conversation->id]);
 
-            DB::commit();
+        //     DB::commit();
 
-            return match ($validated['payment_method']) {
+            return match ($request->payment_method) {
                 'stripe'       => app(StripeController::class)->create($request),
                 'nowpayments'  => app(NowPaymentController::class)->create($request),
             };
 
-        } catch (\Throwable $e) {
-            DB::rollBack();
+        // } catch (\Throwable $e) {
+        //     DB::rollBack();
 
-            Log::error('Order creation failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+        //     Log::error('Order creation failed', [
+        //         'error' => $e->getMessage(),
+        //         'trace' => $e->getTraceAsString(),
+        //     ]);
 
-            return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
-        }
+        //     return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
+        // }
     }
 }

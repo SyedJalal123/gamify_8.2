@@ -37,7 +37,7 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first"  style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first mb-5"  style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="row m-0 position-relative zi-2">
             <div class="d-none d-lg-block col-md-2 p-0">
                 @include('frontend.includes.sidebar')
@@ -66,7 +66,7 @@
                             <i class="bi bi-chevron-double-up fs-20 fw-bold text-default"></i>
                             <h3 class="ml-2 mb-0 fw-bold text-theme-primary first-letter-cap">Offers</h3>
                         </div>
-                        <div class="mb-0">
+                        {{-- <div class="mb-0">
                             <form method="GET" id="desktopFilterForm">
                                 <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
                                     <div class="mr-md-3 mb-2 select-2-dark position-relative p-w-100" style="min-width: 200px;">
@@ -117,11 +117,11 @@
                                     @endif
                                 </div>
                             </form>
-                        </div>
-                        
+                        </div> --}}
                         <div id="itemsContainerWrapper" class="br-9 fs-14 position-realative">
                             @livewire('OfferDashboardComponent', ['offers' => $offers, 'category' => $category, 'games' => $games])
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -172,11 +172,17 @@
             }, 700);
         }
 
-        Livewire.on('componentUpdate', () => {
-            setTimeout(() => {
-                $('[data-toggle="tooltip"]').tooltip('dispose').tooltip();
-            }, 200);
-        });
+        if (!window.componentUpdateListener) {
+            window.componentUpdateListener = true;
+
+            Livewire.on('componentUpdate', () => {
+                setTimeout(() => {
+                    $('[data-toggle="tooltip"]').tooltip('dispose').tooltip();
+                }, 200);
+
+                initPage();
+            });
+        }
 
         function checkPriceChanged(offerId) {
             const input = document.getElementById(`offer-price-${offerId}`);

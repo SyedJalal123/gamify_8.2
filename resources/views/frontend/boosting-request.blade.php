@@ -38,11 +38,11 @@
                         <div class="text-black-40">Expires: {{ $buyerRequest->expires_at->format('F j, Y, g:i:s A') }}</div>
                     </div>
                 </div>
-                <div class="d-flex flex-column align-items-start align-items-md-end col-md-4 mt-4 mt-md-0">
-                    @if(count($conversations) !== 0 && ($identity == 'seller'))
+                <div class="d-flex header-buttons flex-column align-items-start align-items-md-end col-md-4 mt-4 mt-md-0">
+                    @if(count($conversations) !== 0 && ($identity == 'seller') && $buyerRequest->status !== 'cancelled')
                         <button onclick="scrollToClass('live-chat')" class="btn btn-secondary w-max">Chat with Buyer</button>
-                    @elseif($identity == 'buyer')
-                        <button class="btn btn-secondary w-max">Cancel Request</button>
+                    @elseif($identity == 'buyer' && $buyerRequest->status !== 'cancelled' && $buyerRequest->status !== 'closed')
+                        <button class="btn btn-secondary w-max" onclick="cancelRequest({{$buyerRequest->id}})">Cancel Request</button>
                     @endif
                 </div>
             </div>
@@ -82,7 +82,7 @@
                                 <div class="small text-black-40">Connected</div>
                             </div>
                         </div>
-                        <div class="notifications-data d-flex flex-column flex-md-row text-white pb-2 p-md-0">
+                        <div class="notifications-data @if($buyerRequest->status == 'cancelled') d-none @endif d-flex flex-column flex-md-row text-white pb-2 p-md-0">
                             <div class="d-flex align-items-center ml-4 pb-2 fs-15">
                                 <i class="bi bi-bell fs-19 pr-1"></i>
                                 <span>Notified sellers: 666</span>
@@ -101,6 +101,7 @@
                         @include('frontend.offers-live-feed', ['buyerRequest' => $buyerRequest])
                     </div>
                 </div>
+                @if ($buyerRequest->status !== 'cancelled')    
                 <div class="live-chat @if(count($conversations) == 0) d-none @endif d-flex flex-column mb-4 pb-4">
                     <div class="live-chat-title d-flex align-items-center mt-1 mb-3">
                         <div class="signal-ping-wrapper">
@@ -137,12 +138,13 @@
                                     </div>
                                 </div>
                                 <div class="live-chats col-md-8 m-0 p-0 chat">
-                                    @livewire('Openchat', ['buyerRequestConversation' => $conversations->first(), 'identity' => $identity, 'buyerRequest' => $buyerRequest])
+                                    @livewire('Openchat', ['buyerRequestConversation' => $conversations->first(), 'identity' => $identity, 'buyerRequest' => $buyerRequest, 'conversations' => $conversations])
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="request-details row d-flex pb-4 pb-md-2 mb-4 m-md-0 mx-0">
                     <div class="col-md-8 p-0 pr-md-4 pb-4">
                         <div class="bg-white">
@@ -187,8 +189,8 @@
                                         <div class="fw-bold">{{$buyerRequest->description}}</div>
                                     @endif
                                 </div>
-                                @if($identity == 'seller')
-                                <div class="d-flex px-4 py-3">
+                                @if($identity == 'seller' && $buyerRequest->status !== 'closed')
+                                <div class="d-flex px-4 py-3 seller-buttons">
                                     @php
                                         $isRelated = $buyerRequest->requestOffers->contains(function ($offer) {
                                             return $offer->user_id === auth()->id();
@@ -221,6 +223,10 @@
             </div>
         </div>
     </section>
+
+    <div id="pageOverlay" style="z-index: 1256;">
+        <div class="spinner-border text-light" role="status"></div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="createOfferModal" tabindex="-1" role="dialog" aria-labelledby="createOfferModalLabel" aria-hidden="true">
@@ -271,8 +277,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create offer</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                    <button type="submit" onclick="document.getElementById('pageOverlay').style.display = 'flex';" class="btn btn-primary">Create offer</button>
                 </div>
             </div>
         </div>
@@ -327,6 +333,24 @@
             });
         }
 
+        function cancelRequest(id){
+            let url = new URL('cancel-request', window.location.origin);
+            $.ajax({
+                url: url.toString(),
+                method: 'GET',
+                data: { id: id },
+                success: function (response) {
+                    $('#live-feed').html(response); // Replace item list
+                    $('.notifications-data').addClass('d-none');
+                    $('.live-chat').addClass('d-none');
+                    $('.header-buttons').addClass('d-none');
+                },
+                error: function () {
+                    alert('Something went wrong.');
+                }
+            });
+        }
+
         function create_offer(){
             let url = new URL(window.location.href);
             $.ajax({
@@ -349,45 +373,66 @@
         });
 
         $(document).ready(function() {
-            setTimeout(() => {
-                scroll_bottom('.msg_card_body');
-            }, 500);
-        });
-
-        Livewire.on('sidebar-updated', () => {
-            setTimeout(() => {
-                scroll_bottom('.msg_card_body');
-
+            setTimeout(() => {            
                 var conId = $('#conversationId').val();
-
+    
                 $('.conversations').each(function() {
                     $(this).removeClass('active');
                 });
 
                 $(`#conversation_${conId}`).addClass('active');
                 $(`#redDot_${conId}`).addClass('d-none');
-                
-            }, 0.1);
+
+                scroll_bottom('.msg_card_body');
+            }, 500);
         });
 
-        Livewire.on('message-updated', () => {
-            setTimeout(() => {
-                let buffer = 350; // pixels from bottom
-                let $el = $('.msg_card_body');
-                let isNearBottom = $el.scrollTop() + $el.innerHeight() >= $el[0].scrollHeight - buffer;
+        if (!window.sidebarUpdatedListener) {
+            window.sidebarUpdatedListener = true;
 
-                if(isNearBottom){
+            Livewire.on('sidebar-updated', () => {
+                setTimeout(() => {
                     scroll_bottom('.msg_card_body');
-                    Livewire.dispatch('sidebar-update');
-                }
-            }, 0.1);
-        });
 
-        Livewire.on('conversation-created', (conversation) => {
-            HideById('chat-btn-'+conversation['sellerId']);
-            HideById('seller-chat-btn');
-            $('.live-chat').removeClass('d-none');
-        });
+                    var conId = $('#conversationId').val();
+
+                    $('.conversations').each(function() {
+                        $(this).removeClass('active');
+                    });
+
+                    $(`#conversation_${conId}`).addClass('active');
+                    $(`#redDot_${conId}`).addClass('d-none');
+                    
+                }, 0.1);
+            });
+        }
+
+        if (!window.messageUpdatedListener) {
+            window.messageUpdatedListener = true;
+
+            Livewire.on('message-updated', () => {
+                setTimeout(() => {
+                    let buffer = 350; // pixels from bottom
+                    let $el = $('.msg_card_body');
+                    let isNearBottom = $el.scrollTop() + $el.innerHeight() >= $el[0].scrollHeight - buffer;
+
+                    if(isNearBottom){
+                        scroll_bottom('.msg_card_body');
+                        Livewire.dispatch('sidebar-update');
+                    }
+                }, 0.1);
+            });
+        }
+        
+        if (!window.conversationCreatedListener) {
+            window.conversationCreatedListener = true;
+
+            Livewire.on('conversation-created', (conversation) => {
+                HideById('chat-btn-'+conversation['sellerId']);
+                HideById('seller-chat-btn');
+                $('.live-chat').removeClass('d-none');
+            });
+        }
 
         $(document).ready(function () {
             if (window.innerWidth <= 768) {
@@ -437,31 +482,75 @@
             $(document).ready(function() {
                 const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
                 const buyerRequestId = {{ $buyerRequest->id }};
-
+                const serviceId = {{ $buyerRequest->service_id }}
                 let unreadCount = parseInt(document.querySelector('.count-notifications').textContent) || 0;
         
-                Echo.private(`App.Models.User.${userId}`)
-                    .notification((notification) => {  
-                        if (notification.category == 'notification' || notification.category == 'offersUpdate') {
-                            get_live_feeds()
-                        }                 
-                    });
 
-                Echo.private(`chat-channel.${buyerRequestId}`)
-                    .listen('MessageSentEvent', (e) => {
-                        if(e['message']['sender_id'] != userId)
-                        Livewire.dispatch('message-received', [e.message]);
-                    });
+                if (!window.app_models_user_offers_update) {
+                    window.app_models_user_offers_update = {};
+                }
+                if (!window.chat_channel) {
+                    window.chat_channel = {};
+                }
+                if (!window.chat_creation_channel) {
+                    window.chat_creation_channel = {};
+                }
+                if (!window.message_seen) {
+                    window.message_seen = {};
+                }
+                if (!window.group_service_sellers) {
+                    window.group_service_sellers = {};
+                }
 
-                Echo.private(`chat-creation-channel.${userId}`)
-                    .listen('ChatCreatedEvent', (e) => {
-                        Livewire.dispatch('chat-created', [e.conversation]);
-                    });
+                if (!window.app_models_user_offers_update[userId]) {
+                    Echo.private(`App.Models.User.${userId}`)
+                        .notification((notification) => {
+                            if (notification.category == 'notification' || notification.category == 'offersUpdate') {
+                                get_live_feeds();
+                            }                 
+                        });
+                    window.app_models_user_offers_update[userId] = true;
+                }
 
-                Echo.private(`message-seen.${userId}`)
-                    .listen('MessageSeenEvent', (e) => {
-                        Livewire.dispatch('chat-seen', [e]);
-                    });
+                if (!window.chat_channel[userId]) {
+                    Echo.private(`chat-channel.${userId}`)
+                        .listen('MessageSentEvent', (e) => {
+                            Livewire.dispatch('message-received', [e.message]);
+                        });
+                    window.chat_channel[userId] = true;
+                }
+                if (!window.chat_creation_channel[userId]) {
+                    Echo.private(`chat-creation-channel.${userId}`)
+                        .listen('ChatCreatedEvent', (e) => {
+                            Livewire.dispatch('chat-created', [e.conversation]);
+                        });
+                    window.chat_creation_channel[userId] = true;
+                }
+                if (!window.message_seen[userId]) {
+                    Echo.private(`message-seen.${userId}`)
+                        .listen('MessageSeenEvent', (e) => {
+                            Livewire.dispatch('chat-seen', [e]);
+                        });                    
+                    window.message_seen[userId] = true;
+                }
+                if (!window.group_service_sellers[serviceId]) {
+                    Echo.private(`group-service-sellers.${serviceId}`)
+                        .listen('GroupServiceSellerEvent', (e) => {
+                            get_live_feeds();
+
+                            if(e.reason == 'cancelled') {
+                                $('.notifications-data').addClass('d-none');
+                                $('.live-chat').addClass('d-none');
+                                $('.header-buttons').addClass('d-none');
+                                $('.seller-buttons').addClass('d-none');
+                            }
+
+                            if(e.reason == 'closed') {
+                                $('.seller-buttons').addClass('d-none');
+                            }
+                        });
+                    window.group_service_sellers[serviceId] = true;
+                }
             });
         </script>
     @endauth

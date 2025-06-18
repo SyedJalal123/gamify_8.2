@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\BuyerRequest;
+use App\Models\BuyerRequestConversation;
 use App\Models\Message;
 use App\Events\MessageSeenEvent;
 use App\Events\MessageSentEvent;
@@ -20,6 +21,7 @@ class Openchat extends Component
     
     public $reciever;
     public $buyerRequestConversation;
+    public $conversations;
     public $message;
 
     #[Validate('nullable|file|max:80024')]
@@ -33,10 +35,9 @@ class Openchat extends Component
     public function mount() 
     {
         if($this->buyerRequestConversation != null){
-            $this->reciever = $this->identity == 'seller'
+            $this->reciever = $this->buyerRequestConversation->seller_id == auth()->id()
                             ? $this->buyerRequestConversation->buyer
                             : $this->buyerRequestConversation->seller;
-        
 
             $this->readAllMessages();
             $this->getAllMessages();
@@ -50,13 +51,17 @@ class Openchat extends Component
     #[On('open-chat')]
     public function openChat($conversationId, $recieverId = null) 
     {
-        $conversation = $this->buyerRequest->buyerRequestConversation->firstWhere('id', $conversationId);
-        
+        if($this->conversations->firstWhere('id', $conversationId) !== null){
+            $conversation = $this->conversations->firstWhere('id', $conversationId);
+        }else {
+            $conversation = BuyerRequestConversation::with(['buyer', 'seller', 'messages.sender','messages.reciever', 'order.categoryGame.category', 'buyerRequest'])->find($conversationId);
+        }
+
         $this->buyerRequestConversation = $conversation;
 
         $this->getAllMessages();
 
-        $this->reciever = $this->identity == 'seller'
+        $this->reciever = $this->buyerRequestConversation->seller_id == auth()->id()
                         ? $this->buyerRequestConversation->buyer
                         : $this->buyerRequestConversation->seller;
                         
@@ -74,6 +79,7 @@ class Openchat extends Component
     public function sendMessage($message = null) 
     {
         // dd($this->file, $this->message);
+
         $this->validate();
         
         if($message !== null){
@@ -87,7 +93,7 @@ class Openchat extends Component
 
             $this->chatMessages[] = $sentMessage;
 
-            broadcast(new MessageSentEvent($sentMessage, $this->buyerRequest->id));
+            broadcast(new MessageSentEvent($sentMessage, $this->reciever->id));
             
             $this->dispatch('message-updated');
         }

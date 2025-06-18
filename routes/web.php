@@ -90,6 +90,7 @@ Route::middleware('verified')->group(function () {
     Route::get('/get-service-attributes', [ServiceController::class, 'getServiceAttributes']);
     Route::get('/boosting-request/{id}', [ServiceController::class, 'boostingRequest'])->middleware(['auth']);
     Route::post('/create-offer', [ServiceController::class, 'create_offer'])->name('offer.create')->middleware(['auth']);
+    Route::get('/cancel-request', [ServiceController::class, 'cancelRequest'])->middleware(['auth']);
 
     
     // Checkout Routes
@@ -106,7 +107,10 @@ Route::middleware('verified')->group(function () {
     Route::get('/offers/{category}', [SellerDashboardController::class, 'offers'])->name('seller-dashboard.offers')->middleware(['auth']);
     Route::get('/offers/edit/{offer_id}', [SellerDashboardController::class, 'editOffer'])->name('seller-dashboard.offers.edit')->middleware(['auth']);
     Route::get('/boosting/{tag}', [SellerDashboardController::class, 'boosting'])->name('seller-dashboard.boosting')->middleware(['auth']);
-
+    Route::get('/messages', [SellerDashboardController::class, 'messages'])->name('seller-dashboard.messages')->middleware(['auth']);
+    Route::get('/notifications', [SellerDashboardController::class, 'notifications'])->name('seller-dashboard.notifications')->middleware(['auth']);
+    Route::get('/feedback', [SellerDashboardController::class, 'feedback'])->name('seller-dashboard.feedback')->middleware(['auth']);
+    
 
 });
 

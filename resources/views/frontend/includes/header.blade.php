@@ -137,7 +137,7 @@
                                     </span>
                                 </a> --}}
                                 <li class="header__nav-item mr-2 mr-md-3">
-                                    <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                                    <a wire:navigate href="{{url('messages')}}?messageType=All" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
                                         <i class="bi bi-chat-left-text fs-16"></i>
                                     </a>
                                 </li>
@@ -152,45 +152,22 @@
                                                 <div class="d-flex align-items-center">
                                                     <div class="pl-1 d-flex flex-column">
                                                         <span class="fs-14 fw-bold">Notifications</span>
-                                                        <div class="d-flex">
-                                                            <div class="signal-ping-wrapper">
-                                                                <span class="signal-ping-dot"></span>
-                                                            </div>
-                                                            <span class="fs-13 text-black-40">Connected</span>
-                                                        </div>
                                                     </div>
-                                                </div>
                                                 <div>
                                                     
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="text-center p-0"><a href="#" class="pb-2 p-0 justify-content-center">Mark all as read</a></li>
                                         <li class="notification-main-box">
-                                            @foreach (auth()->user()->unreadNotifications->take(6) as $notification)
-                                                <a wire:navigate href="{{$notification->data['link']}}" class="notification-box mb-1">
-                                                    <div class="d-flex">
-                                                        <img src="{{asset('uploads/games/5.webp')}}" class="mt-1" width="30" height="30" alt="">
-                                                        <div class="d-flex flex-column ml-3">
-                                                            <div class="title d-flex flex-row align-items-center">
-                                                                <div class="fs-13">{{$notification->data['title']}}</div>
-                                                                <div class="opacity-50 small ml-3">{{shortTimeAgo($notification->created_at)}}</div>
-                                                            </div>
-                                                            <div class="d-flex flex-column">
-                                                                <div class="opacity-50">{{$notification->data['data1']}}</div>
-                                                                <div>
-                                                                    <span class="opacity-50">{{$notification->data['data2']}}</span>
-                                                                    {{-- <span class="opacity-50">Price: </span><strong>${{$notification->data['data2']}}</strong> --}}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            @endforeach
+                                            <ul>
+                                                @livewire('NotificationComponent', ['type' => 'header'])
+                                            </ul>
                                         </li>
                                         <li class="mt-4">
-                                            <a href="#" class="pb-2 p-0 justify-content-center">
-                                                <button class="btn btn-dark fs-14">View all (<span class="count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>)</button>
+                                            <a wire:navigate href="{{url('notifications')}}" class="pb-2 p-0 justify-content-center">
+                                                <button class="btn btn-dark fs-14">View all 
+                                                    <span id="count-header-button" class="@if(count(auth()->user()->unreadnotifications) == 0) d-none @endif">(<span class="count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>)</span>
+                                                </button>
                                             </a>
                                         </li>
                                     </ul>
@@ -274,7 +251,7 @@
                                                     <div class="d-flex flex-column ml-3">
                                                         <a wire:navigate href="{{ url('boosting/my-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/my-requests' ? 'active' : '' }}">My Requests</a>
                                                         <a wire:navigate href="{{ url('boosting/received-requests') }}" class="sidebar-item {{ request()->path() == 'boosting/received-requests' ? 'active' : '' }}">Received requests</a>
-                                                        <a href="#" class="sidebar-item">Boosting subscriptions</a>
+                                                        <a wire:navigate href="{{ url('items/create') }}?category=boosting" class="sidebar-item">Boosting subscriptions</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -309,7 +286,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-2 pt-1 dividor-border-theme-top">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a wire:navigate href="{{url('messages')}}?messageType=All" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'messages' ? 'active' : '' }}">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-chat-left-dots fs-20 mr-2"></i>
                                                         <div>
@@ -319,7 +296,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-1">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a wire:navigate href="{{url('notifications')}}" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'notifications' ? 'active' : '' }}">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-bell fs-20 mr-2"></i>
                                                         <div>
@@ -329,7 +306,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-1">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a wire:navigate href="{{url('feedback')}}?feedbackRating=All" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'feedback' ? 'active' : '' }}">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-star fs-20 mr-2"></i>
                                                         <div>
@@ -339,7 +316,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-1">
-                                                <a href="#" class="sidebar-title p-1">
+                                                <a href="#" class="sidebar-title sidebar-item p-1">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-gear fs-20 mr-2"></i>
                                                         <div>
@@ -349,7 +326,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-2 pt-1 dividor-border-theme-top">
-                                                <div class="sidebar-title p-1">
+                                                <div class="sidebar-title sidebar-item p-1">
                                                     <form class="d-flex align-items-center" method="POST" action="{{ route('logout') }}">
                                                         @csrf
                                                         <i class="bi bi-arrow-bar-right fs-20 mr-2"></i>
@@ -433,7 +410,7 @@
                             <!-- Input + Dropdown -->
                             <div class="custom-search-container">
                                 <div class="header__form">
-                                    <input type="text" id="customSearchInput" class="header__input w-100" placeholder="Search Gamify">
+                                    <input type="text" id="customSearchInput" class="header__input w-100" autocomplete="off" placeholder="Search Gamify">
                                     <button class="header__btn" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 512 512">
                                             <path d="M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z"

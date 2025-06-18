@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\BuyerRequestConversation;
 use App\Events\ChatCreatedEvent;
+use App\Events\AllMessageSentEvent;
 use Livewire\Attributes\On;
 
 class LiveUser extends Component
@@ -44,7 +45,7 @@ class LiveUser extends Component
 
         $this->conversations = $this->conversations->prepend($conversation);
 
-        $reciever = $this->identity == 'seller'
+        $reciever = $conversation->seller_id == auth()->id()
                         ? $conversation->buyer
                         : $conversation->seller;
         

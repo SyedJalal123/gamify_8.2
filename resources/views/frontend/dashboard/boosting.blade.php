@@ -69,7 +69,7 @@
                                         <div class="custom-table-col w-20">
                                             <span>Category</span>
                                         </div>
-                                        <div class="custom-table-col @if ($tag == 'received-requests') w-26 @else w-20 @endif">
+                                        <div class="custom-table-col @if ($tag == 'received-requests') w-26 @else w-26 @endif">
                                             <span>Request creation date</span>
                                         </div>
                                         
@@ -78,7 +78,7 @@
                                                 <span>Status</span>
                                             </div>
                                         @else
-                                            <div class="custom-table-col w-50">
+                                            <div class="custom-table-col w-40">
                                                 <span>Offer(s) available</span>
                                             </div>
                                         @endif
@@ -105,13 +105,13 @@
                                                 <div class="custom-table-col w-20">
                                                     <span>{{ $request->service->name }}</span>
                                                 </div>
-                                                <div class="custom-table-col @if($tag == 'received-requests') w-26 @else w-20 @endif">
+                                                <div class="custom-table-col @if($tag == 'received-requests') w-26 @else w-26 @endif">
                                                     <span>{{ date('M d, Y, h:i:s A', strtotime($request->created_at)) }}</span>
                                                 </div>
                                                 @if($tag == 'received-requests')
                                                 <div class="custom-table-col w-20">
                                                     @if($request->status == 'cancelled')
-                                                    <span class="btn-theme-pill btn-theme-pill-cherry">Cancelled</span>
+                                                    <span class="btn-theme-pill btn-theme-pill-red">Cancelled</span>
                                                     @elseif($request->status == 'waiting')
                                                     <span class="btn-theme-pill btn-theme-pill-yellow">Waiting for offer</span>
                                                     @else
@@ -123,7 +123,7 @@
                                                     @endif
                                                 </div>
                                                 @else
-                                                <div class="custom-table-col w-50">
+                                                <div class="custom-table-col w-40">
                                                     <span>{{ count($request->requestOffers) }}</span>
                                                 </div>
                                                 @endif
@@ -137,7 +137,7 @@
                                                     @if($tag == 'received-requests')
                                                     <div class="d-flex mb-2">
                                                         @if($request->status == 'cancelled')
-                                                        <span class="btn-theme-pill btn-theme-pill-cherry">Cancelled</span>
+                                                        <span class="btn-theme-pill btn-theme-pill-red">Cancelled</span>
                                                         @elseif($request->status == 'waiting')
                                                         <span class="btn-theme-pill btn-theme-pill-yellow">Waiting for offer</span>
                                                         @else
@@ -175,6 +175,11 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+                        <div class="paginations mt-3 d-flex flex-column align-items-center">
+                            @if (count($boostingRequests) > 0)
+                                {{ $boostingRequests->links('pagination::bootstrap-4') }}
+                            @endif
                         </div>
                     </div>
                 </div>

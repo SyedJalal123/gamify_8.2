@@ -19,10 +19,12 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class ItemController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
+        $category = $request->category;
+
         $categories = Category::with('categoryGames.game','categoryGames.services')->get();
-        return view('frontend.items_create', compact('categories'));
+        return view('frontend.items_create', compact('categories', 'category'));
     }
 
     public function index()

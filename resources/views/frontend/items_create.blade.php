@@ -33,7 +33,7 @@
 
                             </div>                            
                         </div>
-
+                        @if($category != 'boosting')
                         <!-- One "tab" for each step in the form: -->
                         <div class="tab" style="display: block;">
                             <div class="container p-0">
@@ -133,8 +133,8 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="tab fade-in-delay-small-2" style="display: none;">
+                        @endif
+                        <div class="tab fade-in-delay-small-2" @if($category == 'boosting') style="display: block;" @else style="display: none;" @endif>
                             <input type="hidden" name="category_id" id="selectedCategory">
                             <input type="hidden" name="category_game_id" id="category_game_id">
                             <div class="container">
@@ -143,6 +143,7 @@
                                 </div>
                             </div>
                             <div class="custom-container">
+                                @if($category != 'boosting')
                                 <div class="main-card currency_class accounts_class topup_class items_class">
                                 
                                     <!-- Item Section -->
@@ -357,6 +358,7 @@
                                     </div>
                               
                                 </div>
+                                @endif
                                 <div class="boosting_class">
                                     <div class="container">
                                         <p class="text-center text-black-40">
@@ -412,7 +414,7 @@
                                 </div>
                             </div>
 
-                            <div style="overflow:auto;" class="d-flex justify-content-center buttons mt-5">
+                            <div style="overflow:auto;" class="@if($category == 'boosting') d-none @endif d-flex justify-content-center buttons mt-5">
                                 <div style="float:right;">
                                     <button type="button" id="prevBtn" onclick="nextPrev(-1)">Back</button>
                                 </div>
@@ -420,7 +422,7 @@
                         </div> 
                         
                         <!-- Circles which indicates the steps of the form: -->
-                        <div class="steps-container" style="text-align:center;margin-top:40px;">
+                        <div class="steps-container @if($category == 'boosting') d-none @endif" style="text-align:center;margin-top:40px;">
                             <span class="step"></span>
                             <span class="step"></span>
                             <span class="step"></span>

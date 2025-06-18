@@ -641,241 +641,244 @@
     </script>
 
     <script>
-        // Handle pagination link click
-        document.addEventListener('click', function(e) {
-            const link = e.target.closest('.pagination a');
-            if (link) {
-                e.preventDefault();
-                const url = link.getAttribute('href');
-                const overlay = document.getElementById('itemsOverlay');
-                // overlay.style.display = 'flex';
+        if (!window.paginationTopupCatalogListener) {
+            window.paginationTopupCatalogListener = true;
+            // Handle pagination link click
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('.pagination a');
+                if (link) {
+                    e.preventDefault();
+                    const url = link.getAttribute('href');
+                    const overlay = document.getElementById('itemsOverlay');
+                    // overlay.style.display = 'flex';
 
-                html =  '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                    html =  '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="position-relative" style="min-height: 138px;">'+
-                            '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
-                                '<div class="d-flex flex-column">'+
-                                    '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
+                            '<div class="position-relative" style="min-height: 138px;">'+
+                                '<div class="drop-box d-flex flex-column justify-content-between br-10 skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1; min-height: 138px;">'+
+                                    '<div class="d-flex flex-column">'+
+                                        '<div style="width:40px;height:40px;" class="skeleton">&nbsp;</div>'+
 
-                                    '<div>'+
-                                        '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                        '<div>'+
+                                            '<span class="small px-5 skeleton">&nbsp;</span>'+
+                                            '</div>'+
                                         '</div>'+
+                                    '<div class="mt-3">'+
+                                        '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                     '</div>'+
-                                '<div class="mt-3">'+
-                                    '<strong class="px-4 skeleton">&nbsp;</strong>'+
                                 '</div>'+
-                            '</div>'+
-                '</div>';
+                    '</div>';
 
 
-                $('#itemsContainer div').empty();
-                $('#itemsContainer div:first').append(html);
+                    $('#itemsContainer div').empty();
+                    $('#itemsContainer div:first').append(html);
 
-                fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    const doc = new DOMParser().parseFromString(JSON.parse(html).main, 'text/html');
-                    document.getElementById('itemsContainer').innerHTML = JSON.parse(html).main;
-                    // document.getElementById('itemCount').innerHTML = doc.getElementById('itemCount').innerHTML;
-                    window.scrollTo({top: document.getElementById('itemsContainer').offsetTop - 100, behavior: 'smooth'});
-                }).finally(() => $('.skeleton-overlay-start').css('opacity', '0'));
-            }
-        });
+                    fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        const doc = new DOMParser().parseFromString(JSON.parse(html).main, 'text/html');
+                        document.getElementById('itemsContainer').innerHTML = JSON.parse(html).main;
+                        // document.getElementById('itemCount').innerHTML = doc.getElementById('itemCount').innerHTML;
+                        window.scrollTo({top: document.getElementById('itemsContainer').offsetTop - 100, behavior: 'smooth'});
+                    }).finally(() => $('.skeleton-overlay-start').css('opacity', '0'));
+                }
+            });
+        }
     </script>
 @endsection

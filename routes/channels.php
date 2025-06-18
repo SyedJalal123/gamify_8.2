@@ -17,8 +17,8 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chat-channel.{buyerRequestId}', function ($user, $buyerRequestId) {
-    return \App\Models\BuyerRequest::where('id', $buyerRequestId)->exists();
+Broadcast::channel('chat-channel.{recieverId}', function ($user, $recieverId) {
+    return (int) $user->id === (int) $recieverId;
 });
 
 Broadcast::channel('order-chat-channel.{conversationId}', function ($user, $conversationId) {
@@ -37,3 +37,7 @@ Broadcast::channel('order-page-update.{orderId}', function ($user, $orderId) {
     return \App\Models\Order::where('id', $orderId)->exists();
 });
 
+Broadcast::channel('group-service-sellers.{serviceId}', function ($user, $serviceId) {
+    // Check if user belongs to the service
+    return $user->services()->where('services.id', $serviceId)->exists();
+});

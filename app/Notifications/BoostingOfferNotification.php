@@ -52,11 +52,12 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
     {
         // dd($this->boostingOffer);
         return [
-            'title' => $this->data['title'],
-            'data1' => $this->data['data1'],
-            'data2' => $this->data['data2'],
-            'link' => $this->data['link'],
-            'category' => 'notification',
+            'title'     => $this->data['title'],
+            'data1'     => $this->data['data1'],
+            'data2'     => $this->data['data2'],
+            'link'      => $this->data['link'],
+            'category'  => 'notification',
+            'game_id'   => $this->data['game_id'],
         ];
     }
 

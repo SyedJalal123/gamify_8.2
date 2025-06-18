@@ -181,7 +181,8 @@
 
                     <!-- Live Chat -->
                     <div class="live-chats m-0 p-0 chat">
-                        @livewire('OrderChat', ['conversation' => $conversation, 'identity' => $identity])
+                        @livewire('Openchat', ['buyerRequestConversation' => $conversation, 'identity' => $identity])
+                        {{-- @livewire('OrderChat', ['conversation' => $conversation, 'identity' => $identity]) --}}
                     </div>
                 </div>
 
@@ -516,42 +517,57 @@
             setTimeout(() => {
                 scroll_bottom('.msg_card_body');
             }, 500);
-            
         });
+        
+        if (!window.messageUpdatedListener) {
+            window.messageUpdatedListener = true;
 
-        Livewire.on('message-updated', () => {
-            setTimeout(() => {
-                let buffer = 350; // pixels from bottom
-                let $el = $('.msg_card_body');
-                let isNearBottom = $el.scrollTop() + $el.innerHeight() >= $el[0].scrollHeight - buffer;
+            Livewire.on('message-updated', () => {
+                setTimeout(() => {
+                    let buffer = 350; // pixels from bottom
+                    let $el = $('.msg_card_body');
+                    let isNearBottom = $el.scrollTop() + $el.innerHeight() >= $el[0].scrollHeight - buffer;
 
-                if(isNearBottom){
-                    scroll_bottom('.msg_card_body');
+                    if(isNearBottom){
+                        scroll_bottom('.msg_card_body');
+                    }
+                }, 0.1);
+            });
+        }
+
+        if (!window.orderDeliveredListener) {
+            window.orderDeliveredListener = true;
+
+            Livewire.on('orderDelivered', (data) => {
+                $('#delivery-time-title').text('Delivery time');
+                $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-blue');
+
+                if(data['orderStatus'] == 'received' || data['orderStatus'] == 'completed'){
+                    $('.order-feedback-container').removeClass('d-none');
                 }
-            }, 0.1);
-        });
+            });
+        }
 
-        Livewire.on('orderDelivered', (data) => {
-            $('#delivery-time-title').text('Delivery time');
-            $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-blue');
+        if (!window.orderCancelledListener) {
+            window.orderCancelledListener = true;
 
-            if(data['orderStatus'] == 'received' || data['orderStatus'] == 'completed'){
+            Livewire.on('orderCancelled', (data) => {
+                $('#delivery-time-title').text('Delivery time');
+                $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-red');
+
                 $('.order-feedback-container').removeClass('d-none');
-            }
-        });
+                $('#delivery-time-container').addClass('d-none');
 
-        Livewire.on('orderCancelled', (data) => {
-            $('#delivery-time-title').text('Delivery time');
-            $('.pill-order-status').text(data['orderStatus']).addClass('btn-theme-pill-red');
+            });
+        }
 
-            $('.order-feedback-container').removeClass('d-none');
-            $('#delivery-time-container').addClass('d-none');
+        if (!window.orderDisputedListener) {
+            window.orderDisputedListener = true;
 
-        });
-
-        Livewire.on('orderDisputed', (data) => {
-            // $('.order-feedback-container').removeClass('d-none');
-        });
+            Livewire.on('orderDisputed', (data) => {
+                // $('.order-feedback-container').removeClass('d-none');
+            });
+        }
     </script>
 
     <!-- Initialize Echo private channel listener for user notifications -->
@@ -564,23 +580,41 @@
 
                 let unreadCount = parseInt(document.querySelector('.count-notifications').textContent) || 0;
 
-                Echo.private(`order-chat-channel.${conversationId}`)
-                    .listen('OrderMessageSentEvent', (e) => {
-                        if(e['message']['sender_id'] != userId)
-                        Livewire.dispatch('message-received', [e.message]);
-                    });
+                if (!window.chat_channel) {
+                    window.chat_channel = {};
+                }
+                if (!window.message_seen) {
+                    window.message_seen = {};
+                }
+                if (!window.order_page_update) {
+                    window.order_page_update = {};
+                }
 
-                Echo.private(`message-seen.${userId}`)
-                    .listen('MessageSeenEvent', (e) => {
-                        Livewire.dispatch('chat-seen', [e]);
-                    });
+                if (!window.chat_channel[userId]) {
+                    Echo.private(`chat-channel.${userId}`)
+                        .listen('MessageSentEvent', (e) => {
+                            Livewire.dispatch('message-received', [e.message]);
+                        });
+                    window.chat_channel[userId] = true;
+                }
+                
+                if (!window.message_seen[userId]) {
+                    Echo.private(`message-seen.${userId}`)
+                        .listen('MessageSeenEvent', (e) => {
+                            Livewire.dispatch('chat-seen', [e]);
+                        });                    
+                    window.message_seen[userId] = true;
+                }
 
-                Echo.private(`order-page-update.${orderId}`)
-                    .listen('OrderEvent', (e) => {
-                        if (e['sender_id'] !== userId) {
-                            Livewire.dispatch('order-update', [e]);
-                        }
-                    });
+                if (!window.order_page_update[orderId]) {
+                    Echo.private(`order-page-update.${orderId}`)
+                        .listen('OrderEvent', (e) => {
+                            if (e['sender_id'] !== userId) {
+                                Livewire.dispatch('order-update', [e]);
+                            }
+                        });
+                    window.order_page_update[userId] = true;
+                }
             });
         </script>
     @endauth

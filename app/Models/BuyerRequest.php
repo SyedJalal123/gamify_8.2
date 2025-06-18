@@ -10,9 +10,12 @@ class BuyerRequest extends Model
     use HasFactory;
     protected $fillable = [
         'service_id',
+        'request_id',
         'user_id',
         'expires_at',
         'description',
+        'seller_id',
+        'status',
     ];
 
     protected $casts = [

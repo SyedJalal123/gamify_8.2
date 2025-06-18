@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\RequestOffer;
 use App\Models\User;
 use App\Models\CategoryGame;
+use App\Events\GroupServiceSellerEvent;
 use App\Models\BuyerRequestAttribute;
 use App\Notifications\BoostingOfferUpdate;
 use App\Notifications\BoostingRequestNotification;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -36,6 +38,7 @@ class ServiceController extends Controller
     
             // Save item
             $buyerRequest = BuyerRequest::create([
+                'request_id'        => Str::uuid()->toString(),
                 'service_id'        => $request->service_id,
                 'user_id'           => Auth::id(),
                 'description'       => $request->description,
@@ -82,6 +85,7 @@ class ServiceController extends Controller
                 'data2' => $boostingOffer->attributes[1]->pivot->value,
                 'link' => url('boosting-request/' . $boostingOffer->id),
                 'id' => $boostingOffer->id,
+                'game_id' => $boostingOffer->service->categoryGame->game_id,
             ];
 
             Notification::send($users, new BoostingRequestNotification($data));
@@ -115,10 +119,11 @@ class ServiceController extends Controller
         $boostingOffer = BuyerRequest::where('id', $request->buyer_request_id)->with('service.categoryGame.game','user','attributes','requestOffers.user')->first();
 
         $data = [
-            'title' => 'New Boosting Offer',
-            'data1' => $boostingOffer->service->categoryGame->game->name.' - '.$boostingOffer->service->name,
-            'data2' => '$'.$request->price,
-            'link' => url('boosting-request/' . $boostingOffer->id),
+            'title'     => 'New Boosting Offer',
+            'data1'     => $boostingOffer->service->categoryGame->game->name.' - '.$boostingOffer->service->name,
+            'data2'     => '$'.$request->price,
+            'link'      => url('boosting-request/' . $boostingOffer->id),
+            'game_id'   => $boostingOffer->service->categoryGame->game_id,
         ];
 
         $user = User::where('id', $boostingOffer->user_id)->first();
@@ -131,20 +136,21 @@ class ServiceController extends Controller
 
         Notification::send($user, new BoostingOfferNotification($data));
 
-        if($other_users)
-        Notification::send($other_users, new BoostingOfferUpdate($data));
+        broadcast(new GroupServiceSellerEvent('update', $service_id));
+        // if($other_users)
+        // Notification::send($other_users, new BoostingOfferUpdate($data));
 
         return redirect()->back();
     }
 
-    public function boostingRequest(Request $request, $id){
+    public function boostingRequest(Request $request = null, $id){
         $buyerRequest = BuyerRequest::with([
             'service.categoryGame.game',
             'attributes',
             'requestOffers.user',
             'requestOffers.order',
             'buyerRequestConversation' => function ($query) {
-                $query->with(['buyer', 'seller', 'messages.sender','messages.reciever']);
+                $query->with(['buyer', 'seller', 'messages.sender','messages.reciever', 'order.categoryGame.category', 'buyerRequest.service']);
             },
         ])->find($id);
 
@@ -160,12 +166,37 @@ class ServiceController extends Controller
             $identity = 'buyer';
         }
         
-        
 
         if ($request->ajax()) {
             return view('frontend.offers-live-feed', compact('buyerRequest'))->render();
         }
+
         return view('frontend.boosting-request', compact('buyerRequest','identity'));
+    }
+
+    public function cancelRequest(Request $request) {
+        $buyerRequest = BuyerRequest::find($request->id);
+        $serviceId = $buyerRequest->service_id;
+
+        $buyerRequest->update([
+            'status' => 'cancelled',
+        ]);
+
+        $fakeAjaxRequest = Request::create(
+            url('cancel-request'),
+            'GET',
+            ['id' => $request->id],
+            [],
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest'] // <- AJAX header
+        );
+        
+
+        broadcast(new GroupServiceSellerEvent('cancelled', $serviceId));
+
+        $data = $this->boostingRequest($fakeAjaxRequest, $request->id);
+
+        return $data;
     }
 
     public function getServiceAttributes(Request $request){

@@ -194,60 +194,74 @@
         <div id="dynamic-js">
             @yield('js')
         </div>
-
+        
         {{-- Notification Sound --}}
         @auth
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
                 let unreadCount = parseInt(document.querySelector('.count-notifications').textContent) || 0;
-        
-                // Initialize Echo private channel listener for user notifications
-                Echo.private(`App.Models.User.${userId}`)
-                    .notification((notification) => {  
-                        // console.log(notification);
-                        if(notification.category == 'notification'){
-                            // Play sound (handle autoplay restrictions)
-                            const audio = new Audio('/sounds/notification.mp3');
-                            audio.play().catch(err => console.warn('Audio blocked:', err));
-            
-                            // Create the notification HTML dynamically
-                            const notificationHTML = `
-                                <li class="mb-1">
-                                    <a wire:navigate href="${notification.link}" class="notification-box">
-                                        <div class="d-flex">
-                                            <img src="{{asset('uploads/games/5.webp')}}" class="mt-1" width="30" height="30" alt="">
-                                            <div class="d-flex flex-column ml-3">
-                                                <div class="title d-flex flex-row align-items-center">
-                                                    <div class="fs-13">${notification.title}</div>
-                                                    <div class="opacity-50 small ml-3">${shortTimeAgo(notification.created_at)}</div>
-                                                </div>
-                                                <div class="d-flex flex-column">
-                                                    <div class="opacity-50">${notification.data1}</div>
-                                                    <div>
-                                                        <span class="opacity-50">${notification.data2}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            `;
-                            
-                            // Insert the new notification at the top of the notification list
-                            const notificationMainBox = document.querySelector('.notification-main-box');
-                            if (notificationMainBox) {
-                                notificationMainBox.insertAdjacentHTML('afterbegin', notificationHTML);
+
+                if (!window.app_models_user) {
+                    window.app_models_user = {};
+                }
+
+                if (!window.app_models_user[userId]) {
+                    const games = @json(\App\Models\Game::all()->keyBy('id'));
+                    // Initialize Echo private channel listener for user notifications
+                    Echo.private(`App.Models.User.${userId}`)
+                        .notification((notification) => {  
+                            // console.log(notification);
+                            if(notification.category == 'notification'){
+                                // Play sound (handle autoplay restrictions)
+                                const audio = new Audio('/sounds/notification.mp3');
+                                audio.play().catch(err => console.warn('Audio blocked:', err));
+                                
+                                Livewire.dispatch('notification-received');
+
+                                // const game = games[notification.game_id];
+
+                                // Create the notification HTML dynamically
+                                
+                                // const notificationHTML = `
+                                //     <li class="mb-1">
+                                //         <a wire:navigate href="${notification.link}" class="notification-box">
+                                //             <div class="d-flex">
+                                //                 <img src="{{asset('${game.image}')}}" class="mt-1" width="30" height="30" alt="">
+                                //                 <div class="d-flex flex-column ml-3">
+                                //                     <div class="title d-flex flex-row align-items-center">
+                                //                         <div class="fs-13">${notification.title}</div>
+                                //                         <div class="opacity-50 small ml-3">${shortTimeAgo(notification.created_at)}</div>
+                                //                     </div>
+                                //                     <div class="d-flex flex-column">
+                                //                         <div class="opacity-50">${notification.data1}</div>
+                                //                         <div>
+                                //                             <span class="opacity-50">${notification.data2}</span>
+                                //                         </div>
+                                //                     </div>
+                                //                 </div>
+                                //             </div>
+                                //         </a>
+                                //     </li>
+                                // `;
+                                
+                                // // Insert the new notification at the top of the notification list
+                                // const notificationMainBox = document.querySelector('.notification-main-box');
+                                // if (notificationMainBox) {
+                                //     notificationMainBox.insertAdjacentHTML('afterbegin', notificationHTML);
+                                // }
+
+                                
+                                // Increment the unread notification count
+                                // unreadCount++;
+                                // const countElements = document.querySelectorAll('.count-notifications');
+                                // countElements.forEach(countElement => {
+                                //     countElement.textContent = unreadCount; // Update the unread count
+                                // });
                             }
-                            
-                            // Increment the unread notification count
-                            unreadCount++;
-                            const countElements = document.querySelectorAll('.count-notifications');
-                            countElements.forEach(countElement => {
-                                countElement.textContent = unreadCount; // Update the unread count
-                            });
-                        }
-                });
+                    });
+                    window.app_models_user[userId] = true;
+                }
                 
                 window.addEventListener('popstate', function () {
                     Livewire.navigate(window.location);

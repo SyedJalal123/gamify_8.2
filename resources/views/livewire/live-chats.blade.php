@@ -1,6 +1,15 @@
 <div class="card m-0 p-0">
+    @if(request()->segments()[0] == 'order')
+    <style>
+        @media (max-width: 768px) {
+            .card {
+                height: 507px !important;
+            }
+        }
+    </style>
+    @endif
     @if($buyerRequestConversation != null)
-    <div class="d-flex d-md-none px-3 py-2 fs-16 text-white cursor-pointer back">
+    <div class="d-flex d-md-none @if(request()->segments()[0] == 'order') d-none @endif px-3 py-2 fs-16 text-white cursor-pointer back">
         <i class="bi-caret-left-fill"></i>
         <span class="ml-2">Inbox</span>
     </div>
@@ -15,7 +24,13 @@
             </div>
             <div class="user_info">
                 <span>{{$reciever->name}}</span>
-                <p class="one-line-ellipsis">Boosting request: 0c06a96b-6731-4edb-bcdf-02b89b4d9306</p>
+                <p class="one-line-ellipsis">
+                    @if ($buyerRequestConversation->order_id != null)
+                        Order for {{ $buyerRequestConversation->buyer_request_id == null ? $buyerRequestConversation->order->categoryGame->category->name : $buyerRequestConversation->buyerRequest->service->name }}
+                    @else
+                        Boosting request: {{ $buyerRequestConversation->buyerRequest->request_id }}
+                    @endif
+                </p>
             </div>
             {{-- <div class="video_cam">
                 <span><i class="fas fa-video"></i></span>
@@ -34,15 +49,40 @@
     </div>
     <div class="card-body fade-in-delay-small msg_card_body pb-0 mb-0 px-1 px-md-3" style="height: 351px;">
         <input type="hidden" name="" id="conversationId" value="{{$buyerRequestConversation->id}}">
+        <div class="d-flex flex-column mb-4">
+            @if($buyerRequestConversation->buyer_request_id != null)
+                <div class="d-flex justify-content-start mb-1">
+                    <div class="msg_cotainer w-100 py-1 border-theme-left-tag-default">
+                        <div class="message-box w-100 mw-100 d-flex flex-row justify-content-between align-items-end">
+                            <span class="message-formatting mw-100">
+                                Boosting Request chat started:<br>
+                                <a class="underline text-theme-primary" target="_blank" href="{{ url('boosting-request') }}/{{ $buyerRequestConversation->buyer_request_id }}">{{ url('boosting-request') }}/{{ $buyerRequestConversation->buyerRequest->request_id }}</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if ($buyerRequestConversation->order_id != null)
+                <div class="d-flex justify-content-start">
+                    <div class="msg_cotainer w-100 py-1 border-theme-left-tag-default">
+                        <div class="message-box w-100 mw-100 d-flex flex-row justify-content-between align-items-end">
+                            <span class="message-formatting mw-100">
+                                Order Created: <a class="underline text-theme-primary" target="_blank" href="{{ url('order') }}/{{ $buyerRequestConversation->order->order_id }}">{{ url('order') }}/{{ $buyerRequestConversation->order->order_id }}</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
         @foreach ($chatMessages as $message)
             {{-- @if($message->sender_id == auth()->id()) --}}
                 <div class="d-flex @if($message->sender_id == auth()->id()) justify-content-end @else justify-content-start @endif mb-4">
                     <div class="msg_cotainer @if($message->sender_id == auth()->id()) msg_cotainer_send @endif p-0">
                         @if (str_starts_with($message->file_type, 'image/') || str_starts_with($message->file_type, 'video/'))
                             @if (str_starts_with($message->file_type, 'video/'))
-                                <div class="position-relative d-inline-block cursor-pointer" style="width: 312px; height: auto;"data-toggle="modal" 
+                                <div class="position-relative d-inline-block cursor-pointer" style="width: 312px; height: 170px;"data-toggle="modal" 
                                 data-target="#liveMediaModal" onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'video')">
-                                    <video class="img-fluid rounded" width="312" muted>
+                                    <video class="img-fluid rounded h-100" width="312" muted>
                                         <source src="{{ asset($message->file_path) }}" type="{{ $message->file_type }}">
                                         Your browser does not support the video tag.
                                     </video>
@@ -52,12 +92,14 @@
                                     </span>
                                 </div>
                             @else
-                                <img data-toggle="modal" data-target="#liveMediaModal"  src="{{ asset($message->file_path) }}" 
-                                onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
-                                class="img-fluid rounded cursor-pointer" style="width: 312px;" alt="Image">
-                                <i class="bi-arrows-fullscreen cursor-pointer" style="position: absolute;right: 0;top: 0;padding: 2px 8px;color: #a5a5a5;" 
-                                onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
-                                data-toggle="modal" data-target="#liveMediaModal"></i>
+                            <div data-toggle="modal" data-target="#liveMediaModal" class="cursor-pointer text-center" style="width: 312px; height: 170px;">
+                                <img src="{{ asset($message->file_path) }}"
+                                    onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
+                                    class="img-fluid rounded h-webkit-fill" alt="Image">
+                                <i class="bi-arrows-fullscreen" style="position: absolute;right: 0;top: 0;padding: 2px 8px;color: #a5a5a5;" 
+                                    onclick="showLiveImageModal('{{ asset($message->file_path) }}', 'image')"
+                                    data-toggle="modal" data-target="#liveMediaModal"></i>
+                            </div>
                             @endif
                         @elseif ($message->file_type != null)
                             @php $parts = explode('.', $message->file_path); @endphp
@@ -185,6 +227,13 @@
                             @endif
                         </div>
                     </div>
+                    @if($buyerRequestConversation->buyerRequest !== null && $buyerRequestConversation->buyerRequest->status == 'cancelled')
+                    <div class="input-group">
+                        <div class="input-group-append w-100">
+                            <input type="text" disabled value="This conversation is no longer available" class="form-control input-theme-1">
+                        </div>
+                    </div>
+                    @else
                     <div class="input-group">
                         <div class="input-group-append">
                             <label for="fileAttachment" class="input-group-text attach_btn cursor-pointer" :class="{ 'cursor-wait': uploading }" >
@@ -194,11 +243,12 @@
                         </div>
                         <input type="hidden" value="{{$reciever->id}}">
                         <input type="hidden" value="{{$buyerRequestConversation->id}}">
-                        <input type="text" wire:model="message" class="form-control type_msg" id="chatInput" placeholder="Type your message...">
+                        <input type="text" wire:model="message" class="form-control type_msg" id="chatInput" autocomplete="off" placeholder="Type your message...">
                         <div class="input-group-append">
                             <button type="submit" x-bind:disabled="uploading" :class="{ 'cursor-wait': uploading }" id="chatSendBtn" class="input-group-text send_btn"><i class="bi-send-fill"></i></button>
                         </div>
                     </div>
+                    @endif
                 </div>
         </form>
     </div>

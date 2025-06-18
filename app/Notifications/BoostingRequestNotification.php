@@ -57,6 +57,7 @@ class BoostingRequestNotification extends Notification
             'link'      => $this->data['link'],
             'category'  => 'notification',
             'id'        => $this->data['id'],
+            'game_id'   => $this->data['game_id'],
         ];
     }
 
