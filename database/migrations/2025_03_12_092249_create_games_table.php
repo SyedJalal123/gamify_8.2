@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Fortnite, Valorant, CSGO
             $table->string('image')->nullable();
+            $table->string('image_name')->nullable();
             $table->timestamps();
         });
     }

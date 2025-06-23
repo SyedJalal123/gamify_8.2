@@ -86,28 +86,34 @@
                         
                         <div id="itemsContainerWrapper" class="br-9 position-realative fade-in-delay-small-2">
                             <div id="feedback-show" class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary px-3 pb-4 pt-2 mb-3">
-                                @foreach ($orders as $order) 
-                                    <a @if($order->seller_id == auth()->id()) wire:navigate href="{{ url('order') }}/{{ $order->order_id }}" @else href="#" onclick="event.preventDefault()" @endif class="@if($order->seller_id !== auth()->id()) cursor-default @endif text-theme-primary dividor-border-theme-bottom py-3 px-md-4 d-flex flex-column position-relative">
-                                        <div class="d-flex flex-row mb-2">
-                                            @if($order->feedback == 1)
-                                                <i class="fa fa-thumbs-up fs-20 pr-3 text-theme-teal"></i>
-                                            @else
-                                                <i class="fa fa-thumbs-down fs-20 pr-3 text-theme-cherry"></i>
-                                            @endif
-    
-                                            <div class="d-flex fs-14">
-                                                <span>{{ $order->categoryGame->category->name }}</span>
-                                                <span class="mx-1 text-theme-secondary">|</span>
-                                                <span class="text-theme-secondary three-ch-ellipsis">{{ $order->buyer->name }}</span>
+                                @if(count($orders) != 0)
+                                    @foreach ($orders as $order) 
+                                        <a @if($order->seller_id == auth()->id()) wire:navigate href="{{ url('order') }}/{{ $order->order_id }}" @else href="#" onclick="event.preventDefault()" @endif class="@if($order->seller_id !== auth()->id()) cursor-default @endif text-theme-primary dividor-border-theme-bottom py-3 px-md-4 d-flex flex-column position-relative">
+                                            <div class="d-flex flex-row mb-2">
+                                                @if($order->feedback == 1)
+                                                    <i class="fa fa-thumbs-up fs-20 pr-3 text-theme-teal"></i>
+                                                @else
+                                                    <i class="fa fa-thumbs-down fs-20 pr-3 text-theme-cherry"></i>
+                                                @endif
+        
+                                                <div class="d-flex fs-14">
+                                                    <span>{{ $order->categoryGame->category->name }}</span>
+                                                    <span class="mx-1 text-theme-secondary">|</span>
+                                                    <span class="text-theme-secondary three-ch-ellipsis">{{ $order->buyer->name }}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex text-theme-secondary">
-                                            <div class="d-flex fs-14" style="white-space: pre-line; overflow: hidden;">{!! $order->feedback_comment !!}</div>
-                                        </div>
+                                            <div class="d-flex text-theme-secondary">
+                                                <div class="d-flex fs-14" style="white-space: pre-line; overflow: hidden;">{!! $order->feedback_comment !!}</div>
+                                            </div>
 
-                                        <div class="position-absolute top-0 right-0 p-1 px-2 cursor-pointer fs-12 text-theme-secondary">{{ shortTimeAgo($order->feedback_at) }} ago</div>
-                                    </a>
-                                @endforeach
+                                            <div class="position-absolute top-0 right-0 p-1 px-2 cursor-pointer fs-12 text-theme-secondary">{{ shortTimeAgo($order->feedback_at) }} ago</div>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <div class="pt-4 pb-2 text-theme-secondary">
+                                        No reviews found
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

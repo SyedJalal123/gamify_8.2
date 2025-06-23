@@ -14,7 +14,8 @@
 	<link rel="stylesheet" href="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/jquery.mCustomScrollbar.min.css')}}">
 	<link rel="stylesheet" href="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/paymentfont.min.css')}}">
 	<link rel="stylesheet" href="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/main.css')}}">
-	<link rel="stylesheet" href="{{asset('css/custom.css')}}">
+    <link rel="stylesheet" href="{{asset('css/colors.css')}}">
+    <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="{{asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/favicon-32x32.png')}}" sizes="32x32">
@@ -34,7 +35,7 @@
 				<div class="col-12">
 					<div class="sign__content color-white d-flex flex-column text-center">
 
-                        <div class="mb-4 text-sm d-flex flex-column align-items-center">
+                        <div class="mb-4 text-sm d-flex flex-column align-items-center" style="color: #ffff;">
                             <h2 class="fw-bold">{{ __('Thanks for signing up!')  }}</h2>
                             <span>{{ __('Before getting started, please verify your email address by clicking the confirmation link sent to your inbox.') }}</span>
                         </div>

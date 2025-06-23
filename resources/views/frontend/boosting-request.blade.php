@@ -155,15 +155,28 @@
                                 @if($identity == 'seller')
                                 <div class="d-flex justify-content-between px-4 py-2 border-bottom">
                                     <div class="seller_details d-flex text-left">
-                                        <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
-                                            S
-                                        </div>
+                                        @if($buyerRequest->user->profile !== null)
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
+                                                <img src="{{ url('uploads/profile/thumbnails') }}/{{$buyerRequest->user->profile}}" class="br-40 mr-2" alt="">
+                                            </a>
+                                        @else
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
+                                                <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
+                                                    {{ strtoupper(substr($buyerRequest->user->name, 0, 1)) }}
+                                                </div>
+                                            </a>
+                                        @endif
                                         <div class="d-flex flex-column">
-                                            <div id="sellerName" class="fs-15 fw-bold">{{$buyerRequest->user->name}}</div>
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
+                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{$buyerRequest->user->name}}</div>
+                                            </a>
                                             <div class="d-flex align-items-center">
                                                 <i class="text-success bi bi-star-fill"></i>
-                                                <span class="text-black-70 mx-1 fs-13">99.3%</span>
-                                                <a href="#" class="fs-13">27,066 reviews</a>
+                                                <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($buyerRequest->user->id) }}%</span>
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
+                                                    @php $totalFeedbacks = count(userPositiveFeebacks($buyerRequest->user->id)) + count(userNegativeFeebacks($buyerRequest->user->id)); @endphp
+                                                    {{ number_format($totalFeedbacks) }} reviews
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

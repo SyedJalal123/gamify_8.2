@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\BuyerRequest;
 use App\Models\Game;
 use App\Models\Seller;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NowPaymentController;
 use App\Http\Controllers\SellerDashboardController;
 use App\Http\Controllers\CheckoutController;
@@ -63,7 +64,7 @@ Route::middleware('verified')->group(function () {
     Route::get('/', function () {
         $categories = Category::with('games')->get();
         return view('frontend.home', compact('categories'));
-    });
+    })->name('home');
     Route::get('/seller-verification', function () {
         return view('frontend.seller_verification');
     });
@@ -111,7 +112,21 @@ Route::middleware('verified')->group(function () {
     Route::get('/notifications', [SellerDashboardController::class, 'notifications'])->name('seller-dashboard.notifications')->middleware(['auth']);
     Route::get('/feedback', [SellerDashboardController::class, 'feedback'])->name('seller-dashboard.feedback')->middleware(['auth']);
     Route::get('/settings', [SellerDashboardController::class, 'settings'])->name('seller-dashboard.settings')->middleware(['auth']);
-    
+
+    Route::post('/update_account', [SellerDashboardController::class, 'update_account'])->name('seller-dashboard.update_account')->middleware(['auth']);
+    Route::get('/toggle-email-notification', [SellerDashboardController::class, 'toggle_email_notification'])->name('seller-dashboard.toggle_email_notification')->middleware(['auth']);
+    Route::get('/user-profile/{username}', [SellerDashboardController::class, 'profile'])->name('profile'); 
+
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Backend Routes
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/games', [AdminDashboardController::class, 'games'])->name('games');
+    Route::post('/add_game', [AdminDashboardController::class, 'add_game'])->name('add_game');
+    Route::post('/edit_game', [AdminDashboardController::class, 'edit_game'])->name('edit_game');
+    Route::get('/items/{category}', [AdminDashboardController::class, 'items'])->name('items.category');
+    Route::get('/item/add', [AdminDashboardController::class, 'add_item'])->name('item.add');
 
 });
 

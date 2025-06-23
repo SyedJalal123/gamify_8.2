@@ -10,15 +10,28 @@
         @foreach ($buyerRequest->requestOffers as $key => $offer)    
             <div class="row w-100 p-0 px-md-3 py-md-3 align-items-center border-bottom-thick">
                 <div class="seller_details d-flex col-12 col-md-3 text-left border-m-bottom p-2 pt-3 p-md-0">
-                    <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
-                        {{ strtoupper(substr($offer->user->name,0,1)) }}
-                    </div>
+                    @if($offer->user->profile !== null)
+                        <a wire:navigate href="{{ url('user-profile') }}/{{ $offer->user->username }}?tab=Offers&category=Currency">
+                            <img src="{{ url('uploads/profile/thumbnails') }}/{{$offer->user->profile}}" class="br-40 mr-2" alt="">
+                        </a>
+                    @else
+                        <a wire:navigate href="{{ url('user-profile') }}/{{ $offer->user->username }}?tab=Offers&category=Currency">
+                            <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
+                                {{ strtoupper(substr($offer->user->name, 0, 1)) }}
+                            </div>
+                        </a>
+                    @endif
                     <div class="d-flex flex-column">
-                        <div id="sellerName" class="fs-15 fw-bold">{{$offer->user->name}}</div>
+                        <a wire:navigate href="{{ url('user-profile') }}/{{ $offer->user->username }}?tab=Offers&category=Currency">
+                            <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{$offer->user->name}}</div>
+                        </a>
                         <div class="d-flex align-items-center">
                             <i class="text-success bi bi-star-fill"></i>
-                            <span class="text-black-70 mx-1 fs-13">99.3%</span>
-                            <a href="#" class="fs-13">27,066 reviews</a>
+                            <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($offer->user->id) }}%</span>
+                            <a wire:navigate href="{{ url('user-profile') }}/{{ $offer->user->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
+                                @php $totalFeedbacks = count(userPositiveFeebacks($offer->user->id)) + count(userNegativeFeebacks($offer->user->id)); @endphp
+                                {{ number_format($totalFeedbacks) }} reviews
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -51,21 +51,34 @@
                         }
                     @endphp
 
-                    @if ($isCurrency)
+                    @if ($isCurrency || $isTopup)
                         <div class="row gold-layout mt-2">
                             <div class="col-lg-7 p-0 px-md-3">
                                 <div class="seller-box rounded text-black bg-white mb-3">
                                     <div class="seller_details d-md-flex text-left border-m-bottom px-3 py-3 d-none">
-                                        <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
-                                            style="width: 40px; height: 40px; background-color: #c0392b;">
-                                            {{ strtoupper(substr($item->seller->name, 0, 1)) }}
-                                        </div>
+                                        @if($item->seller->profile !== null)
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                <img src="{{ url('uploads/profile/thumbnails') }}/{{$item->seller->profile}}" class="br-40 mr-2" alt="">
+                                            </a>
+                                        @else
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
+                                                    style="width: 40px; height: 40px; background-color: #c0392b;">
+                                                    {{ strtoupper(substr($item->seller->name, 0, 1)) }}
+                                                </div>
+                                            </a>
+                                        @endif
                                         <div class="d-flex flex-column">
-                                            <div id="sellerName" class="fs-15 fw-bold">{{ $item->seller->name }}</div>
+                                            <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                            </a>
                                             <div class="d-flex align-items-center">
                                                 <i class="text-success bi bi-star-fill"></i>
-                                                <span class="text-black-70 mx-1 fs-13">99.3%</span>
-                                                <a href="#" class="fs-13">27,066 reviews</a>
+                                                <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
+                                                    @php $totalFeedbacks = count(userPositiveFeebacks($item->seller->id)) + count(userNegativeFeebacks($item->seller->id)); @endphp
+                                                    {{ number_format($totalFeedbacks) }} reviews
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -108,24 +121,44 @@
                                 </div>
                             </div>
 
+                            @if($isTopup)
+                                @php
+                                    foreach ($item->attributes as $attribute) {
+                                        if($attribute->topup == 1) {
+                                            $topupValue = $attribute->pivot->value;
+                                        }
+                                    }
+                                @endphp
+                            @endif
+
                             <div class="col-lg-5 p-0">
                                 <div class="price-box text-black bg-white p-0 rounded text-center">
                                     <div class="d-flex justify-content-between border-bottom px-4 py-3">
                                         <p class="m-0 text-muted">Price</p>
                                         <div class="d-flex flex-row">
-                                            <h5 class="m-0 fw-bold">${{ number_format($item->price, 3) }}</h5>
-                                            <span class="pl-1">/ {{ $item->categoryGame->currency_type }}</span>
+                                            @if(!$isTopup)
+                                                <h5 class="m-0 fw-bold">${{ number_format($item->price, 3) }}</h5>
+                                                <span class="pl-1">/ {{ $item->categoryGame->currency_type }}</span>
+                                            @else
+                                                <h5 class="m-0 fw-bold">${{ number_format($item->price * (int) $topupValue, 3) }}</h5>
+                                            @endif
                                         </div>
                                     </div>
 
                                     <form method="GET" action="{{ route('checkout') }}" class="p-3">
                                         @csrf
                                         <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                        <input type="hidden" name="price" value="{{ $item->price }}">
-                                        <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * $item->minimum_quantity }}">
+                                        @if($isTopup)
+                                            <input type="hidden" name="price" value="{{ $item->price * (int) $topupValue }}">
+                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * (int) $topupValue * $item->minimum_quantity }}">
+                                        @else
+                                            <input type="hidden" name="price" value="{{ $item->price }}">
+                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * $item->minimum_quantity }}">
+                                        @endif
+                                        
                                         <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
 
-                                        <div class="d-flex flex-column p-2">
+                                        <div class="d-flex flex-column p-2 @if($isTopup) d-none @endif">
 
                                             <div class="input-group mb-2">
                                                 <button onclick="adjustQty()" class="btn btn-minus btn-minus-2 mr-1"
@@ -133,7 +166,7 @@
                                                 <span class="input-group-text">Qty</span>
                                                 <input type="number"
                                                     class="form-control text-center input-group-text-input"
-                                                    id="quantity-input" value="{{ $item->minimum_quantity }}" name="quantity"
+                                                    id="quantity-input" @if($isTopup) value="{{(int) $topupValue}}" @else value="{{ $item->minimum_quantity }}" @endif name="quantity"
                                                     min="{{ $item->minimum_quantity }}" oninput="adjustQty()"
                                                     step="1" required>
                                                 <span
@@ -156,7 +189,12 @@
                                         <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
                                             id="price-submit-button">
                                             $<span
-                                                id="totalPrice" name="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
+                                            @if($isTopup)
+                                                id="totalPrice" name="totalPrice">{{ number_format($item->price * (int) $topupValue * $item->minimum_quantity, 2) }}
+                                            @else
+                                                id="totalPrice" name="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}
+                                            @endif
+                                            </span>
                                             | Buy now
                                         </button>
 
@@ -212,17 +250,29 @@
                                             <span class="text-small text-black-70">Seller</span>
                                         </div>
                                         <div class="d-flex seller_details text-left">
-                                            <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
-                                                style="width: 40px; height: 40px; background-color: #c0392b;">
-                                                {{ strtoupper(substr($item->seller->name, 0, 1)) }}
-                                            </div>
+                                            @if($item->seller->profile !== null)
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">    
+                                                    <img src="{{ url('uploads/profile/thumbnails') }}/{{$item->seller->profile}}" class="br-40 mr-2" alt="">
+                                                </a>
+                                            @else
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">    
+                                                    <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
+                                                        style="width: 40px; height: 40px; background-color: #c0392b;">
+                                                        {{ strtoupper(substr($item->seller->name, 0, 1)) }}
+                                                    </div>
+                                                </a>
+                                            @endif
                                             <div class="d-flex flex-column">
-                                                <div id="sellerName" class="fs-15 fw-bold">{{ $item->seller->name }}
-                                                </div>
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                    <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                                </a>
                                                 <div class="d-flex align-items-center">
                                                     <i class="text-success bi bi-star-fill"></i>
-                                                    <span class="text-black-70 mx-1 fs-13">99.3%</span>
-                                                    <a href="#" class="fs-13">27,066 reviews</a>
+                                                    <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
+                                                    <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
+                                                        @php $totalFeedbacks = count(userPositiveFeebacks($item->seller->id)) + count(userNegativeFeebacks($item->seller->id)); @endphp
+                                                        {{ number_format($totalFeedbacks) }} reviews
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -469,17 +519,29 @@
                                             <span class="text-small text-black-70">Seller</span>
                                         </div>
                                         <div class="d-flex seller_details text-left">
-                                            <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
-                                                style="width: 40px; height: 40px; background-color: #c0392b;">
-                                                {{ strtoupper(substr($item->seller->name, 0, 1)) }}
-                                            </div>
+                                            @if($item->seller->profile !== null)
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                    <img src="{{ url('uploads/profile/thumbnails') }}/{{$item->seller->profile}}" class="br-40 mr-2" alt="">
+                                                </a>
+                                            @else
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                    <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white"
+                                                        style="width: 40px; height: 40px; background-color: #c0392b;">
+                                                        {{ strtoupper(substr($item->seller->name, 0, 1)) }}
+                                                    </div>
+                                                </a>
+                                            @endif
                                             <div class="d-flex flex-column">
-                                                <div id="sellerName" class="fs-15 fw-bold">{{ $item->seller->name }}
-                                                </div>
-                                                <div class="d-flex align-items-center">
+                                                <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
+                                                    <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                                </a>
+                                               <div class="d-flex align-items-center">
                                                     <i class="text-success bi bi-star-fill"></i>
-                                                    <span class="text-black-70 mx-1 fs-13">99.3%</span>
-                                                    <a href="#" class="fs-13">27,066 reviews</a>
+                                                    <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
+                                                    <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
+                                                        @php $totalFeedbacks = count(userPositiveFeebacks($item->seller->id)) + count(userNegativeFeebacks($item->seller->id)); @endphp
+                                                        {{ number_format($totalFeedbacks) }} reviews
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

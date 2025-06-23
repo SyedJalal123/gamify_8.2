@@ -29,8 +29,32 @@
     font-size: 30px;
 }
 
+.fs-29 {
+    font-size: 29px;
+}
+
+.fs-28 {
+    font-size: 28px;
+}
+
+.fs-27 {
+    font-size: 27px;
+}
+
+.fs-26 {
+    font-size: 26px;
+}
+
 .fs-25 {
     font-size: 25px;
+}
+
+.fs-24 {
+    font-size: 24px;
+}
+
+.fs-23 {
+    font-size: 23px;
 }
 
 .fs-22 {
@@ -230,6 +254,10 @@
     line-height: 1;
 }
 
+.br-40 {
+    border-radius: 40px;
+}
+
 .br-10 {
     border-radius: 10px;
 }
@@ -280,6 +308,10 @@
 }
 .p-\[2px\] {
     padding: 2px;
+}
+
+.text-stroke-1 {
+    -webkit-text-stroke: 1px;
 }
 
 .px-6 {
@@ -1390,6 +1422,10 @@
         color: var(--brand-dark);
     }
 
+    .brand-theme-dark:hover {
+        color: var(--brand-dark);
+    }
+
     .text-theme-teal {
         color: var(--brand-teal);
     }
@@ -1409,9 +1445,14 @@
     .text-theme-yellow-1 {
         color: var(--brand-yellow-1);
     }
+    
 
 
 /* Theme backgrounds */
+    .background-theme-default {
+        background-color: var(--text-default);
+    }
+
     .background-theme-body-1 {
         background-color: var(--background-body-1);
     }

@@ -184,6 +184,10 @@
                 toastr.warning('{{ $value }}');
             @endsession
 
+            @session('error')
+                toastr.error('{{ $value }}');
+            @endsession
+
         </script>
 
         @livewireScripts

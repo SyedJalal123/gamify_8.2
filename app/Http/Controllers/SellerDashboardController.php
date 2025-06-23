@@ -10,9 +10,14 @@ use App\Models\Category;
 use App\Models\BuyerRequest;
 use App\Models\EmailNotifications;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\BuyerRequestConversation;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SellerDashboardController extends Controller
 {
@@ -289,8 +294,8 @@ class SellerDashboardController extends Controller
                 ->where(function ($query) {
                     $query->where('feedback', 1)
                         ->where(function ($q) {
-                            $q->where('buyer_id', auth()->id())
-                                ->orWhere('seller_id', auth()->id());
+                            $q->where('seller_id', auth()->id());
+                                // ->orWhere('buyer_id', auth()->id());
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -300,8 +305,8 @@ class SellerDashboardController extends Controller
                 ->where(function ($query) {
                     $query->where('feedback', 2)
                         ->where(function ($q) {
-                            $q->where('buyer_id', auth()->id())
-                                ->orWhere('seller_id', auth()->id());
+                            $q->where('seller_id', auth()->id());
+                                // ->orWhere('buyer_id', auth()->id());
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -311,8 +316,8 @@ class SellerDashboardController extends Controller
                 ->where(function ($query) {
                     $query->where('feedback','!=', 0)
                     ->where(function ($q) {
-                            $q->where('buyer_id', auth()->id())
-                                ->orWhere('seller_id', auth()->id());
+                            $q->where('seller_id', auth()->id());
+                                // ->orWhere('buyer_id', auth()->id());
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -321,6 +326,117 @@ class SellerDashboardController extends Controller
 
         return view('frontend.dashboard.feedback', compact('feedbackRating', 'orders'));
     }
+
+    public function profile(Request $request, $username) {
+        // dd($request->all());
+
+        if($request->tab == null){
+            $tab = 'Offers';
+        }else {
+            $tab = $request->tab;
+        }
+
+        if($request->category == null){
+            $category = 'Currency';
+        }else {
+            $category = $request->category;
+        }
+
+        if($request->feedbackRating == null){
+            $feedbackRating = 'All';
+        }else {
+            $feedbackRating = $request->feedbackRating;
+        }
+
+        $user = User::where('username',$username)->first();
+
+        $games = null;
+        $items = null;
+        $orders = null;
+
+        if($tab == 'Offers'){
+            if($category == 'TopUp')
+            $category = 'Top up';
+    
+            $categoryQ = Category::where('name', $category)->first();
+    
+            $itemsQuery = Item::where('seller_id', $user->id)
+                ->whereHas('categoryGame', function ($query) use ($categoryQ) {
+                    $query->where('category_id', $categoryQ->id);
+            });
+    
+    
+            ////// FILTERS ////////////////////////////////////////////////////////////
+                // Apply attribute filters
+                
+                if ($request->game != null) {
+                    $game_id = $request->game;
+    
+                    $itemsQuery->whereHas('categoryGame', function ($query) use ($game_id) {
+                        $query->where('game_id', $game_id);
+                    });
+                }
+                
+                // Apply search filter
+                if ($searchTerm = $request->input('search')) {
+                    $itemsQuery->where(fn($query) => $query->where('title', 'like', "%$searchTerm%")
+                        ->orWhereHas('attributes', fn($q) => $q->where('value', 'like', "%$searchTerm%"))
+                        ->orWhere('price', 'like', "%$searchTerm%"));
+                }
+            ///////////////////////////////////////////////////////////////////////////
+    
+            $items = $itemsQuery->paginate('30');
+            $games = Game::all();
+    
+            if($category == 'Top up')
+            $category = 'TopUp';
+    
+            if ($request->ajax()) {
+                // Optional: render differently if needed
+                return view('frontend.catalog._items', compact('items'))->render();
+            }
+        }elseif($tab == 'Feedback') {
+            if($feedbackRating == 'Positive') {
+                $orders = Order::with('buyer','seller','categoryGame.category')
+                    ->where(function ($query) use ($user) {
+                        $query->where('feedback', 1)
+                            ->where(function ($q) use ($user) {
+                                $q->where('seller_id', $user->id);
+                                    // ->orWhere('buyer_id', auth()->id());
+                            });
+                    })
+                    ->orderBy('feedback_at', 'desc')
+                    ->get();
+            }elseif($feedbackRating == 'Negative') {
+                $orders = Order::with('buyer','seller','categoryGame.category')
+                    ->where(function ($query) use ($user) {
+                        $query->where('feedback', 2)
+                            ->where(function ($q) use ($user) {
+                                $q->where('seller_id', $user->id);
+                                    // ->orWhere('buyer_id', auth()->id());
+                            });
+                    })
+                    ->orderBy('feedback_at', 'desc')
+                    ->get();
+            }elseif($feedbackRating == 'All'){
+                $orders = Order::with('buyer','seller','categoryGame.category')
+                    ->where(function ($query) use ($user) {
+                        $query->where('feedback','!=', 0)
+                        ->where(function ($q) use ($user) {
+                                $q->where('seller_id', $user->id);
+                                    // ->orWhere('buyer_id', auth()->id());
+                            });
+                    })
+                    ->orderBy('feedback_at', 'desc')
+                    ->get();
+            }
+        }else {
+
+        }
+
+        return view('frontend.profile', compact('user','tab','category','games','items','feedbackRating','orders'));
+    }
+
     public function notifications(Request $request) {    
         $notifications = auth()->user()->notifications()->paginate('20');
 
@@ -331,6 +447,98 @@ class SellerDashboardController extends Controller
         $user = auth()->user();
         $email_notifications = EmailNotifications::all();
         return view('frontend.dashboard.account-settings', compact('user','email_notifications'));
+    }
+
+    public function update_account(Request $request) {
+        // dd($request->all());
+
+        $user = User::findOrFail(auth()->id());
+
+        if($request->username) {
+            $userSearch = User::where('username', $request->username)->first();
+            if($userSearch == null) {
+                $user->username = $request->username;
+            }else {
+                return redirect()->back()->with('error', 'Username already exists.');
+            }
+        }
+
+        if($request->old_password != null){
+            if (!Hash::check($request->old_password, $user->password)) {
+                return redirect()->back()->with('error', 'Password is invalid.');
+            }
+
+            // Password is correct — update to new one
+            $user->password = Hash::make($request->new_password);
+        }
+
+        if ($request->hasFile('profile')) {
+            if ($user->profile && file_exists(public_path('uploads/profile/' . $user->profile))) {
+                unlink(public_path('uploads/profile/' . $user->profile));
+                unlink(public_path('uploads/profile/thumbnails/' . $user->profile));
+            }
+
+            $image = $request->file('profile');
+
+            // Generate unique filename
+            $randomNumber = rand(1, 99999);
+            $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+
+            // Original upload path
+            $originalPath = public_path('uploads/profile/' . $filename);
+            $image->move(public_path('uploads/profile'), $filename);
+
+            // Initialize Intervention Image
+            $imgManager = new ImageManager(new Driver());
+
+            // Resize to 125x125
+            $img125 = $imgManager->read($originalPath)->cover(125, 125);
+            $savePath125 = public_path('uploads/profile/' . $filename);
+            $img125->save($savePath125);
+
+            // Resize to 44x44
+            $img44 = $imgManager->read($originalPath)->cover(44, 44);
+            $savePath44 = public_path('uploads/profile/thumbnails/' . $filename);
+            $img44->save($savePath44);
+
+            // Save the base filename (you can adjust this to store both if needed)
+            $user->profile = $filename;
+        }
+        
+
+        if($request->description != null) {
+            $user->description = $request->description;
+        }
+
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'User updated successfully.');
+    }
+
+    public function toggle_email_notification(Request $request){
+        $notificationId = $request->input('notification_id');
+        $totalAvailable = $request->input('total_available');
+        $subscribed = $request->input('subscribed');
+
+        $user = auth()->user(); // or auth('seller')->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $notification = EmailNotifications::find($notificationId);
+
+        if ($subscribed === 'true') {
+            $user->emailNotifications()->syncWithoutDetaching([$notificationId]);
+        } else {
+            $user->emailNotifications()->detach($notificationId);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 
     public function editOffer(Request $request, $offer_id) {

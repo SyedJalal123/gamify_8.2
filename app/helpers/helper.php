@@ -8,6 +8,16 @@ use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 
+function count_user_offer($category_id, $user) {
+    $items = Item::where('seller_id', $user->id)
+            ->whereHas('categoryGame', function ($query) use ($category_id) {
+                $query->where('category_id', $category_id);
+            })
+        ->get();
+
+    return count($items);
+}
+
 function generateUniqueGamifyUsername(): string
 {
     $prefixes = [
@@ -170,8 +180,8 @@ function userPositiveFeebacks($userId) {
                 ->where(function ($query) use ($userId) {
                     $query->where('feedback', 1)
                         ->where(function ($q) use ($userId) {
-                            $q->where('buyer_id', $userId)
-                                ->orWhere('seller_id', $userId);
+                            $q->where('seller_id', $userId);
+                                // ->orWhere('buyer_id', $userId);
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -185,8 +195,8 @@ function userNegativeFeebacks($userId) {
                 ->where(function ($query) use ($userId) {
                     $query->where('feedback', 2)
                         ->where(function ($q) use ($userId) {
-                            $q->where('buyer_id', $userId)
-                                ->orWhere('seller_id', $userId);
+                            $q->where('seller_id', $userId);
+                                // ->orWhere('buyer_id', $userId);
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -200,8 +210,8 @@ function userFeedbackScore($userId) {
                 ->where(function ($query) use ($userId) {
                     $query->where('feedback', 1)
                         ->where(function ($q) use ($userId) {
-                            $q->where('buyer_id', $userId)
-                                ->orWhere('seller_id', $userId);
+                            $q->where('seller_id', $userId);
+                                // ->orWhere('buyer_id', $userId);
                         });
                 })
                 ->orderBy('feedback_at', 'desc')
@@ -211,8 +221,8 @@ function userFeedbackScore($userId) {
                 ->where(function ($query) use ($userId) {
                     $query->where('feedback', 2)
                         ->where(function ($q) use ($userId) {
-                            $q->where('buyer_id', $userId)
-                                ->orWhere('seller_id', $userId);
+                            $q->where('seller_id', $userId);
+                                // ->orWhere('buyer_id', $userId);
                         });
                 })
                 ->orderBy('feedback_at', 'desc')

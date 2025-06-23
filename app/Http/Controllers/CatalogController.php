@@ -227,10 +227,12 @@ class CatalogController extends Controller
 
         // Detect if category is explicitly 'Gold'
         $isCurrency = strtolower($item->categoryGame->category->id) == 1;
+        $isTopup = strtolower($item->categoryGame->category->id) == 3;
         return view('frontend.item-detail', [
             'item' => $item,
             'categoryGame' => $item->categoryGame,
-            'isCurrency' => $isCurrency
+            'isCurrency' => $isCurrency,
+            'isTopup' => $isTopup,
         ]);
     }
 }

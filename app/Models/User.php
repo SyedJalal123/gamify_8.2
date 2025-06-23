@@ -23,9 +23,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'username',
         'profile',
         'email',
+        'description',
         'password',
         'google_id',
         'facebook_id',
+        'username_updated_at',
+        'email_updated_at',
         'email_verified_at',
     ];
 
@@ -80,7 +83,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function emailNotifications()
     {
-        return $this->belongsToMany(EmailNotification::class)
-                    ->withTimestamps();
+        return $this->belongsToMany(EmailNotifications::class, 'email_notification_user', 'user_id', 'email_notification_id');
     }
 }

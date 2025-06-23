@@ -438,3 +438,32 @@ function handleNotificationClick(event, href) {
     // Otherwise navigate using Livewire’s router manually
     Livewire.navigate(href);
 }
+
+function toggle_input_visibility(id) {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function validatePassword(password) {
+    const trimmed = password.trim();
+
+    return {
+        minLength: trimmed.length >= 8,
+        hasUppercase: /[A-Z]/.test(trimmed),
+        hasLowercase: /[a-z]/.test(trimmed),
+        hasNumber: /[0-9]/.test(trimmed),
+        noSpaces: trimmed === password && trimmed.length > 0
+    };
+}
+
+function updateRule(id, isValid) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const icon = el.querySelector('i');
+    el.classList.remove('text-theme-teal', 'text-theme-cherry');
+    el.classList.add(isValid ? 'text-theme-teal' : 'text-theme-cherry');
+    icon.className = isValid ? 'bi bi-check fs-15' : 'bi bi-x fs-15';
+}

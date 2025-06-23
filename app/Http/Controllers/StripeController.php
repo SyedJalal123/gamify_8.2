@@ -30,7 +30,6 @@ class StripeController extends Controller
 {
     public function create(Request $request)
     {
-        // dd($request->all());
         $amountInCents = (int) round($request->total_price * 100); // 65.543 → 6554
 
         
@@ -44,9 +43,9 @@ class StripeController extends Controller
                     'product_data' => [
                         'name' => $request->input('product_name'),
                     ],
-                    'unit_amount' => $amountInCents, 
+                    'unit_amount' => $amountInCents,
                 ],
-                'quantity' => $request->input('quantity'),
+                'quantity' => 1,
             ]],
             'mode' => 'payment',
             'success_url' => route('stripe.success') . '?session_id={CHECKOUT_SESSION_ID}', // important!

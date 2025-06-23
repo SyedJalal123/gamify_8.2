@@ -141,7 +141,7 @@
                                         <i class="bi bi-chat-left-text fs-16"></i>
                                     </a>
                                 </li>
-                                <li class="header__nav-item mr-2 mr-md-3">
+                                <li class="header__nav-item mr-3 mr-md-3">
                                     <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
                                         <i class="bi bi-bell fs-16"></i>
                                         <span class="top-tag bg-yellow text-black count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>
@@ -174,18 +174,28 @@
                                 </li>
                                 <li class="header__nav-item">
                                     <a  href="#" role="button" id="dropdownMenu3" data-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
-                                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                                        @if(auth()->user()->profile !== null)
+                                            <img src="{{ url('uploads/profile/thumbnails') }}/{{auth()->user()->profile}}" class="br-40 mr-2" alt="">
+                                        @else
+                                            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                                        @endif
                                     </a>
                                     <ul class="dropdown-menu header__nav-menu mCustomScrollbar _mCS_1 stay-open p-2" aria-labelledby="dropdownMenu3" style="overflow: visible;min-width: 279px;">
                                         <li style="border-bottom:1px solid grey;">
                                             <div class="d-flex align-items-center justify-content-between mb-2 color-white">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
-                                                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
-                                                    </div>
+                                                    @if(auth()->user()->profile !== null)
+                                                        <img src="{{ url('uploads/profile/thumbnails') }}/{{auth()->user()->profile}}" class="br-40 mr-2" alt="">
+                                                    @else
+                                                        <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
+                                                            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                                                        </div>
+                                                    @endif
                                                     
                                                     <div class="pl-1 d-flex flex-column">
-                                                        <span class="fs-14">{{auth()->user()->name}}</span>
+                                                        <a wire:navigate href="{{ url('user-profile') }}/{{ auth()->user()->username }}?tab=Offers&category=Currency" class="p-0">
+                                                            <span class="fs-14">{{auth()->user()->name}}</span>
+                                                        </a>
                                                         <span class="fs-13">$0.00</span>
                                                     </div>
                                                 </div>
@@ -316,7 +326,7 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-1">
-                                                <a href="#" class="sidebar-title sidebar-item p-1">
+                                                <a wire:navigate href="{{url('settings')}}" class="sidebar-title sidebar-item p-1">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-gear fs-20 mr-2"></i>
                                                         <div>
