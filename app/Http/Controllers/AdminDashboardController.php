@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CategoryGame;
 use App\Models\Category;
+use App\Models\Attribute;
+use App\Models\Service;
 use App\Models\Game;
 use Yajra\DataTables\Facades\DataTables;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AdminDashboardController extends Controller
 {
@@ -215,7 +218,7 @@ class AdminDashboardController extends Controller
             })
             ->addColumn('action_data', function($game) {
                 return '
-                        <div  data-bs-toggle="modal" onclick="edit_game_modal_values(\'' . $game->feature_image . '\', \'' . $game->title . '\', \'' . $game->id . '\')" data-bs-target="#kt_modal_edit_game" class="menu-item px-3 float-end">
+                        <div data-bs-toggle="modal" onclick="edit_game_modal_values(\'' . $game->feature_image . '\', \'' . $game->title . '\', \'' . $game->id . '\')" data-bs-target="#kt_modal_edit_game" class="menu-item px-3 float-end">
                             <span class="menu-link px-3">Edit</span>
                         </div>
                 ';
@@ -229,7 +232,136 @@ class AdminDashboardController extends Controller
 
     public function add_item(Request $request) {
         $categories = Category::all();
-        return view('backend.add_item', compact('categories'));
+        $games = Game::orderBy('name','asc')->get();
+        $attributes = Attribute::where('cloned','0')->get();
+
+        return view('backend.add_item', compact('categories', 'games', 'attributes'));
+    }
+
+    public function get_attribute(Request $request) {
+        // dd($request->all());
+
+        $attribute = Attribute::find($request->attributeId);
+        return $attribute;
+    }
+
+    public function store_item(Request $request) {
+        // dd($request->all());
+
+        $category = Category::find($request->category_id);
+
+        $filepath = null;
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+
+            // Generate unique filename
+            $randomNumber = rand(1, 99999);
+            $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+
+            // Original upload path
+            $originalPath = public_path('uploads/games/' . $filename);
+            $image->move(public_path('uploads/games'), $filename);
+
+            // Initialize Intervention Image
+            $imgManager = new ImageManager(new Driver());
+
+            // Resize to 125x125
+            $img125 = $imgManager->read($originalPath)->cover(100, 100);
+            $savePath125 = public_path('uploads/games/' . $filename);
+            $img125->save($savePath125);
+
+            $filepath = 'uploads/games/'.$filename;
+
+        }
+
+        $name = $request->name;
+        if($request->name == null){
+            $name = $category->name;
+        }
+
+        $categoryGame = CategoryGame::create([
+            'category_id' => $request->category_id,
+            'game_id' => $request->game_id,
+            'title' => $name,
+            'feature_image' => $filepath,
+            'currency_type' => $request->currency_type,
+            'delivery_type' => $request->deliver_type,
+        ]);
+
+        // Filter all attribute fields
+        $formatted = [];
+
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^service_name_(\d+)$/', $key, $match)) {
+                $serviceIndex = $match[1];
+                $formatted[$serviceIndex]['service_name'] = $value;
+            }
+
+            if (preg_match('/^attribute_name_(\d+)_(\d+)$/', $key, $match)) {
+                $serviceIndex = $match[1];
+                $attributeIndex = $match[2];
+                $formatted[$serviceIndex][$attributeIndex]['name'] = $value[0] ?? null;
+            }
+
+            if (preg_match('/^attribute_options_(\d+)_(\d+)$/', $key, $match)) {
+                $serviceIndex = $match[1];
+                $attributeIndex = $match[2];
+                $formatted[$serviceIndex][$attributeIndex]['options'] = $value;
+            }
+
+            if (preg_match('/^attribute_cloned_(\d+)_(\d+)$/', $key, $match)) {
+                $serviceIndex = $match[1];
+                $attributeIndex = $match[2];
+                $formatted[$serviceIndex][$attributeIndex]['cloned'] = $value;
+            }
+        }
+        
+        foreach($formatted as $data) {
+            if(isset($data['service_name'])){
+
+                $service = Service::create([
+                    'name' => $data['service_name'],
+                    'category_game_id' => $categoryGame->id,
+                ]);
+
+                foreach($data as $key => $record) {
+                    if($key != 'service_name'){
+                        $attribute = Attribute::create([
+                            'name' => $record['name'],
+                            'options' => $record['options'],
+                            'type' => 'select',
+                        ]);
+
+                        $service->attributes()->attach($attribute->id);
+                    }
+                }
+            }
+            else {
+                $key = 0;
+                foreach($data as $record) {
+                    if($record != null && $record['name'] != null){
+
+                        $attribute = new Attribute;
+                        $attribute->name = $record['name'];
+                        $attribute->options = $record['options'];
+                        $attribute->type = 'select';
+                        $attribute->cloned = $record['cloned'][0];
+                        if($key == 0 && $category->id == 3){
+                            $attribute->topup = 1;
+                        }
+
+                        $attribute->save();                        
+
+                        $categoryGame->attributes()->attach($attribute->id, ['visible' => 3]);
+                        $key++;
+
+                    }
+                }
+            }
+        }
+        
+        return redirect()->back()->with('success', 'Item added successfully');
     }
 
 }

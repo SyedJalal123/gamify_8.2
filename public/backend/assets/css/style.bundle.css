@@ -55122,6 +55122,31 @@ body {
 .top-3 {
     top: 3;
 }
+.top-\[-12px\] {
+    top: -12px;
+}
+
+.bottom-0 {
+    bottom: 0;
+}
+.bottom-1 {
+    bottom: 1;
+}
+.bottom-2 {
+    bottom: 2;
+}
+.bottom-3 {
+    bottom: 3;
+}
+.bottom-4 {
+    bottom: 4px;
+}
+.bottom-5 {
+    bottom: 5px;
+}
+.bottom-15 {
+    bottom: 15px;
+}
 
 .right-auto {
     right: auto;

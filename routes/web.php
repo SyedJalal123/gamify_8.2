@@ -127,6 +127,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/edit_game', [AdminDashboardController::class, 'edit_game'])->name('edit_game');
     Route::get('/items/{category}', [AdminDashboardController::class, 'items'])->name('items.category');
     Route::get('/item/add', [AdminDashboardController::class, 'add_item'])->name('item.add');
+    Route::get('/get_attribute', [AdminDashboardController::class, 'get_attribute'])->name('attribute.get');
+    Route::post('/item/store', [AdminDashboardController::class, 'store_item'])->name('item.store');
 
 });
 

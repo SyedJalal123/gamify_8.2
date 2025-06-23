@@ -29,7 +29,7 @@
                     <div class="d-flex justify-content-between mb-4 fs-14 text-muted">
                         <p class="two-line-ellipsis lh-1_2 mr-2">{{ $item->title!=null ? $item->title : $item->categoryGame->title }}</p>
                         <div class="mb-2 d-flex flex-column align-items-end">
-                            <img src="{{ asset($item->feature_image!==null ? $item->images_path.'thumbnails/'.$item->feature_image : $item->categoryGame->feature_image) }}" alt="" width="50px">
+                            <img src="{{ asset($item->feature_image!==null ? $item->images_path.'thumbnails/'.$item->feature_image : $item->categoryGame->feature_image) }}" alt="" width="58px">
                         </div>
                     </div>
                     <p class="m-0">

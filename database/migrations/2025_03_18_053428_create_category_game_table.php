@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('feature_image')->nullable();
             $table->string('currency_type')->nullable();
-            $table->enum('delivery_type', ['Character name', 'Username']);
+            $table->enum('delivery_type', ['Character name', 'Username', 'user id'])->nullable();
             $table->timestamps();
         });
     }

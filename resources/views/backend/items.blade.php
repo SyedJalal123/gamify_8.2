@@ -31,7 +31,7 @@
                 <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                     <!--begin::Add user-->
-                    <a href="{{ url('admin/items/add') }}" class="btn btn-primary">
+                    <a href="{{ url('admin/item/add') }}" class="btn btn-primary">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -181,7 +181,7 @@
                                     <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
                                         <i class="bi bi-pencil-fill fs-7"></i>
                                         <!--begin::Inputs-->
-                                        <input type="file" name="image" accept=".png, .jpg, .jpeg" />
+                                        <input type="file" name="image" accept="image/*" />
                                         <input type="hidden" name="avatar_remove" />
                                         <!--end::Inputs-->
                                     </label>

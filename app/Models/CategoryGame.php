@@ -9,6 +9,14 @@ class CategoryGame extends Model
 {
     use HasFactory;
     protected $table = 'category_game';
+    protected $fillable = [
+        'category_id',
+        'game_id',
+        'title' ,
+        'feature_image',
+        'currency_type',
+        'delivery_type'
+    ];
 
     public function attributes()
     {

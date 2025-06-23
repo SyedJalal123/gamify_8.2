@@ -57,7 +57,7 @@
                     <form method="GET" id="desktopFilterForm">
                         <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
                             @foreach ($attributes as $attribute)
-                                <div class="mr-3 select-2-dark position-relative" style="min-width: 200px;">
+                                <div class="mr-3 mb-2 select-2-dark position-relative" style="min-width: 200px;">
                                     <select class="form-control filter-select select2" name="attr_{{ $attribute->id }}">
                                         <option value="">{{ $attribute->name }}</option>
                                         @foreach ($attribute->options as $option)
