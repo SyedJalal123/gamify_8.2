@@ -11,7 +11,7 @@
             <!--begin::Card title-->
             <div class="card-title">
                 <!--begin::Search-->
-                <div class="d-flex align-items-center position-relative my-1">
+                <div class="d-flex align-items-center position-relative my-1 me-3">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                     <span class="svg-icon svg-icon-1 position-absolute ms-6">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -20,15 +20,43 @@
                         </svg>
                     </span>
                     <!--end::Svg Icon-->
-                    <input type="text" id="datatable-search" class="form-control form-control-solid w-250px ps-14" placeholder="Search game" />
+                    <input type="text" id="datatable-search" class="form-control form-control-solid w-250px ps-14" placeholder="Search order" />
                 </div>
                 <!--end::Search-->
+                {{-- <div class="fv-row min-w-200px my-1 me-3">
+                    <select class="form-select form-select-solid" data-control="select2" id="filter-duration" name="filterDuration" data-placeholder="Select an option">
+                        <option value="recent">Recent</option>            
+                        <option value="older">3 months or older</option>
+                    </select>
+                </div> --}}
+                <div class="fv-row min-w-200px my-1 me-3">
+                    <select class="form-select form-select-solid" data-control="select2" id="filter-status" name="filterStatus" data-placeholder="Select an option">
+                        <option value="all">All statuses</option>                  
+                        <option value="pending delivery">Pending delivery ({{ countOrders('pending delivery', $orders) }})</option>
+                        <option value="disputed">Disputed ({{ countOrders('disputed', $orders) }})</option>
+                        <option value="delivered">Delivered ({{ countOrders('delivered', $orders) }})</option>
+                        <option value="received">Received ({{ countOrders('received', $orders) }})</option>
+                        <option value="completed">Completed ({{ countOrders('completed', $orders) }})</option>
+                        <option value="cancelled">Canceled ({{ countOrders('cancelled', $orders) }})</option>
+                    </select>
+                </div>
+                <div class="fv-row min-w-200px my-1 me-3">
+                    <select class="form-select form-select-solid" data-control="select2" id="filter-games" name="filterGames" data-placeholder="Select an option">
+                        <option value="all">All games</option>                  
+                        @foreach ($games as $game)
+                            <option value="{{ $game->id }}">{{ $game->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="fv-row min-w-225px my-1 me-3">
+                    <input class="form-control form-control-solid flatpickr-input" placeholder="Pick date" name="filterDate" id="filter-date">
+                </div>
             </div>
             <!--begin::Card title-->
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
 
-                <!--begin::Toolbar-->
+                {{-- <!--begin::Toolbar-->
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
                     <!--begin::Add user-->
                     <a href="{{ url('admin/item/add') }}" class="btn btn-primary">
@@ -43,7 +71,7 @@
                     </a>
                     <!--end::Add user-->
                 </div>
-                <!--end::Toolbar-->
+                <!--end::Toolbar--> --}}
                 
             </div>
             <!--end::Card toolbar-->
@@ -52,14 +80,20 @@
         <!--begin::Card body-->
         <div class="card-body pt-0">
             <!--begin::Table-->
-            <div id="table-container" style="max-width: 1048px;">
-                <table id="gamesTable" class="datatable-1 table align-middle table-row-dashed fs-6 gy-5">
-                    <thead>
-                        <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                            <th>Game</th>
-                            <th>@if($cat->id == 5) Services @else Attributes @endif</th>
-                            <th>@if($cat->id == 5) Requests @else Offers @endif</th>
-                            <th class="text-end min-w-100px">Actions</th>
+            <div id="table-container">
+                <table id="orderTable" class="datatable-1 table align-middle table-row-dashed fs-6 gy-5">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order name</th>
+                            <th>Type</th>
+                            <th>Buyer</th>
+                            <th>Seller</th>
+                            <th>Order date</th>
+                            <th>Order status</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 fw-bold">
@@ -78,67 +112,143 @@
     <script src="{{ asset('backend/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
 
     <script>
-        var category = "{{$category}}";
-        
-        if ($.fn.DataTable.isDataTable('#gamesTable')) {
-            $('#gamesTable').DataTable().clear().destroy();
-        }
+        $(document).ready(function() {
+            setTimeout(() => {
+                $('.skeleton-overlay-start').remove();
+            }, 700);
 
-        var gamesTable = $('#gamesTable').DataTable({
             
-            serverSide: true,
-            processing: true,
-            // searching: false,
-            lengthChange: false,
-            ajax: {
-                url: `/admin/items/${category}`,
-            },
-            columns:[
-                { 
-                    data: 'title_data', name: 'title_search', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
+            const end = moment(); // today
+            const start = moment().subtract(3, 'months'); // 3 months ago
+
+            $('#filter-date').daterangepicker({
+                startDate: start,
+                endDate: end,
+                locale: {
+                    format: 'MM/DD/YYYY'
+                }
+            });
+
+            
+            if ($.fn.DataTable.isDataTable('#orderTable')) {
+                $('#orderTable').DataTable().clear().destroy();
+            }
+
+            var orderTable = $('#orderTable').DataTable({
+                serverSide: true,
+                processing: true,
+                // searching: false,
+                lengthChange: false,
+                ajax: {
+                    url: '{{ route("admin.orders") }}',
+                    data: function(payload) {
+                        const filterStatus = $('#filter-status').val();
+                        const filterGames = $('#filter-games').val();
+                        const filterDate = $('#filter-date').val();
+
+                        payload.filterStatus = filterStatus;
+                        payload.filterGames = filterGames;
+                        payload.filterDate = filterDate;
+                    }
                 },
-                { 
-                    data: 'attributes', name: 'attributes', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
-                },
-                { 
-                    data: 'offers_count', name: 'offers_count', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
-                },
-                {
-                    data: 'action_data', name: 'action_data', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false, searchable: false 
-                },
-            ],
-            // order: [[0, 'desc']],
+                columns:[
+                    { 
+                        data: 'title_data', name: 'title_data', className: 'desktop-only',
+                        responsivePriority: 100, orderable: false 
+                    },
+                    {
+                        data: 'category_game.category.name', name: 'category_game.category.name', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'buyer_data', name: 'buyer_seller', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false 
+                    },
+                    {
+                        data: 'seller_data', name: 'buyer_seller', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false 
+                    },
+                    {
+                        data: 'created_at_data', name: 'created_at', className: 'desktop-only',
+                        responsivePriority: 100 , searchable: false 
+                    },
+                    {
+                        data: 'order_status', name: 'order_status', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'quantity', name: 'quantity', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'price', name: 'price', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'actions', name: 'actions', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    { data: 'mobile_summary', name: 'title', className: 'dtr-control mobile-only', responsivePriority: 1, orderable: false },
+                ],
+                order: [[4, 'desc']],
+            });
+
+            orderTable.on('draw', function () {
+                KTMenu.createInstances();
+            });
+
+            $('#orderTable tbody').on('click', 'tr', function () {
+                var url = $(this).data('href');
+                if (url) {
+                    // window.open(url, '_blank');
+                }
+            });
+
+            $('#filter-status, #filter-games, #filter-date').on('change', function() {
+                orderTable.draw();
+            });
+
+            $('#datatable-search').on('keyup change clear', function () {
+                orderTable.search(this.value, {
+                    caseInsensitive: false
+                }).draw();
+            });
         });
 
-        gamesTable.on('draw', function () {
-            initializeTooltips();
-        });
+        function change_order_status(orderId, orderStatus) {
+             $.ajax({
+                url: '/admin/change_order_status',
+                method: 'GET',
+                data: { 
+                    orderId: orderId, 
+                    orderStatus: orderStatus, 
+                },
+                success: function (response) {
+                    const pill = $(`#order-pill-${response['id']}`);
 
-        function initializeTooltips() {
-            $('[data-bs-toggle="tooltip"]').tooltip({
-                html: true,
+                    pill.removeClass(
+                        'btn-theme-pill-green',
+                        'btn-theme-pill-blue',
+                        'btn-theme-pill-red',
+                        'btn-theme-pill-yellow',
+                        'btn-theme-pill-default'
+                    );
+
+                    if (response['order_status'] == 'cancelled') {
+                        pill.addClass('btn-theme-pill-red');
+                        pill.text('cancelled');
+
+                        toastr.success('Marked as cancelled');
+                    } else if (response['order_status'] == 'completed') {
+                        pill.addClass('btn-theme-pill-green');
+                        pill.text('completed');
+
+                        toastr.success('Marked as completed');
+                    }
+                }
             });
         }
-
-        $('#datatable-search').on('keyup change clear', function () {
-            gamesTable.search(this.value, {
-                caseInsensitive: false
-            }).draw();
-        });
-
-        function edit_game_modal_values(image, name, id) {
-            let imageUrl = `url("${hostUrl}/${image}")`;
-            $('#edit-game-background-image').css('background-image', imageUrl);
-            $('#edit-game-name').val(name);
-            $('#edit-game-id').val(id);
-        }
     </script>
-
-	<script src="{{ asset('backend/assets/js/custom/apps/user-management/users/list/add.js')}}"></script>
 
     <!--begin::Modal - Edit game-->
     <div class="modal fade" id="kt_modal_edit_game" tabindex="-1" aria-hidden="true">

@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Carbon\Carbon;
 
-class BoostingOfferNotification extends Notification implements ShouldQueue
+class OrderDisputedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     public $data;
@@ -29,6 +29,7 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
+        // return ['mail'];
         return ['database', 'broadcast'];
     }
 
@@ -51,20 +52,13 @@ class BoostingOfferNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         // dd($this->boostingOffer);
-        if(isset($this->data['admin'])) {
-            $admin = $this->data['admin'];
-        }else {
-            $admin = 0;
-        }
-
         return [
             'title'     => $this->data['title'],
             'data1'     => $this->data['data1'],
-            'data2'     => $this->data['data2'],
+            'reason'    => $this->data['reason'],
             'link'      => $this->data['link'],
-            'category'  => 'notification',
-            'game_id'   => $this->data['game_id'],
-            'admin'   => $admin,
+            'admin'     => $this->data['admin'],
+            'category'  => 'admin_notifications',
         ];
     }
 

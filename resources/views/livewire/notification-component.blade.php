@@ -1,3 +1,4 @@
+
 <div id="itemsContainerWrapper" class="br-9 position-realative fade-in-delay-small-2">
     
     <li class="@if($type == 'header') px-3 @endif">
@@ -6,7 +7,7 @@
                 <span class="signal-ping-dot mr-2"></span>
                 <span class="text-theme-secondary fs-14">Connected</span>
             </div>
-            @if(count(auth()->user()->unreadnotifications) !== 0)
+            @if(count_user_unread_noti() !== 0)
             <div class="d-flex">
                 <span 
                 @if($type == 'header')      
@@ -35,8 +36,17 @@
         @foreach ($notifications as $notification)
             <div onclick="handleNotificationClick(event, '{{$notification->data['link']}}');" @if($type == 'header') wire:click="markAsRead('{{ $notification->id }}');" @endif class="notification-box cursor-pointer mb-1 d-flex justify-content-between text-theme-primary">
                 <div class="d-flex">
-                    <img src="{{asset(getGame($notification->data['game_id'])->image)}}" class="mt-1" width="30" height="30" alt="">
-                    <div class="d-flex flex-column ml-3">
+                    @if ($notification->data['game_id'])
+                        @php
+                            $img_url = asset(getGame($notification->data['game_id'])->image);
+                        @endphp    
+                    @else
+                        @php
+                            $img_url = asset('30_logo-3.png');
+                        @endphp
+                    @endif
+                    <img src="{{ $img_url }}" class="mt-1" width="30" height="30" alt="">
+                    <div class="d-flex flex-column justify-content-center ml-3">
                         <div class="title d-flex flex-row align-items-center">
                             <div class="fs-13">{{$notification->data['title']}}</div>
                             <div class="opacity-50 small ml-3">{{shortTimeAgo($notification->created_at)}}</div>

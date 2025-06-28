@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Seller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SellerVerification;
+use App\Notifications\OrderDisputedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class SellerController extends Controller
 {
@@ -38,21 +41,37 @@ class SellerController extends Controller
         // $path_2 = $request->file('main_photo_2')->store('seller_verification', 'public');
     
         // Save seller details
-        $seller = Seller::create([
-            'user_id'        => auth()->user()->id,
-            'selling_option' => $request->selling_option,
-            'first_name'     => $request->first_name,
-            'middle_name'    => $request->middle_name,
-            'last_name'      => $request->last_name,
-            'dob'            => $request->dob,
-            'nationality'    => $request->nationality,
-            'street_address' => $request->street_address,
-            'city'           => $request->city,
-            'country'        => $request->country,
-            'postal_code'    => $request->postal_code,
-            'main_photo_1'   => $path_1,
-            'main_photo_2'   => $path_2
-        ]);
+        $seller = Seller::where('user_id', auth()->user()->id)->first();
+
+        if($seller == null) {
+            $seller = new Seller;
+        }else {
+            $filePath = public_path($seller->main_photo_1);
+            if ($seller->main_photo_1 && file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $filePath = public_path($seller->main_photo_2);
+            if ($seller->main_photo_2 && file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        $seller->user_id        = auth()->user()->id;
+        $seller->selling_option = $request->selling_option;
+        $seller->first_name     = $request->first_name;
+        $seller->middle_name    = $request->middle_name;
+        $seller->verified       = 0;
+        $seller->last_name      = $request->last_name;
+        $seller->dob            = $request->dob;
+        $seller->nationality    = $request->nationality;
+        $seller->street_address = $request->street_address;
+        $seller->city           = $request->city;
+        $seller->country        = $request->country;
+        $seller->postal_code    = $request->postal_code;
+        $seller->main_photo_1   = $path_1;
+        $seller->main_photo_2   = $path_2;
+        $seller->save();
     
         $sellerData = [
             'name'    => "{$seller->first_name} {$seller->last_name}",
@@ -61,10 +80,22 @@ class SellerController extends Controller
             'photo_1' => asset("$path_1"),
             'photo_2' => asset("$path_2"),
         ];
+
         
         // Queue Emails
         Mail::to(auth()->user()->email)->send(new SellerVerification($sellerData));
         Mail::to('gamify295@gmail.com')->send(new SellerVerification($sellerData));
+
+        $data = [
+            'title'     => 'Request',
+            'data1'     => 'Seller Request(<span class="fs-11">'.$seller->user->username.'</span>)',
+            'reason'     => 0,
+            'link'      => url('admin/sellerRequests'),
+            'admin'     => '1',
+        ];
+
+        $admins = User::where('role','admin')->get();
+        Notification::send($admins, new OrderDisputedNotification($data));
         
         return redirect('/')->with('success', 'Verification submitted! Email is being processed.');
     }

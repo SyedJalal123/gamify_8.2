@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('selling_option')->default('Individual');
+            $table->boolean('verified')->default(0);
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');

@@ -75,7 +75,7 @@
                             </div>
                         @endif
                         <div class="d-flex flex-column">
-                            <div id="sellerName" class="fs-24 fw-bold">{{ $user->name }}</div>
+                            <div id="sellerName" class="fs-24 fw-bold">{{ $user->username }}</div>
                             <div class="d-flex align-items-center mb-1">
                                 <i class="text-success bi bi-star-fill"></i>
                                 <span class="text-theme-secondary mx-1 fs-13">{{ userFeedbackScore($user->id) }}%</span>

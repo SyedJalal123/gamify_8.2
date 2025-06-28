@@ -65,6 +65,10 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->role == 'admin') {
+            return redirect()->back()->with('error', 'You can\'t perform this action.');
+        }
+        
         // dd($request->all());
         try {
             // Validate the input
@@ -273,41 +277,43 @@ class ItemController extends Controller
 
     public function toggleService(Request $request)
     {   
-        $serviceId = $request->input('service_id');
-        $totalAvailable = $request->input('total_available');
-        $subscribed = $request->input('subscribed');
+        if(auth()->user()->role !== 'admin') {
+            $serviceId = $request->input('service_id');
+            $totalAvailable = $request->input('total_available');
+            $subscribed = $request->input('subscribed');
 
-        $seller = auth()->user(); // or auth('seller')->user();
+            $seller = auth()->user(); // or auth('seller')->user();
 
-        if (!$seller) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            if (!$seller) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            // Find the service and get its category_game_id
+            $service = \App\Models\Service::find($serviceId);
+
+            $categoryGameId = $service->category_game_id;
+
+            if ($subscribed === 'true') {
+                $seller->services()->syncWithoutDetaching([$serviceId]);
+            } else {
+                $seller->services()->detach($serviceId);
+            }
+
+            // Count only services with the same category_game_id
+            $totalSubscribed = $seller->services()
+                ->where('category_game_id', $categoryGameId)
+                ->count();
+
+            return response()->json([
+                'status' => 'success',
+                'subscribedText' => $totalSubscribed > 0 
+                    ? "Subscribed {$totalSubscribed}/{$totalAvailable}" 
+                    : "Not Subscribed",
+                'class' => $totalSubscribed > 0 
+                    ? "text-success" 
+                    : "text-muted"
+            ]);
         }
-
-        // Find the service and get its category_game_id
-        $service = \App\Models\Service::find($serviceId);
-
-        $categoryGameId = $service->category_game_id;
-
-        if ($subscribed === 'true') {
-            $seller->services()->syncWithoutDetaching([$serviceId]);
-        } else {
-            $seller->services()->detach($serviceId);
-        }
-
-        // Count only services with the same category_game_id
-        $totalSubscribed = $seller->services()
-            ->where('category_game_id', $categoryGameId)
-            ->count();
-
-        return response()->json([
-            'status' => 'success',
-            'subscribedText' => $totalSubscribed > 0 
-                ? "Subscribed {$totalSubscribed}/{$totalAvailable}" 
-                : "Not Subscribed",
-            'class' => $totalSubscribed > 0 
-                ? "text-success" 
-                : "text-muted"
-        ]);
 
     }
     

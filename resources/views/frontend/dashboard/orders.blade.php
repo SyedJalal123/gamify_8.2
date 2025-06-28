@@ -23,6 +23,7 @@
         .dt-search {
             display: none !important;
         }
+        
         .dt-layout-row, .dt-paging-button {
             color: var(--text-primary) !important;
         }
@@ -163,7 +164,7 @@
                         responsivePriority: 100 , orderable: false, searchable: false 
                     },
                     {
-                        data: 'buyer.name', name: 'buyer.name', className: 'desktop-only',
+                        data: 'buyer.username', name: 'buyer.username', className: 'desktop-only',
                         responsivePriority: 100 , orderable: false, searchable: false 
                     },
                     {

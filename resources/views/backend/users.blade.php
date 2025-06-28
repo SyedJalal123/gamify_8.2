@@ -11,7 +11,7 @@
             <!--begin::Card title-->
             <div class="card-title">
                 <!--begin::Search-->
-                <div class="d-flex align-items-center position-relative my-1">
+                <div class="d-flex align-items-center position-relative my-1 me-3">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                     <span class="svg-icon svg-icon-1 position-absolute ms-6">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -20,46 +20,43 @@
                         </svg>
                     </span>
                     <!--end::Svg Icon-->
-                    <input type="text" id="datatable-search" class="form-control form-control-solid w-250px ps-14" placeholder="Search game" />
+                    <input type="text" id="datatable-search" class="form-control form-control-solid w-250px ps-14" placeholder="Search order" />
                 </div>
                 <!--end::Search-->
+                <div class="fv-row min-w-200px my-1 me-3">
+                    <select class="form-select form-select-solid" data-control="select2" id="filter-role" name="filterRole" data-placeholder="Select an option">
+                        <option value="all">All roles</option>                  
+                        <option value="admin">Admin</option>
+                        <option value="seller">Seller</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                </div>
+                <div class="fv-row min-w-200px my-1 me-3">
+                    <select class="form-select form-select-solid" data-control="select2" id="filter-status" name="filterStatus" data-placeholder="Select an option">
+                        <option value="all">All statuses</option>                  
+                        <option value="active">Active</option>
+                        <option value="banned">Banned</option>
+                    </select>
+                </div>
+                <div class="fv-row min-w-225px my-1 me-3">
+                    <input class="form-control form-control-solid flatpickr-input" placeholder="Pick date" name="filterDate" id="filter-date">
+                </div>
             </div>
             <!--begin::Card title-->
-            <!--begin::Card toolbar-->
-            <div class="card-toolbar">
-
-                <!--begin::Toolbar-->
-                <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
-                    <!--begin::Add user-->
-                    <a href="{{ url('admin/item/add') }}" class="btn btn-primary">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
-                                <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->Add Item
-                    </a>
-                    <!--end::Add user-->
-                </div>
-                <!--end::Toolbar-->
-                
-            </div>
-            <!--end::Card toolbar-->
         </div>
         <!--end::Card header-->
         <!--begin::Card body-->
         <div class="card-body pt-0">
             <!--begin::Table-->
-            <div id="table-container" style="max-width: 1048px;">
-                <table id="gamesTable" class="datatable-1 table align-middle table-row-dashed fs-6 gy-5">
-                    <thead>
-                        <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                            <th>Game</th>
-                            <th>@if($cat->id == 5) Services @else Attributes @endif</th>
-                            <th>@if($cat->id == 5) Requests @else Offers @endif</th>
-                            <th class="text-end min-w-100px">Actions</th>
+            <div id="table-container">
+                <table id="orderTable" class="datatable-1 table align-middle table-row-dashed fs-6 gy-5">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Registered_at</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 fw-bold">
@@ -78,67 +75,108 @@
     <script src="{{ asset('backend/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
 
     <script>
-        var category = "{{$category}}";
-        
-        if ($.fn.DataTable.isDataTable('#gamesTable')) {
-            $('#gamesTable').DataTable().clear().destroy();
-        }
+        $(document).ready(function() {
+            setTimeout(() => {
+                $('.skeleton-overlay-start').remove();
+            }, 700);
 
-        var gamesTable = $('#gamesTable').DataTable({
+            const end = moment(); // today
+            const start = moment().subtract(6, 'months'); // 3 months ago
+
+            $('#filter-date').daterangepicker({
+                startDate: start,
+                endDate: end,
+                locale: {
+                    format: 'MM/DD/YYYY'
+                }
+            });
             
-            serverSide: true,
-            processing: true,
-            // searching: false,
-            lengthChange: false,
-            ajax: {
-                url: `/admin/items/${category}`,
-            },
-            columns:[
-                { 
-                    data: 'title_data', name: 'title_search', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
+            if ($.fn.DataTable.isDataTable('#orderTable')) {
+                $('#orderTable').DataTable().clear().destroy();
+            }
+
+            var orderTable = $('#orderTable').DataTable({
+                serverSide: true,
+                processing: true,
+                // searching: false,
+                lengthChange: false,
+                ajax: {
+                    url: '{{ route("admin.users") }}',
+                    data: function(payload) {
+                        const filterRole = $('#filter-role').val();
+                        const filterStatus = $('#filter-status').val();
+                        const filterDate = $('#filter-date').val();
+
+                        payload.filterRole = filterRole;
+                        payload.filterStatus = filterStatus;
+                        payload.filterDate = filterDate;
+                    }
                 },
-                { 
-                    data: 'attributes', name: 'attributes', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
-                },
-                { 
-                    data: 'offers_count', name: 'offers_count', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false
-                },
-                {
-                    data: 'action_data', name: 'action_data', className: 'desktop-only',
-                    responsivePriority: 100 , orderable: false, searchable: false 
-                },
-            ],
-            // order: [[0, 'desc']],
+                columns:[
+                    { 
+                        data: 'title_data', name: 'title,order_id', className: 'desktop-only',
+                        responsivePriority: 100, orderable: false 
+                    },
+                    {
+                        data: 'role', name: 'role', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'status', name: 'status', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                    {
+                        data: 'created_at_data', name: 'created_at', className: 'desktop-only',
+                        responsivePriority: 100 , searchable: false 
+                    },
+                    {
+                        data: 'actions', name: 'actions', className: 'desktop-only',
+                        responsivePriority: 100 , orderable: false, searchable: false 
+                    },
+                ],
+                order: [[3, 'desc']],
+            });
+
+            $('#orderTable tbody').on('click', 'tr', function () {
+                var url = $(this).data('href');
+                if (url) {
+                    // window.open(url, '_blank');
+                }
+            });
+
+            orderTable.on('draw', function () {
+                KTMenu.createInstances();
+            });
+
+            $('#filter-role, #filter-status, #filter-date').on('change', function() {
+                orderTable.draw();
+            });
+
+            $('#datatable-search').on('keyup change clear', function () {
+                orderTable.search(this.value, {
+                    caseInsensitive: false
+                }).draw();
+            });
         });
 
-        gamesTable.on('draw', function () {
-            initializeTooltips();
-        });
+        function ban_user(userId, userStatus) {
+             $.ajax({
+                url: '/admin/change_user_status',
+                method: 'GET',
+                data: { 
+                    userId: userId, 
+                    userStatus: userStatus, 
+                },
+                success: function (response) {
+                    const pill = $(`#user-status-${response['id']}`);
 
-        function initializeTooltips() {
-            $('[data-bs-toggle="tooltip"]').tooltip({
-                html: true,
+                    pill.text(response.status);
+
+                    toastr.success('Marked as completed');
+                }
             });
         }
-
-        $('#datatable-search').on('keyup change clear', function () {
-            gamesTable.search(this.value, {
-                caseInsensitive: false
-            }).draw();
-        });
-
-        function edit_game_modal_values(image, name, id) {
-            let imageUrl = `url("${hostUrl}/${image}")`;
-            $('#edit-game-background-image').css('background-image', imageUrl);
-            $('#edit-game-name').val(name);
-            $('#edit-game-id').val(id);
-        }
     </script>
-
-	<script src="{{ asset('backend/assets/js/custom/apps/user-management/users/list/add.js')}}"></script>
 
     <!--begin::Modal - Edit game-->
     <div class="modal fade" id="kt_modal_edit_game" tabindex="-1" aria-hidden="true">

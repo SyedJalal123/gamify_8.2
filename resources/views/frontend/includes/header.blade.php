@@ -144,7 +144,7 @@
                                 <li class="header__nav-item mr-3 mr-md-3">
                                     <a  href="#" role="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
                                         <i class="bi bi-bell fs-16"></i>
-                                        <span class="top-tag bg-yellow text-black count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>
+                                        <span class="top-tag bg-yellow text-black count-notifications">{{ count_user_unread_noti() }}</span>
                                     </a>
                                     <ul class="dropdown-menu notification-dropdown header__nav-menu p-0 mCustomScrollbar _mCS_1" aria-labelledby="dropdownMenu4" style="overflow: visible;">
                                         <li class="p-2" style="border-bottom:1px solid grey;">
@@ -166,7 +166,7 @@
                                         <li class="mt-4">
                                             <a wire:navigate href="{{url('notifications')}}" class="pb-2 p-0 justify-content-center">
                                                 <button class="btn btn-dark fs-14">View all 
-                                                    <span id="count-header-button" class="@if(count(auth()->user()->unreadnotifications) == 0) d-none @endif">(<span class="count-notifications">{{count(auth()->user()->unreadnotifications)}}</span>)</span>
+                                                    <span id="count-header-button" class="@if(count_user_unread_noti() == 0) d-none @endif">(<span class="count-notifications">{{ count_user_unread_noti() }}</span>)</span>
                                                 </button>
                                             </a>
                                         </li>
@@ -201,13 +201,25 @@
                                                 </div>
                                                 <div>
                                                     @php $seller = get_seller(); @endphp
-                                                    <a class="btn__1" @if($seller == null) data-toggle="modal" data-target="#exampleModal" href="#" @else wire:navigate href="{{url('items/create')}}" @endif>
+                                                    <a class="btn__1" @if($seller == null || ($seller != null && $seller->verified != 1)) data-toggle="modal" data-target="#exampleModal" href="#" @else wire:navigate href="{{url('items/create')}}" @endif>
                                                         <span>Sell</span>
                                                     </a>
                                                 </div>
                                             </div>
                                         </li>
                                         <div class="p-0">
+                                            @if(auth()->user()->role == 'admin')
+                                            <div class="sidebar-menu mt-1">
+                                                <a href="{{url('admin/dashboard')}}" class="sidebar-title sidebar-item p-1">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-activity fs-20 mr-2"></i>
+                                                        <div>
+                                                            <div class="font-weight-bold">Admin Dashboard</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            @endif
                                             <div class="sidebar-menu d-lg-none mt-1">
                                                 <div class="sidebar-title p-1" data-toggle="collapse" data-target="#headbarOptions_1" aria-expanded="false" aria-controls="serviceOptions">
                                                     <div class="d-flex align-items-center">

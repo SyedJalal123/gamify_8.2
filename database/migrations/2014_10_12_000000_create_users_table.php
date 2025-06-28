@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('descripiton', 500)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('role',['admin','customer','vendor'])->default('customer');
-            $table->enum('status',['active','inactive'])->default('inactive');
+            $table->enum('status',['active','inactive','banned'])->default('active');
             $table->string('password');
             $table->timestamp('username_updated_at')->nullable();
             $table->timestamp('email_updated_at')->nullable();

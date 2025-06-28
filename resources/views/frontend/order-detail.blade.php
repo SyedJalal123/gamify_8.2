@@ -50,10 +50,9 @@
                                 <span class="text-theme-secondary fs-14 d-none d-md-block">Order ID: {{ $order->order_id }}</span>
                             </div>
                             @php
-                                if($order->order_status == 'pending delivery')
-                                {
-                                    $order_pill_class = 'btn-theme-pill-yellow';
-                                } 
+                                if($order->order_status == 'completed') {
+                                    $order_pill_class = 'btn-theme-pill-green';
+                                }
                                 elseif($order->order_status == 'received' || $order->order_status == 'delivered') 
                                 {
                                     $order_pill_class = 'btn-theme-pill-blue';
@@ -62,10 +61,14 @@
                                 {
                                     $order_pill_class = 'btn-theme-pill-red';
                                 }
+                                elseif($order->order_status == 'pending delivery')
+                                {
+                                    $order_pill_class = 'btn-theme-pill-yellow';
+                                } 
                                 else
                                 {
                                     $order_pill_class = 'btn-theme-pill-default';
-                                } 
+                                }
                             @endphp
                             <div class="d-flex align-items-center d-md-none">
                                 <span class="btn-theme-pill {{ $order_pill_class }} text-capitalize pill-order-status">
@@ -583,6 +586,9 @@
                 if (!window.chat_channel) {
                     window.chat_channel = {};
                 }
+                if (!window.admin_chat_channel) {
+                    window.admin_chat_channel = {};
+                }
                 if (!window.message_seen) {
                     window.message_seen = {};
                 }
@@ -596,6 +602,14 @@
                             Livewire.dispatch('message-received', [e.message]);
                         });
                     window.chat_channel[userId] = true;
+                }
+
+                if (!window.admin_chat_channel[userId]) {
+                    Echo.private(`admin-chat-channel`)
+                        .listen('AdminMessageSentEvent', (e) => {
+                            Livewire.dispatch('message-received', [e.message]);
+                        });
+                    window.admin_chat_channel[userId] = true;
                 }
                 
                 if (!window.message_seen[userId]) {

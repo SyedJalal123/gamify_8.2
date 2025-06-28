@@ -19,8 +19,8 @@
                 <!--begin::Nav-->
                 <div class="stepper-nav flex-center flex-wrap mb-10">
 
-                    <!--begin::Step 1-->
-                    <div class="stepper-item mx-2 my-4 current" data-kt-stepper-element="nav">
+                    {{-- <!--begin::Step 1-->
+                    <div class="stepper-item mx-2 my-4" data-kt-stepper-element="nav">
                         <!--begin::Line-->
                         <div class="stepper-line w-40px"></div>
                         <!--end::Line-->
@@ -44,10 +44,10 @@
                         </div>
                         <!--end::Label-->
                     </div>
-                    <!--end::Step 1-->
+                    <!--end::Step 1--> --}}
 
-                    <!--begin::Step 2-->
-                    <div class="stepper-item mx-2 my-4" data-kt-stepper-element="nav">
+                    {{-- <!--begin::Step 2-->
+                    <div class="stepper-item mx-2 my-4 current" data-kt-stepper-element="nav">
                         <!--begin::Line-->
                         <div class="stepper-line w-40px"></div>
                         <!--end::Line-->
@@ -71,29 +71,30 @@
                         </div>
                         <!--end::Label-->
                     </div>
-                    <!--end::Step 2-->
+                    <!--end::Step 2--> --}}
 
                 </div>
                 <!--end::Nav-->
 
                 <!--begin::Form-->
-                <form class="form w-lg-700px mx-auto" action="{{ route('admin.item.store') }}" method="POST" novalidate="novalidate" id="kt_stepper_example_basic_form" enctype="multipart/form-data">
+                <form class="form w-lg-700px mx-auto" action="{{ route('admin.item.update') }}" method="POST" novalidate="novalidate" id="kt_stepper_example_basic_form" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="category_game_id" value="{{ $item->id }}">
+                    <input type="hidden" name="category_id" id="category_id">
                     <!--begin::Group-->
                     <div class="mb-5">
-                        <!--begin::Step 1-->
-                        <div class="flex-column current" data-kt-stepper-element="content">
+                        {{-- <!--begin::Step 1-->
+                        <div class="flex-column" data-kt-stepper-element="content">
                             @foreach ($categories as $key => $category)
                                 <div class="p-3 fs-16 fw-bold mb-2 category-select btn btn-light category-select" onclick="show_category_elements({{$category->id}})" id="category_{{$key}}">
                                     {{ $category->name }}
                                 </div>
                             @endforeach
-                            <input type="hidden" name="category_id" id="category_id">
                         </div>
-                        <!--begin::Step 1-->
+                        <!--begin::Step 1--> --}}
 
                         <!--begin::Step 1-->
-                        <div class="flex-column" data-kt-stepper-element="content">
+                        <div class="flex-column current" data-kt-stepper-element="content">
                             <div class="d-flex flex-column">
                                 <div>
                                     <div class="row w-100">
@@ -103,7 +104,7 @@
                                                 <select class="form-select form-select-solid" data-control="select2" name="game_id" data-placeholder="Select an option" required>
                                                     <option value="">Select game</option>
                                                     @foreach ($games as $game)
-                                                        <option value="{{ $game->id }}">{{ $game->name }}</option>
+                                                        <option {{ $game->id == $item->game_id ? 'selected' : '' }} value="{{ $game->id }}">{{ $game->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -127,14 +128,14 @@
                                                 <!--end::Label-->
             
                                                 <!--begin::Input-->
-                                                <input type="text" class="form-control form-control-solid 1_r 3_r" name="name" placeholder="Name" value=""/>
+                                                <input type="text" class="form-control form-control-solid 1_r 3_r" name="name" placeholder="Name" value="{{ $item->title }}"/>
                                                 <!--end::Input-->
                                             </div>
                                             <!--end::Input group-->
                                         </div>
                                         <div class="col-md-3">
                                             <!--begin::Image input-->
-                                            <div class="image-input image-input-empty" data-kt-image-input="true" style="background-image: url({{asset('backend/assets/media/avatars/blank.png')}})">
+                                            <div class="image-input image-input-empty" data-kt-image-input="true" style="background-image: url({{asset($item->feature_image)}})">
                                                 <!--begin::Image preview wrapper-->
                                                 <div class="image-input-wrapper w-125px h-125px"></div>
                                                 <!--end::Image preview wrapper-->
@@ -148,7 +149,7 @@
                                                     <i class="bi bi-pencil-fill fs-7"></i>
 
                                                     <!--begin::Inputs-->
-                                                    <input type="file" name="image" class="1_r 3_r" accept="image/*" />
+                                                    <input type="file" name="image" class="" accept="image/*" />
                                                     <input type="hidden" name="avatar_remove" />
                                                     <!--end::Inputs-->
                                                 </label>
@@ -181,83 +182,252 @@
                                         <label class="form-label">Select currency type</label>
                                         <select class="form-select form-select-solid 1_r" data-control="select2" name="currency_type" data-placeholder="Select an option">
                                             <option value="">Select currency type</option>
-                                            <option value="K">K</option>
-                                            <option value="M">M</option>
-                                            <option value="unit">Unit</option>
+                                            <option {{ $item->currency_type == 'K' ? 'selected' : '' }} value="K">K</option>
+                                            <option {{ $item->currency_type == 'M' ? 'selected' : '' }} value="M">M</option>
+                                            <option {{ $item->currency_type == 'unit' ? 'selected' : '' }} value="unit">Unit</option>
                                         </select>
                                     </div>
                                     <div class="fv-row mb-10 d-none 1_show 3_show 4_show">
                                         <label class="form-label">Delivery type</label>
                                         <select class="form-select form-select-solid 1_r 3_r 4_r" data-control="select2" name="deliver_type" data-placeholder="Select an option">
                                             <option value="">Delivery type</option>
-                                            <option value="Character name">Character name</option>
-                                            <option value="Username">Username</option>
-                                            <option value="user id">User id</option>
+                                            <option {{ $item->delivery_type == 'Character name' ? 'selected' : '' }} value="Character name">Character name</option>
+                                            <option {{ $item->delivery_type == 'Username' ? 'selected' : '' }} value="Username">Username</option>
+                                            <option {{ $item->delivery_type == 'user id' ? 'selected' : '' }} value="user id">User id</option>
                                         </select>
                                     </div>
                                     <div class="d-flex flex-column d-none 1_show 2_show 3_show 4_show 5_show">
-                                        <div class="service-container mb-2">
-                                            <div class="pb-5 mt-8 service_container_1 border-bottom position-relative" data-service-index="1">
-                                                <div class="fv-row mb-10 w-100 tag-wrapper d-none 5_show">
-                                                    <div class="d-flex justify-content-between position-relative">
-                                                        <!--begin::Label-->
-                                                        <label class="form-label">Service name</label>
-                                                        <!--end::Label-->
-                                                    </div>
-                
-                                                    <!--begin::Input-->
-                                                    <input type="text" class="form-control form-control-solid tag-input 5_r" name="service_name_1" placeholder="Service name"/>
-                                                    <div class="tag-container mt-3 d-flex flex-wrap gap-2"></div>
-                                                    <!--end::Input-->
-                                                </div>
-                                                <div class="d-flex">
-                                                    <h4 class="me-1">Attributes</h4>
-                                                    <span class="fs-14 d-none 3_show">(first attribute should be the topup value)</span>
-                                                </div>
-
-                                                <template id="attribute-template-1">
-                                                    <div class="d-flex flex-column bg-light-blue p-4 mb-3 position-relative attribute_container_1_1">
-                                                        <div class="fv-row mb-10 w-100">
-                                                            <label class="form-label">Add attribute name</label>
-                                                            <input type="text" class="form-control form-control-solid" name="attribute_name_1_1[]" placeholder="Attribute name" value=""/>
-                                                            <input type="hidden"  name="attribute_cloned_1_1[]" placeholder="Cloned" value="0"/>
-                                                        </div>
-                                                        <div class="fv-row mb-10 w-100 tag-wrapper">
-                                                            <label class="form-label">Add options</label>
-                                                            <input type="text" class="form-control form-control-solid tag-input" id="attribute_options_1_1" placeholder="Add options and press enter to add"/>
+                                        <div class="service-container position-relative mb-2">
+                                            @if(count($item->services) > 0)
+                                                @foreach ($item->services as $key1 => $service)
+                                                    @php $key1 = $key1 + 1; @endphp 
+                                                    <div class="pb-5 mt-8 service_container_{{$key1}} border-bottom position-relative" data-service-index="{{ $key1 }}">
+                                                        <div class="fv-row mb-10 w-100 tag-wrapper d-none 5_show">
+                                                            <div class="d-flex justify-content-between position-relative">
+                                                                <!--begin::Label-->
+                                                                <label class="form-label">Service name</label>
+                                                                <!--end::Label-->
+                                                            </div>
+                        
+                                                            <!--begin::Input-->
+                                                            <input type="text" class="form-control form-control-solid tag-input 5_r" value="{{ $service->name }}" name="service_name_{{$key1}}" placeholder="Service name"/>
+                                                            <input type="hidden" value="{{ $service->id }}" name="service_id_{{$key1}}"/>
                                                             <div class="tag-container mt-3 d-flex flex-wrap gap-2"></div>
+                                                            <!--end::Input-->
                                                         </div>
-                                                        <div class="fv-row w-100">
-                                                            <label class="form-label">Input Type</label>
-                                                            <div class="d-flex flex-row">
-                                                                <div class="form-check form-check-custom">
-                                                                    <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="select" id="attribute_type_select_1_1" checked="checked" />
-                                                                    <label class="form-check-label">
-                                                                        Select
-                                                                    </label>
+                                                        <div class="d-flex">
+                                                            <h4 class="me-1">Attributes</h4>
+                                                        </div>
+
+                                                        <template id="attribute-template-1">
+                                                            <div class="d-flex flex-column bg-light-blue mb-3 position-relative attribute_container_1_1">
+                                                                <div class="fv-row mb-10 w-100 px-4 pt-4">
+                                                                    <label class="form-label">Add attribute name</label>
+                                                                    <input type="text" class="form-control form-control-solid" name="attribute_name_1_1[]" placeholder="Attribute name" value=""/>
+                                                                    <input type="hidden"  name="attribute_cloned_1_1[]" placeholder="Cloned" value="0"/>
                                                                 </div>
-                                                                <div class="form-check form-check-custom ms-6">
-                                                                    <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="input" id="attribute_type_input_1_1" />
-                                                                    <label class="form-check-label">
-                                                                        Input
-                                                                    </label>
+                                                                <div class="fv-row mb-10 w-100 tag-wrapper px-4">
+                                                                    <label class="form-label">Add options</label>
+                                                                    <input type="text" class="form-control form-control-solid tag-input" id="attribute_options_1_1" placeholder="Add options and press enter to add"/>
+                                                                    <div class="tag-container mt-3 d-flex flex-wrap gap-2"></div>
+                                                                </div>
+                                                                <div class="fv-row w-100 px-4 pb-4">
+                                                                    <label class="form-label">Input Type</label>
+                                                                    <div class="d-flex flex-row">
+                                                                        <div class="form-check form-check-custom">
+                                                                            <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="select" id="attribute_type_select_1_1" checked="checked" />
+                                                                            <label class="form-check-label">
+                                                                                Select
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-custom ms-6">
+                                                                            <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="input" id="attribute_type_input_1_1" />
+                                                                            <label class="form-check-label">
+                                                                                Input
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+
+                                                        <div class="d-flex flex-column attribute-container-{{$key1}} mb-3">
+                                                            @foreach($service->attributes as $key2 => $attribute)    
+                                                                @php $key2 = $key2 + 1; @endphp 
+                                                                <div class="d-flex flex-column bg-light-blue mb-3 position-relative attribute_container_{{$key1}}_{{$key2}}">
+                                                                    <div class="fv-row mb-10 w-100 px-4 pt-4">
+                                                                        <label class="form-label">Add attribute name</label>
+                                                                        <input type="text" class="form-control" name="attribute_name_{{$key1}}_{{$key2}}[]" placeholder="Attribute name" value="{{ $attribute->name }}"/>
+                                                                        <input type="hidden"  name="attribute_cloned_{{$key1}}_{{$key2}}[]" placeholder="Cloned" value="{{ $attribute->cloned }}"/>
+                                                                        <input type="hidden"  name="attribute_id_{{$key1}}_{{$key2}}[]" value="{{ $attribute->id }}"/>
+                                                                    </div>
+                                                                    
+                                                                    <div class="fv-row mb-10 w-100 px-4 tag-wrapper">
+                                                                        <label class="form-label">Add options</label>
+                                                                        <input type="text" class="form-control tag-input" id="attribute_options_{{$key1}}_{{$key2}}" placeholder="Add options and press enter to add"/>
+                                                                        <div class="tag-container mt-3 d-flex flex-wrap gap-2">
+                                                                            @foreach ($attribute->options as $option)
+                                                                                <span class="badge bg-primary text-white d-flex align-items-center px-3 py-2 rounded-pill">
+                                                                                    {{ $option }}
+                                                                                    <button type="button" class="btn-close btn-close-white btn-sm ms-2 btn-close-pill" aria-label="Remove"></button>
+                                                                                    <input type="hidden" name="attribute_options_{{$key1}}_{{$key2}}[]" value="{{ $option }}">
+                                                                                </span>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="fv-row w-100 px-4 pb-4">
+                                                                        <label class="form-label">Input Type</label>
+                                                                        <div class="d-flex flex-row">
+                                                                            <div class="form-check form-check-custom">
+                                                                                <input class="form-check-input" type="radio" name="attribute_type_{{$key1}}_{{$key2}}[]" value="select" id="attribute_type_select_{{$key1}}_{{$key2}}" {{ $attribute->type == 'select' ? 'checked' : '' }} />
+                                                                                <label class="form-check-label">
+                                                                                    Select
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-custom ms-6">
+                                                                                <input class="form-check-input" type="radio" name="attribute_type_{{$key1}}_{{$key2}}[]" value="text" id="attribute_type_input_{{$key1}}_{{$key2}}" {{ $attribute->type == 'text' ? 'checked' : '' }} />
+                                                                                <label class="form-check-label">
+                                                                                    Input
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    @if (count($attribute->pivot->buyerRequestAttribute) > 0)
+                                                                    <div class="position-absolute w-100 h-100 z-index-5" style="background: #36363636;"></div>
+                                                                    @endif   
+                                                                
+                                                                    <button type="button" class="btn btn-close btn-danger p-3 fs-14 position-absolute top-0 end-0 m-4 remove-attribute-btn"
+                                                                        onclick="getRemovedAttributeContainerId({{ $attribute->id }})"></button>
+                                                                </div>
+                                                            @endforeach
+                                                            <div id="removed-attributes-ids-container"></div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="button" id="add-attribute-btn" class="btn btn-icon btn-primary w-150px me-2"><i class="las la-plus fs-2 me-2"></i> Add attribute</button>
+                                                            <button type="button" id="link-attribute-btn" data-bs-toggle="modal" data-bs-target="#kt_modal_link_attribute" 
+                                                            onclick="document.getElementById('clone-service-id').value = 1" class="btn btn-icon btn-primary w-150px">
+                                                                <i class="las la-copy fs-2 me-2"></i> Clone attribute
+                                                            </button>
+                                                        </div>
+
+                                                        @if($key1 !== 1)
+                                                        <button type="button" class="btn btn-close btn-danger p-3 fs-14 position-absolute end-0 top-[-12px] z-index-3 remove-service-btn"
+                                                            onclick="getRemovedServicesContainerId({{ $service->id }})"></button>
+                                                        @endif
+
+                                                        @if (count($service->buyerRequest) > 0)
+                                                        <div class="position-absolute w-100 h-100 z-index-5" style="background: #36363636;"></div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                                <div id="removed-services-ids-container"></div>
+                                            @else 
+                                                <div class="pb-5 mt-8 service_container_1 border-bottom position-relative" data-service-index="1">
+                                                    <div class="d-flex">
+                                                        <h4 class="me-1">Attributes</h4>
+                                                        <span class="fs-14 d-none 3_show">(first attribute should be the topup value)</span>
+                                                    </div>
+
+                                                    <template id="attribute-template-1">
+                                                        <div class="d-flex flex-column bg-light-blue mb-3 position-relative attribute_container_1_1">
+                                                            <div class="fv-row mb-10 w-100 px-4 pt-4">
+                                                                <label class="form-label">Add attribute name</label>
+                                                                <input type="text" class="form-control form-control-solid" name="attribute_name_1_1[]" placeholder="Attribute name" value=""/>
+                                                                <input type="hidden"  name="attribute_cloned_1_1[]" placeholder="Cloned" value="0"/>
+                                                            </div>
+                                                            <div class="fv-row mb-10 w-100 tag-wrapper px-4">
+                                                                <label class="form-label">Add options</label>
+                                                                <input type="text" class="form-control form-control-solid tag-input" id="attribute_options_1_1" placeholder="Add options and press enter to add"/>
+                                                                <div class="tag-container mt-3 d-flex flex-wrap gap-2"></div>
+                                                            </div>
+                                                            <div class="fv-row w-100 px-4 pb-4">
+                                                                <label class="form-label">Input Type</label>
+                                                                <div class="d-flex flex-row">
+                                                                    <div class="form-check form-check-custom">
+                                                                        <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="select" id="attribute_type_select_1_1" checked="checked" />
+                                                                        <label class="form-check-label">
+                                                                            Select
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-custom ms-6">
+                                                                        <input class="form-check-input" type="radio" name="attribute_type_1_1[]" value="input" id="attribute_type_input_1_1" />
+                                                                        <label class="form-check-label">
+                                                                            Input
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </template>
+
+                                                    <div class="d-flex flex-column attribute-container-1 mb-3">
+                                                        @foreach($item->attributes as $key2 => $attribute)    
+                                                            
+                                                            @php $key2 = $key2 + 1; @endphp 
+                                                            <div class="d-flex flex-column bg-light-blue mb-3 position-relative attribute_container_1_{{$key2}}">
+                                                                <div class="fv-row mb-10 w-100 px-4 pt-4">
+                                                                    <label class="form-label">Add attribute name</label>
+                                                                    <input type="text" class="form-control" name="attribute_name_1_{{$key2}}[]" placeholder="Attribute name" value="{{ $attribute->name }}"/>
+                                                                    <input type="hidden"  name="attribute_cloned_1_{{$key2}}[]" placeholder="Cloned" value="{{ $attribute->cloned }}"/>
+                                                                    <input type="hidden"  name="attribute_id_1_{{$key2}}[]" value="{{ $attribute->id }}"/>
+                                                                </div>
+                                                                
+                                                                <div class="fv-row mb-10 w-100 tag-wrapper px-4">
+                                                                    <label class="form-label">Add options</label>
+                                                                    <input type="text" class="form-control tag-input" id="attribute_options_1_{{$key2}}" placeholder="Add options and press enter to add"/>
+                                                                    <div class="tag-container mt-3 d-flex flex-wrap gap-2">
+                                                                        @foreach ($attribute->options as $option)
+                                                                            <span class="badge bg-primary text-white d-flex align-items-center px-3 py-2 rounded-pill">
+                                                                                {{ $option }}
+                                                                                <button type="button" class="btn-close btn-close-white btn-sm ms-2 btn-close-pill" aria-label="Remove"></button>
+                                                                                <input type="hidden" name="attribute_options_1_{{$key2}}[]" value="{{ $option }}">
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="fv-row w-100 px-4 pb-4">
+                                                                    <label class="form-label">Input Type</label>
+                                                                    <div class="d-flex flex-row">
+                                                                        <div class="form-check form-check-custom">
+                                                                            <input class="form-check-input" type="radio" name="attribute_type_1_{{$key2}}[]" value="select" id="attribute_type_select_1_{{$key2}}" {{ $attribute->type == 'select' ? 'checked' : '' }} />
+                                                                            <label class="form-check-label">
+                                                                                Select
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-custom ms-6">
+                                                                            <input class="form-check-input" type="radio" name="attribute_type_1_{{$key2}}[]" value="text" id="attribute_type_input_1_{{$key2}}" {{ $attribute->type == 'text' ? 'checked' : '' }} />
+                                                                            <label class="form-check-label">
+                                                                                Input
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                @if (count($attribute->pivot->itemAttribute) > 0)
+                                                                <div class="position-absolute w-100 h-100 z-index-5" style="background: #36363636;"></div>
+                                                                @endif
+
+                                                                <button type="button" class="btn btn-close btn-danger p-3 fs-14 position-absolute top-0 end-0 m-4 remove-attribute-btn"
+                                                                        onclick="getRemovedAttributeContainerId({{ $attribute->id }})"></button>
+                                                            </div>
+                                                        @endforeach
+                                                        <div id="removed-attributes-ids-container"></div>
                                                     </div>
-                                                </template>
 
-                                                <div class="d-flex flex-column attribute-container-1 mb-3"></div>
-
-                                                <div class="d-flex justify-content-end">
-                                                    <button type="button" id="add-attribute-btn" class="btn btn-icon btn-primary w-150px me-2"><i class="las la-plus fs-2 me-2"></i> Add attribute</button>
-                                                    <button type="button" id="link-attribute-btn" data-bs-toggle="modal" data-bs-target="#kt_modal_link_attribute" 
-                                                    onclick="document.getElementById('clone-service-id').value = 1" class="btn btn-icon btn-primary w-150px">
-                                                        <i class="las la-copy fs-2 me-2"></i> Clone attribute
-                                                    </button>
+                                                    <div class="d-flex justify-content-end">
+                                                        <button type="button" id="add-attribute-btn" class="btn btn-icon btn-primary w-150px me-2"><i class="las la-plus fs-2 me-2"></i> Add attribute</button>
+                                                        <button type="button" id="link-attribute-btn" data-bs-toggle="modal" data-bs-target="#kt_modal_link_attribute" 
+                                                        onclick="document.getElementById('clone-service-id').value = 1" class="btn btn-icon btn-primary w-150px">
+                                                            <i class="las la-copy fs-2 me-2"></i> Clone attribute
+                                                        </button>
+                                                    </div>
+                                                    
                                                 </div>
-
-                                            </div>
+                                            @endif
                                         </div>
                                         <div class="d-flex justify-content-end d-none 5_show">
                                             <button type="button" id="add-service-btn" class="btn btn-icon btn-secondary w-150px"><i class="las la-plus fs-2 me-2"></i> Add service</button>
@@ -282,7 +452,7 @@
 
                         <!--begin::Wrapper-->
                         <div>
-                            <button type="button" class="btn btn-primary" id="stepper-submit-button" style="display: none;"
+                            <button type="button" class="btn btn-primary" id="stepper-submit-button"
                                 onclick="
                                     const form = document.getElementById('kt_stepper_example_basic_form');
                                     if (form.checkValidity()) {
@@ -461,7 +631,23 @@
 
             // Optional: Add Service Button (clone entire service block)
             document.getElementById("add-service-btn").addEventListener("click", function () {
-                serviceIndex++;
+                // serviceIndex++;
+
+                const serviceContainer = document.querySelector(`.service-container`);
+                const containers = serviceContainer.querySelectorAll(`[class*="service_container_"]`);
+
+                let maxAttrIndex = 0;
+                containers.forEach(container => {
+                    const match = container.className.match(new RegExp(`service_container_(\\d+)`));
+                    if (match) {
+                        const idx = parseInt(match[1]);
+                        if (idx > maxAttrIndex) {
+                            maxAttrIndex = idx;
+                        }
+                    }
+                });
+
+                const serviceIndex = maxAttrIndex + 1;
 
                 // Clone the first service container
                 const originalService = document.querySelector(".service_container_1");
@@ -532,6 +718,33 @@
                 document.querySelector(".service-container").appendChild(clone);
             });
         });
+
+        $(document).ready(function() {
+            show_category_elements({{$item->category_id}});
+        });
+
+        function getRemovedAttributeContainerId(attributeId) {
+
+            // Create a hidden input with the removed box ID
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'removed_attributes_ids[]';
+            hiddenInput.value = attributeId;
+
+            document.getElementById('removed-attributes-ids-container').appendChild(hiddenInput);
+        }
+
+        function getRemovedServicesContainerId(serviceId) {
+
+            // Create a hidden input with the removed box ID
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'removed_services_ids[]';
+            hiddenInput.value = serviceId;
+
+            document.getElementById('removed-services-ids-container').appendChild(hiddenInput);
+        }
+
 
         function show_category_elements(class_name) {            
             $(`.${class_name}_show`).removeClass('d-none');

@@ -37,7 +37,9 @@ class SellerDashboardController extends Controller
             $maxDeliveryTime = $order->item->delivery_time;
         }
         
-        if($conversation->seller_id == auth()->user()->id){
+        if(auth()->user()->role == 'admin'){
+            $identity = 'admin';
+        }else if($conversation->seller_id == auth()->user()->id){
             $identity = 'seller';
         }elseif($conversation->buyer_id == auth()->user()->id) {
             $identity = 'buyer';
@@ -78,6 +80,7 @@ class SellerDashboardController extends Controller
 
             $filterStatus = $request->filterStatus ?? null;
             $filterDuration = $request->filterDuration ?? null;
+            $filterDuration = $request->filterDuration ?? null;
 
             if($filterStatus != null) {
 
@@ -85,7 +88,7 @@ class SellerDashboardController extends Controller
                     $orders->where('order_status', $filterStatus);
                 }
                 elseif($filterStatus == 'disputed') {
-                    $orders->where('disputed', '1');
+                    $orders->where('disputed', '1')->whereIn('order_status', ['pending delivery', 'delivered']);
                 }
                 elseif($filterStatus == 'delivered' || $filterStatus == 'pending delivery') {
                     $orders->where('order_status', $filterStatus)->where('disputed', '0');
@@ -118,7 +121,11 @@ class SellerDashboardController extends Controller
                 return '$'.number_format($order->total_price, 2);
             })
             ->addColumn('order_status', function($order) {
-                if($order->order_status == 'received' || $order->order_status == 'delivered') 
+                if($order->order_status == 'completed') {
+                    $order_pill_class = 'btn-theme-pill-green';
+                    $order_status = $order->order_status;
+                }
+                elseif($order->order_status == 'received' || $order->order_status == 'delivered') 
                 {
                     $order_pill_class = 'btn-theme-pill-blue';
                     $order_status = $order->order_status;
@@ -151,7 +158,11 @@ class SellerDashboardController extends Controller
                 return $order->quantity .' '. $order->categoryGame->currency_type;
             })
             ->addColumn('mobile_summary', function ($order) {
-                if($order->order_status == 'received' || $order->order_status == 'delivered') 
+                if($order->order_status == 'completed') {
+                    $order_pill_class = 'btn-theme-pill-green';
+                    $order_status = $order->order_status;
+                }
+                elseif($order->order_status == 'received' || $order->order_status == 'delivered') 
                 {
                     $order_pill_class = 'btn-theme-pill-blue';
                     $order_status = $order->order_status;
@@ -193,7 +204,7 @@ class SellerDashboardController extends Controller
                     </div>
                     <div class="d-flex flex-row justify-content-between mb-2">
                         <div>Buyer</div>
-                        <div>'.$order->buyer->name.'</div>
+                        <div>'.$order->buyer->username.'</div>
                     </div>
                     <div class="d-flex flex-row justify-content-between mb-2">
                         <div>Ordered date</div>
@@ -438,7 +449,11 @@ class SellerDashboardController extends Controller
     }
 
     public function notifications(Request $request) {    
-        $notifications = auth()->user()->notifications()->paginate('20');
+        $notifications = auth()->user()->notifications()->whereIn('type', [
+            'App\Notifications\BoostingRequestNotification',
+            'App\Notifications\UserOrderDisputedNotification',
+            'App\Notifications\BoostingOfferNotification',
+        ])->paginate('20');
 
         return view('frontend.dashboard.notifications', compact('notifications'));
     }

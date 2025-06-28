@@ -8,6 +8,50 @@ use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 
+
+function seller_data($id) {
+    $seller = Seller::with('user')->first();
+
+    return $seller;
+}
+
+function pending_seller_requests() {
+    $sellers = Seller::where('verified', 0)->get();
+    return $sellers;
+}
+
+function pending_disputes() {
+    $disputes = Order::where('dispute_won', null)->where('disputed', 1)->get();
+    return $disputes;
+}
+
+function count_admin_unread_noti() {
+    $nofications = auth()->user()->unreadnotifications()->where('type', 'App\Notifications\OrderDisputedNotification')->get();
+    return count($nofications);
+}
+
+function count_user_unread_noti() {
+    $nofications = auth()->user()->unreadNotifications()
+        ->whereIn('type', [
+            'App\Notifications\BoostingRequestNotification',
+            'App\Notifications\BoostingOfferNotification',
+            'App\Notifications\UserOrderDisputedNotification',
+        ])
+        ->get();
+    return count($nofications);
+}
+
+function get_user_unread_noti() {
+    $nofications = auth()->user()->unreadNotifications()
+        ->whereIn('type', [
+            'App\Notifications\BoostingRequestNotification',
+            'App\Notifications\BoostingOfferNotification',
+            'App\Notifications\UserOrderDisputedNotification',
+        ])
+        ->get();
+    return $nofications;
+}
+
 function count_user_offer($category_id, $user) {
     $items = Item::where('seller_id', $user->id)
             ->whereHas('categoryGame', function ($query) use ($category_id) {
@@ -119,7 +163,7 @@ function countOrders($status, $orders) {
     $conditions = [
         'pending delivery' => ['order_status' => 'pending delivery', 'disputed' => '0'],
         'delivered'        => ['order_status' => 'delivered', 'disputed' => '0'],
-        'disputed'         => ['disputed' => '1'],
+        'disputed'         => ['disputed' => '1', 'order_status' => ['pending delivery', 'delivered']],
         'received'         => ['order_status' => 'received'],
         'completed'        => ['order_status' => 'completed'],
         'cancelled'        => ['order_status' => 'cancelled'],
@@ -127,7 +171,11 @@ function countOrders($status, $orders) {
 
     if (isset($conditions[$status])) {
         foreach ($conditions[$status] as $field => $value) {
-            $statusOrders = $statusOrders->where($field, $value);
+            if (is_array($value)) {
+                $statusOrders = $statusOrders->whereIn($field, $value);
+            } else {
+                $statusOrders = $statusOrders->where($field, $value);
+            }
         }
         $statusOrders = $statusOrders->get();
     }
@@ -159,6 +207,10 @@ function getGames() {
 
 function getGame($id) {
     return Game::find($id);
+}
+
+function getOrder($id) {
+    return Order::where('order_id', $id)->with('categoryGame.category', 'categoryGame.game')->first();
 }
 
 function userCompletedOrders($userId) {

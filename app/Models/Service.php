@@ -22,6 +22,10 @@ class Service extends Model
     }
     public function attributes()
     {
-        return $this->belongsToMany(Attribute::class, 'service_attributes')->withTimestamps();
+        return $this->belongsToMany(Attribute::class, 'service_attributes')->using(ServiceAttribute::class)->withTimestamps();
+    }
+    public function buyerRequest()
+    {
+        return $this->hasMany(BuyerRequest::class, 'service_id', 'id');
     }
 }

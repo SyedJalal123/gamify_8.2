@@ -5,7 +5,13 @@
         <div class="aside-user d-flex align-items-sm-center justify-content-center py-5">
             <!--begin::Symbol-->
             <div class="symbol symbol-50px">
-                <img src="{{asset('uploads/profile/thumbnails/'.auth()->user()->profile)}}" alt="" />
+                <a  href="{{ url('user-profile/'.auth()->user()->username) }}?tab=Offers&category=Currency" target="_blank" id="dropdownMenu3" data-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                    @if(auth()->user()->profile !== null)
+                        <img src="{{ url('uploads/profile/thumbnails') }}/{{auth()->user()->profile}}" class="br-40 mr-2" alt="">
+                    @else
+                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                    @endif
+                </a>
             </div>
             <!--end::Symbol-->
             <!--begin::Wrapper-->
@@ -15,14 +21,14 @@
                     <!--begin::Info-->
                     <div class="flex-grow-1 me-2">
                         <!--begin::Username-->
-                        <a href="#" class="text-white text-hover-primary fs-6 fw-bold">{{ auth()->user()->name }}</a>
+                        <a href="{{ url('user-profile/'.auth()->user()->username) }}?tab=Offers&category=Currency" target="_blank" class="text-white text-hover-primary fs-6 fw-bold">{{ auth()->user()->name }}</a>
                         <!--end::Username-->
                         <!--begin::Description-->
                         <span class="text-gray-600 fw-bold d-block fs-8 mb-1">{{ auth()->user()->role }}</span>
                         <!--end::Description-->
                         <!--begin::Label-->
-                        <div class="d-flex align-items-center text-success fs-9">
-                        <span class="bullet bullet-dot bg-success me-1"></span>online</div>
+                        {{-- <div class="d-flex align-items-center text-success fs-9">
+                        <span class="bullet bullet-dot bg-success me-1"></span>online</div> --}}
                         <!--end::Label-->
                     </div>
                     <!--end::Info-->
@@ -46,7 +52,13 @@
                                 <div class="menu-content d-flex align-items-center px-3">
                                     <!--begin::Avatar-->
                                     <div class="symbol symbol-50px me-5">
-                                        <img alt="Logo" src="{{asset('uploads/profile/thumbnails/'.auth()->user()->profile)}}" />
+                                        <a  href="{{ url('user-profile/'.auth()->user()->username) }}?tab=Offers&category=Currency" target="_blank" id="dropdownMenu3" data-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header mr-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                                            @if(auth()->user()->profile !== null)
+                                                <img src="{{ url('uploads/profile/thumbnails') }}/{{auth()->user()->profile}}" class="br-40 mr-2" alt="">
+                                            @else
+                                                {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                                            @endif
+                                        </a>
                                     </div>
                                     <!--end::Avatar-->
                                     <!--begin::Username-->
@@ -63,6 +75,11 @@
                             <div class="separator my-2"></div>
                             <!--end::Menu separator-->
                             <!--begin::Menu item-->
+                            <div class="menu-item px-5">
+                                <a href="{{ url('/') }}" class="menu-link px-5">Home</a>
+                            </div>
+                            <!--end::Menu item-->
+                            {{-- <!--begin::Menu item-->
                             <div class="menu-item px-5">
                                 <a href="../../demo8/dist/account/overview.html" class="menu-link px-5">My Profile</a>
                             </div>
@@ -188,13 +205,17 @@
                             <div class="menu-item px-5 my-1">
                                 <a href="../../demo8/dist/account/settings.html" class="menu-link px-5">Account Settings</a>
                             </div>
-                            <!--end::Menu item-->
+                            <!--end::Menu item--> --}}
                             <!--begin::Menu item-->
                             <div class="menu-item px-5">
-                                <a href="../../demo8/dist/authentication/flows/basic/sign-in.html" class="menu-link px-5">Sign Out</a>
+                                <form class="d-flex align-items-center" method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="route('logout')" onclick="event.preventDefault(); 
+                                        this.closest('form').submit();" class="menu-link px-5">{{ __('Log Out') }}</a>
+                                </form>
                             </div>
                             <!--end::Menu item-->
-                            <!--begin::Menu separator-->
+                            {{-- <!--begin::Menu separator-->
                             <div class="separator my-2"></div>
                             <!--end::Menu separator-->
                             <!--begin::Menu item-->
@@ -207,7 +228,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <!--end::Menu item-->
+                            <!--end::Menu item--> --}}
                         </div>
                         <!--end::Menu-->
                         <!--end::Action-->
@@ -999,14 +1020,16 @@
                         <span class="menu-title">Games</span>
                     </a>
                 </div>
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ (Request::segment(2) == 'items' || request()->is('admin/item/add')) ? 'show' : '' }}">
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ (Request::segment(2) == 'items' || request()->is('admin/item/add') || (Request::segment(2) == 'item' && Request::segment(3) == 'edit')) ? 'show' : '' }}">
                     <span class="menu-link">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path opacity="0.3" d="M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12ZM12 7C10.3 7 9 8.3 9 10C9 11.7 10.3 13 12 13C13.7 13 15 11.7 15 10C15 8.3 13.7 7 12 7Z" fill="black" />
-                                    <path d="M12 22C14.6 22 17 21 18.7 19.4C17.9 16.9 15.2 15 12 15C8.8 15 6.09999 16.9 5.29999 19.4C6.99999 21 9.4 22 12 22Z" fill="black" />
+                                    <path d="M11.2929 2.70711C11.6834 2.31658 12.3166 2.31658 12.7071 2.70711L15.2929 5.29289C15.6834 5.68342 15.6834 6.31658 15.2929 6.70711L12.7071 9.29289C12.3166 9.68342 11.6834 9.68342 11.2929 9.29289L8.70711 6.70711C8.31658 6.31658 8.31658 5.68342 8.70711 5.29289L11.2929 2.70711Z" fill="black"></path>
+                                    <path d="M11.2929 14.7071C11.6834 14.3166 12.3166 14.3166 12.7071 14.7071L15.2929 17.2929C15.6834 17.6834 15.6834 18.3166 15.2929 18.7071L12.7071 21.2929C12.3166 21.6834 11.6834 21.6834 11.2929 21.2929L8.70711 18.7071C8.31658 18.3166 8.31658 17.6834 8.70711 17.2929L11.2929 14.7071Z" fill="black"></path>
+                                    <path opacity="0.3" d="M5.29289 8.70711C5.68342 8.31658 6.31658 8.31658 6.70711 8.70711L9.29289 11.2929C9.68342 11.6834 9.68342 12.3166 9.29289 12.7071L6.70711 15.2929C6.31658 15.6834 5.68342 15.6834 5.29289 15.2929L2.70711 12.7071C2.31658 12.3166 2.31658 11.6834 2.70711 11.2929L5.29289 8.70711Z" fill="black"></path>
+                                    <path opacity="0.3" d="M17.2929 8.70711C17.6834 8.31658 18.3166 8.31658 18.7071 8.70711L21.2929 11.2929C21.6834 11.6834 21.6834 12.3166 21.2929 12.7071L18.7071 15.2929C18.3166 15.6834 17.6834 15.6834 17.2929 15.2929L14.7071 12.7071C14.3166 12.3166 14.3166 11.6834 14.7071 11.2929L17.2929 8.70711Z" fill="black"></path>
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
@@ -1048,6 +1071,14 @@
                             </a>
                         </div>
                         <div class="menu-item">
+                            <a class="menu-link {{ request()->is('admin/items/Boosting') ? 'active' : '' }}" href="{{ url('admin/items/Boosting') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Boosting</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
                             <a class="menu-link {{ request()->is('admin/item/add') ? 'active' : '' }}" href="{{ url('admin/item/add') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
@@ -1060,11 +1091,11 @@
 
                 <div class="menu-item">
                     <div class="menu-content pt-8 pb-2">
-                        <span class="menu-section text-muted text-uppercase fs-8 ls-1">Apps</span>
+                        <span class="menu-section text-muted text-uppercase fs-8 ls-1">Data</span>
                     </div>
                 </div>
                 <div class="menu-item">
-                    <a class="menu-link" href="../../demo8/dist/apps/calendar.html">
+                    <a class="menu-link {{ request()->is('admin/orders') ? 'active' : '' }}" href="{{ url('admin/orders') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
                             <span class="svg-icon svg-icon-2">
@@ -1076,7 +1107,68 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-title">Calendar</span>
+                        <span class="menu-title">Orders</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/users') ? 'active' : '' }}" href="{{ url('admin/users') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3" d="M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12ZM12 7C10.3 7 9 8.3 9 10C9 11.7 10.3 13 12 13C13.7 13 15 11.7 15 10C15 8.3 13.7 7 12 7Z" fill="black" />
+                                    <path d="M12 22C14.6 22 17 21 18.7 19.4C17.9 16.9 15.2 15 12 15C8.8 15 6.09999 16.9 5.29999 19.4C6.99999 21 9.4 22 12 22Z" fill="black" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Users</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/alerts') ? 'active' : '' }}" href="{{ url('admin/alerts') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="black"></path>
+                                    <rect x="6" y="12" width="7" height="2" rx="1" fill="black"></rect>
+                                    <rect x="6" y="7" width="12" height="2" rx="1" fill="black"></rect>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Alerts</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/disputes') ? 'active' : '' }}" href="{{ url('admin/disputes') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="black"></path>
+                                    <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Disputes ({{ count(pending_disputes()) }})</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('admin/sellerRequests') ? 'active' : '' }}" href="{{ url('admin/sellerRequests') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="black"></path>
+                                    <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Seller requests ({{ count(pending_seller_requests()) }})</span>
                     </a>
                 </div>
                 {{-- <div class="menu-item">

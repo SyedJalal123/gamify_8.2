@@ -18,7 +18,7 @@ class NotificationComponent extends Component
 
     #[On('notification-received')]
     public function refreshNotifications(){
-        $count = count(auth()->user()->unreadnotifications);
+        $count = count_user_unread_noti();
 
         $this->dispatch('notifications-count-update', count: $count);
     }
@@ -32,25 +32,42 @@ class NotificationComponent extends Component
             $notification->markAsRead();
         }
 
-        $count = count(auth()->user()->unreadnotifications);
+        $count = count_user_unread_noti();
         $this->dispatch('notifications-count-update', count: $count);
     }
 
     #[On('mark-all-as-read')]
     public function markAllAsRead()
     {
-        auth()->user()->unreadNotifications->markAsRead();
+        auth()->user()->unreadNotifications()
+        ->whereIn('type', [
+            'App\Notifications\BoostingRequestNotification',
+            'App\Notifications\UserOrderDisputedNotification',
+            'App\Notifications\BoostingOfferNotification',
+        ])
+        ->get()
+        ->each(function ($notification) {
+            $notification->markAsRead();
+        });
 
-        $count = count(auth()->user()->unreadnotifications);
+        $count = count_user_unread_noti();
         $this->dispatch('notifications-count-update', count: $count);
     }
 
     public function render()
     {
         if($this->type == 'header'){
-            $notifications = auth()->user()->unreadnotifications()->paginate('6');
+            $notifications = auth()->user()->unreadnotifications()->whereIn('type', [
+                'App\Notifications\BoostingRequestNotification',
+                'App\Notifications\BoostingOfferNotification',
+                'App\Notifications\UserOrderDisputedNotification',
+            ])->paginate('6');
         }else {
-            $notifications = auth()->user()->notifications()->paginate('20');
+            $notifications = auth()->user()->notifications()->whereIn('type', [
+                'App\Notifications\BoostingRequestNotification',
+                'App\Notifications\BoostingOfferNotification',
+                'App\Notifications\UserOrderDisputedNotification',
+            ])->paginate('20');
         }
 
         return view('livewire.notification-component', [

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\BuyerRequest;
 use App\Models\BuyerRequestConversation;
 use App\Models\Message;
+use App\Events\AdminMessageSentEvent;
 use App\Events\MessageSeenEvent;
 use App\Events\MessageSentEvent;
 use Livewire\Attributes\On;
@@ -92,10 +93,19 @@ class Openchat extends Component
             $this->reset(['message', 'file']);
 
             $this->chatMessages[] = $sentMessage;
-
-            broadcast(new MessageSentEvent($sentMessage, $this->reciever->id));
             
+            
+            if(auth()->user()->role == 'admin'){
+                broadcast(new MessageSentEvent($sentMessage, $this->buyerRequestConversation->buyer_id));
+                broadcast(new MessageSentEvent($sentMessage, $this->buyerRequestConversation->seller_id));
+            }else {
+                broadcast(new MessageSentEvent($sentMessage, $this->reciever->id));
+                broadcast(new AdminMessageSentEvent($sentMessage));
+                
+            }
+
             $this->dispatch('message-updated');
+            
         }
     }
 
@@ -153,13 +163,15 @@ class Openchat extends Component
     #[On('readAllMessages')]
     public function readAllMessages()
     {
-        $chatMessages = $this->buyerRequestConversation->messages()
-        ->where('reciever_id', auth()->user()->id)
-        ->whereNull('read_at')
-        ->update(['read_at' => now()]);
-        
-        if($chatMessages !== 0){
-            broadcast(new MessageSeenEvent($this->reciever->id, $this->buyerRequestConversation->id));
+        if(auth()->user()->role !== 'admin') {
+            $chatMessages = $this->buyerRequestConversation->messages()
+            ->where('reciever_id', auth()->user()->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+            
+            if($chatMessages !== 0){
+                broadcast(new MessageSeenEvent($this->reciever->id, $this->buyerRequestConversation->id));
+            }
         }
     }
 

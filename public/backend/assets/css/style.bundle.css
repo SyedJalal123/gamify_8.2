@@ -12226,6 +12226,10 @@ fieldset:disabled .btn {
     z-index: 3 !important
 }
 
+.z-index-5 {
+    z-index: 5 !important
+}
+
 .border-top-0 {
     border-top-width: 0 !important
 }
@@ -55184,4 +55188,124 @@ body {
 }
 .left-3 {
     left: 3;
+}
+
+.mr-3 {
+    margin-right: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .desktop-only, th {
+        display: none !important;
+    }
+
+    /* Expand mobile-only column to full width */
+    .datatable-1.dataTable td.mobile-only {
+        display: block !important;
+        width: 100% !important;
+        white-space: normal !important;
+    }
+}
+
+.three-line-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Theme pills */
+    .btn-theme-pill {
+        padding: 5px 11px;
+        font-size: 13px;
+        border-radius: 7px;
+    }
+
+    .btn-theme-pill-default {
+        color: var(--text-primary);
+        background-color: var(--background-card-dark);
+        border: 1px solid var(--border-active);
+    }
+
+    .btn-theme-pill-yellow {
+        color: var(--text-primary);
+        background-color: var(--background-card-yellow);
+        border: 1px solid var(--border-yellow-1-active);
+    }
+
+    .btn-theme-pill-blue {
+        color: var(--text-primary);
+        background-color: var(--background-card-blue);
+        border: 1px solid var(--border-blue-1-active);
+    }
+
+    .btn-theme-pill-green {
+        color: var(--text-primary);
+        background-color: var(--background-card-green);
+        border: 1px solid var(--border-green-1-active);
+    }
+
+    .btn-theme-pill-red {
+        color: var(--text-primary);
+        background-color: var(--background-card-red-dark);
+        border: 1px solid var(--border-red-1-active);
+    }
+
+
+.w-fit {
+    width: fit-content;
+}
+
+.underline {
+    text-decoration: underline;
+} 
+
+.hover-underline:hover {
+    text-decoration: underline;
+} 
+
+.hover-remove-underline:hover {
+    text-decoration: none;
+}
+
+
+.seller-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #b02a2a;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.seller-avatar-header {
+    width: 36px;
+    height: 36px;
+    background-color: #b02a2a;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .seller-avatar-header {
+        width: 33px;
+        height: 33px; 
+    }
 }

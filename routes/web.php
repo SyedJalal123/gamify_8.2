@@ -127,9 +127,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/edit_game', [AdminDashboardController::class, 'edit_game'])->name('edit_game');
     Route::get('/items/{category}', [AdminDashboardController::class, 'items'])->name('items.category');
     Route::get('/item/add', [AdminDashboardController::class, 'add_item'])->name('item.add');
+    Route::get('/item/edit/{id}', [AdminDashboardController::class, 'edit_item'])->name('item.edit');
     Route::get('/get_attribute', [AdminDashboardController::class, 'get_attribute'])->name('attribute.get');
     Route::post('/item/store', [AdminDashboardController::class, 'store_item'])->name('item.store');
+    Route::post('/item/update', [AdminDashboardController::class, 'update_item'])->name('item.update');
+    Route::get('/orders', [AdminDashboardController::class, 'orders'])->name('orders');
+    Route::get('/change_order_status', [AdminDashboardController::class, 'change_order_status'])->name('change_order_status');
+    Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
+    Route::get('/change_user_status', [AdminDashboardController::class, 'change_user_status'])->name('change_user_status');
+    Route::get('/alerts', [AdminDashboardController::class, 'alerts'])->name('alerts');
+    Route::get('/disputes', [AdminDashboardController::class, 'disputes'])->name('disputes');
+    Route::get('/sellerRequests', [AdminDashboardController::class, 'sellerRequests'])->name('sellerRequests');
+    Route::get('/change_seller_status', [AdminDashboardController::class, 'change_seller_status'])->name('change_seller_status');
 
+    Route::get('/get-seller/{id}', function ($id) {
+        $seller = Seller::with('user')->where('id', $id)->first();
+
+        return response()->json($seller);
+    });
 });
 
 Route::get('/dashboard', function () {

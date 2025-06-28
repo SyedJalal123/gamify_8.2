@@ -7,7 +7,7 @@
 		<title>Gamify</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta charset="utf-8" />
-		<link rel="shortcut icon" href="{{asset('backend/assets/media/logos/favicon.ico')}}" />
+		{{-- <link rel="shortcut icon" href="{{asset('backend/assets/media/logos/favicon.ico')}}" /> --}}
 		<!--begin::Fonts-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
 		<!--end::Fonts-->
@@ -16,6 +16,7 @@
 		<!--end::Page Vendor Stylesheets-->
 		<!--begin::Global Stylesheets Bundle(used by all pages)-->
 		<link href="{{asset('backend/assets/plugins/global/plugins.bundle.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('css/colors.css') }}" rel="stylesheet" />
 		<link href="{{asset('backend/assets/css/style.bundle.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('css/toastr.css') }}" rel="stylesheet" />
         @yield('css')
@@ -24,12 +25,14 @@
                 background-color: #f1faff;
             }
         </style>
+        @vite(['resources/js/app.js'])
+        @livewireStyles
 		<!--end::Global Stylesheets Bundle-->
 	</head>
 	<!--end::Head-->
 
 	<!--begin::Body-->
-	<body id="kt_body" class="header-tablet-and-mobile-fixed aside-enabled">
+	<body id="kt_body" class="header-tablet-and-mobile-fixed aside-enabled light-theme">
 
 		<!--begin::Root-->
 		<div class="d-flex flex-column flex-root">
@@ -46,7 +49,8 @@
 						<div class="header-brand">
 							<!--begin::Logo-->
 							<a href="{{ url('admin/dashboard') }}">
-								<img alt="Logo" src="{{asset('backend/assets/media/logos/logo-1-dark.svg')}}" class="h-25px h-lg-25px" />
+                                <h2 class="fs-27" style="color: white;font-weight: 900;font-family: cursive;">Gamify</h2>
+								{{-- <img alt="Logo" src="{{asset('backend/assets/media/logos/logo-1-dark.svg')}}" class="h-25px h-lg-25px" /> --}}
 							</a>
 							<!--end::Logo-->
 							<!--begin::Aside minimize-->
@@ -119,46 +123,11 @@
 									<!--begin::Action wrapper-->
 									<div class="d-flex align-items-center">
 										<!--begin::Label-->
-										<span class="fs-7 fw-bolder text-gray-700 pe-4 text-nowrap d-none d-xxl-block">Sort By:</span>
-										<!--end::Label-->
-										<!--begin::Select-->
-										<select class="form-select form-select-sm form-select-solid w-100px w-xxl-125px" data-control="select2" data-placeholder="Latest" data-hide-search="true">
-											<option value=""></option>
-											<option value="1" selected="selected">Latest</option>
-											<option value="2">In Progress</option>
-											<option value="3">Done</option>
-										</select>
-										<!--end::Select-->
-									</div>
-									<!--end::Action wrapper-->
-									<!--begin::Action wrapper-->
-									<div class="d-flex align-items-center">
-										<!--begin::Separartor-->
-										<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
-										<!--end::Separartor-->
-										<!--begin::Label-->
-										<span class="fs-7 text-gray-700 fw-bolder d-none d-sm-block">Impact
-										<span class="d-none d-xxl-inline">Level</span>:</span>
-										<!--end::Label-->
-										<!--begin::NoUiSlider-->
-										<div class="d-flex align-items-center ps-4" id="kt_toolbar">
-											<div id="kt_toolbar_slider" class="noUi-target noUi-target-primary w-75px w-xxl-150px noUi-sm"></div>
-											<span id="kt_toolbar_slider_value" class="d-flex flex-center bg-light-primary rounded-circle w-35px h-35px ms-4 fs-7 fw-bolder text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Set impact level"></span>
-										</div>
-										<!--end::NoUiSlider-->
-										<!--begin::Separartor-->
-										<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
-										<!--end::Separartor-->
-									</div>
-									<!--end::Action wrapper-->
-									<!--begin::Action wrapper-->
-									<div class="d-flex align-items-center">
-										<!--begin::Label-->
 										<span class="fs-7 text-gray-700 fw-bolder pe-3 d-none d-xxl-block">Quick Tools:</span>
 										<!--end::Label-->
 										<!--begin::Actions-->
 										<div class="d-flex">
-											<!--begin::Action-->
+											{{-- <!--begin::Action-->
 											<a href="#" class="btn btn-sm btn-icon btn-icon-muted btn-active-icon-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends">
 												<!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
 												<span class="svg-icon svg-icon-1">
@@ -169,11 +138,11 @@
 												</span>
 												<!--end::Svg Icon-->
 											</a>
-											<!--end::Action-->
+											<!--end::Action--> --}}
 											<!--begin::Notifications-->
 											<div class="d-flex align-items-center">
 												<!--begin::Menu- wrapper-->
-												<a href="#" class="btn btn-sm btn-icon btn-icon-muted btn-active-icon-primary" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
+												<a href="#" class="btn btn-sm btn-icon btn-icon-muted btn-active-icon-primary position-relative" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
 													<!--begin::Svg Icon | path: icons/duotune/general/gen022.svg-->
 													<span class="svg-icon svg-icon-1">
 														<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -184,6 +153,7 @@
 														</svg>
 													</span>
 													<!--end::Svg Icon-->
+                                                    <span class="position-absolute top-0 right-4 text-primary count-notifications">{{ count_admin_unread_noti() }}</span>
 												</a>
 												<!--begin::Menu-->
 												<div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px" data-kt-menu="true">
@@ -191,18 +161,18 @@
 													<div class="d-flex flex-column bgi-no-repeat rounded-top" style="background-image:url('{{asset('backend/assets/media/misc/pattern-1.jpg')}}">
 														<!--begin::Title-->
 														<h3 class="text-white fw-bold px-9 mt-10 mb-6">Notifications
-														<span class="fs-8 opacity-75 ps-3">24 reports</span></h3>
+														<span class="fs-8 opacity-75 ps-3"><span class="count-notifications">{{ count_admin_unread_noti() }}</span> notifications</span></h3>
 														<!--end::Title-->
 														<!--begin::Tabs-->
 														<ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-bold px-9">
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab" href="#kt_topbar_notifications_3">Alerts</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_2">Orders</a>
+                                                            </li>
 															<li class="nav-item">
-																<a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_1">Alerts</a>
-															</li>
-															<li class="nav-item">
-																<a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab" href="#kt_topbar_notifications_2">Updates</a>
-															</li>
-															<li class="nav-item">
-																<a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_3">Logs</a>
+																<a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_1">Others</a>
 															</li>
 														</ul>
 														<!--end::Tabs-->
@@ -210,7 +180,73 @@
 													<!--end::Heading-->
 													<!--begin::Tab content-->
 													<div class="tab-content">
-														<!--begin::Tab panel-->
+
+                                                        <div class="tab-pane fade show active" id="kt_topbar_notifications_3" role="tabpanel">
+															<!--begin::Items-->
+															@livewire('AdminAlertComponent', ['type' => 'header'])
+															<!--end::Items-->
+															<!--begin::View more-->
+															<div class="py-3 text-center border-top">
+																<a href="{{ url('admin/alerts') }}" class="btn btn-color-gray-600 btn-active-color-primary">View All
+																<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+																<span class="svg-icon svg-icon-5">
+																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+																		<rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="black" />
+																		<path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="black" />
+																	</svg>
+																</span>
+																<!--end::Svg Icon--></a>
+															</div>
+															<!--end::View more-->
+														</div>
+
+                                                        <div class="tab-pane fade show" id="kt_topbar_notifications_2" role="tabpanel">
+															<!--begin::Items-->
+															<div class="scroll-y mh-325px my-5 px-8">
+                                                                @php $orders = App\Models\Order::with('categoryGame.game','categoryGame.category')->orderBy('id','desc')->paginate('6'); @endphp
+                                                                @foreach ($orders as $order)
+                                                                <!--begin::Item-->
+                                                                <div class="d-flex flex-stack py-4">
+                                                                    <!--begin::Section-->
+                                                                    <div class="d-flex align-items-center me-2">
+                                                                        <!--begin::Code-->
+                                                                        <img src="{{asset($order->categoryGame->game->image)}}" class="mt-1 me-3" width="30" height="30" alt="">
+                                                                        {{-- <span class="w-70px badge badge-light-success me-4">200 OK</span> --}}
+                                                                        <div class="d-flex flex-column">
+                                                                            <a href="{{ url('admin/orders') }}" class="title d-flex flex-row align-items-center">
+                                                                                <div class="fs-13">New Order</div>
+                                                                            </a>
+                                                                            <div class="d-flex flex-column">
+                                                                                <div class="opacity-50">{{ $order->categoryGame->game->name }} - {{ $order->categoryGame->category->name }}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {{-- <a href="#" class="text-gray-800 text-hover-primary fw-bold">New order</a> --}}
+                                                                    </div>
+                                                                    <!--end::Section-->
+                                                                    <!--begin::Label-->
+                                                                    <span class="badge badge-light fs-8">{{shortTimeAgo($order->created_at)}}</span>
+                                                                    <!--end::Label-->
+                                                                </div>
+                                                                <!--end::Item-->
+                                                                @endforeach
+                                                            </div>
+
+															<!--end::Items-->
+															<!--begin::View more-->
+															<div class="py-3 text-center border-top">
+																<a href="{{ url('admin/orders') }}" class="btn btn-color-gray-600 btn-active-color-primary">View All
+																<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+																<span class="svg-icon svg-icon-5">
+																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+																		<rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="black" />
+																		<path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="black" />
+																	</svg>
+																</span>
+																<!--end::Svg Icon--></a>
+															</div>
+															<!--end::View more-->
+														</div>
+                                                        
 														<div class="tab-pane fade" id="kt_topbar_notifications_1" role="tabpanel">
 															<!--begin::Items-->
 															<div class="scroll-y mh-325px my-5 px-8">
@@ -450,260 +486,7 @@
 															</div>
 															<!--end::View more-->
 														</div>
-														<!--end::Tab panel-->
-														<!--begin::Tab panel-->
-														<div class="tab-pane fade show active" id="kt_topbar_notifications_2" role="tabpanel">
-															<!--begin::Wrapper-->
-															<div class="d-flex flex-column px-9">
-																<!--begin::Section-->
-																<div class="pt-10 pb-0">
-																	<!--begin::Title-->
-																	<h3 class="text-dark text-center fw-bolder">Get Pro Access</h3>
-																	<!--end::Title-->
-																	<!--begin::Text-->
-																	<div class="text-center text-gray-600 fw-bold pt-1">Outlines keep you honest. They stoping you from amazing poorly about drive</div>
-																	<!--end::Text-->
-																	<!--begin::Action-->
-																	<div class="text-center mt-5 mb-9">
-																		<a href="#" class="btn btn-sm btn-primary px-6" data-bs-toggle="modal" data-bs-target="#kt_modal_upgrade_plan">Upgrade</a>
-																	</div>
-																	<!--end::Action-->
-																</div>
-																<!--end::Section-->
-																<!--begin::Illustration-->
-																<div class="text-center px-4">
-																	<img class="mw-100 mh-200px" alt="image" src="{{asset('backend/assets/media/illustrations/sketchy-1/1.png')}}" />
-																</div>
-																<!--end::Illustration-->
-															</div>
-															<!--end::Wrapper-->
-														</div>
-														<!--end::Tab panel-->
-														<!--begin::Tab panel-->
-														<div class="tab-pane fade" id="kt_topbar_notifications_3" role="tabpanel">
-															<!--begin::Items-->
-															<div class="scroll-y mh-325px my-5 px-8">
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-success me-4">200 OK</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">New order</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Just now</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">New customer</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">2 hrs</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-success me-4">200 OK</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Payment process</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">5 hrs</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Search query</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">2 days</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-success me-4">200 OK</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">API connection</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">1 week</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-success me-4">200 OK</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Database restore</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Mar 5</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">System update</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">May 15</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Server OS update</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Apr 3</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">API rollback</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Jun 30</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Refund process</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Jul 10</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Withdrawal process</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Sep 10</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex flex-stack py-4">
-																	<!--begin::Section-->
-																	<div class="d-flex align-items-center me-2">
-																		<!--begin::Code-->
-																		<span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-																		<!--end::Code-->
-																		<!--begin::Title-->
-																		<a href="#" class="text-gray-800 text-hover-primary fw-bold">Mail tasks</a>
-																		<!--end::Title-->
-																	</div>
-																	<!--end::Section-->
-																	<!--begin::Label-->
-																	<span class="badge badge-light fs-8">Dec 10</span>
-																	<!--end::Label-->
-																</div>
-																<!--end::Item-->
-															</div>
-															<!--end::Items-->
-															<!--begin::View more-->
-															<div class="py-3 text-center border-top">
-																<a href="../../demo8/dist/pages/profile/activity.html" class="btn btn-color-gray-600 btn-active-color-primary">View All
-																<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-																<span class="svg-icon svg-icon-5">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																		<rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="black" />
-																		<path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="black" />
-																	</svg>
-																</span>
-																<!--end::Svg Icon--></a>
-															</div>
-															<!--end::View more-->
-														</div>
-														<!--end::Tab panel-->
+														
 													</div>
 													<!--end::Tab content-->
 												</div>
@@ -711,7 +494,7 @@
 												<!--end::Menu wrapper-->
 											</div>
 											<!--end::Notifications-->
-											<!--begin::Quick links-->
+											{{-- <!--begin::Quick links-->
 											<div class="d-flex align-items-center">
 												<!--begin::Menu wrapper-->
 												<a href="#" class="btn btn-sm btn-icon btn-icon-muted btn-active-icon-primary" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
@@ -823,7 +606,7 @@
 												<!--end::Menu-->
 												<!--end::Menu wrapper-->
 											</div>
-											<!--end::Quick links-->
+											<!--end::Quick links--> --}}
 										</div>
 										<!--end::Actions-->
 									</div>
@@ -840,7 +623,7 @@
 						<!--begin::Post-->
 						<div class="post d-flex flex-column-fluid" id="kt_post">
 							<!--begin::Container-->
-							<div id="kt_content_container" class="container-xxl">
+							<div id="kt_content_container" @if(!isset($full_width)) class="container-xxl" @else class="px-4 w-100" @endif>
 								@yield('content')
 							</div>
 							<!--end::Container-->
@@ -848,33 +631,6 @@
 						<!--end::Post-->
 					</div>
 					<!--end::Content-->
-					<!--begin::Footer-->
-					<div class="footer py-4 d-flex flex-lg-column" id="kt_footer">
-						<!--begin::Container-->
-						<div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
-							<!--begin::Copyright-->
-							<div class="text-dark order-2 order-md-1">
-								<span class="text-muted fw-bold me-1">2021©</span>
-								<a href="https://keenthemes.com" target="_blank" class="text-gray-800 text-hover-primary">Keenthemes</a>
-							</div>
-							<!--end::Copyright-->
-							<!--begin::Menu-->
-							<ul class="menu menu-gray-600 menu-hover-primary fw-bold order-1">
-								<li class="menu-item">
-									<a href="https://keenthemes.com" target="_blank" class="menu-link px-2">About</a>
-								</li>
-								<li class="menu-item">
-									<a href="https://keenthemes.com/support" target="_blank" class="menu-link px-2">Support</a>
-								</li>
-								<li class="menu-item">
-									<a href="https://1.envato.market/EA4JP" target="_blank" class="menu-link px-2">Purchase</a>
-								</li>
-							</ul>
-							<!--end::Menu-->
-						</div>
-						<!--end::Container-->
-					</div>
-					<!--end::Footer-->
 				</div>
 				<!--end::Wrapper-->
 			</div>
@@ -2690,6 +2446,10 @@
 		<!--end::Javascript-->
 
         <script>
+            window.Laravel = {
+                user: @json(auth()->user())
+            };
+
             @session('success')
                 toastr.success('{{ $value }}');
             @endsession
@@ -2709,6 +2469,53 @@
             @session('error')
                 toastr.error('{{ $value }}');
             @endsession
+        </script>
+
+        @livewireScripts
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const userId = window.Laravel.user.id; // Pass user ID from Laravel to JS
+                let unreadCount = parseInt(document.querySelector('.count-notifications').textContent) || 0;
+
+
+                // Initialize Echo private channel listener for user notifications
+                Echo.private(`App.Models.User.${userId}`)
+                    .notification((notification) => {  
+                        if(notification.category == 'admin_notifications'){
+                            // Play sound (handle autoplay restrictions)
+                            // const audio = new Audio('/sounds/notification.mp3');
+                            // audio.play().catch(err => console.warn('Audio blocked:', err));
+                            
+                            Livewire.dispatch('notification-received');
+
+                            // // Increment the unread notification count
+                            // unreadCount++;
+                            // const countElements = document.querySelectorAll('.count-notifications');
+                            // countElements.forEach(countElement => {
+                            //     countElement.textContent = unreadCount; // Update the unread count
+                            // });
+                        }
+                });
+                
+
+            });
+
+            Livewire.on('notifications-count-update', (e) => {
+
+                $('.count-notifications').text(e.count);
+
+                // if(e.count == 0){
+                //     $('#count-header-button').addClass('d-none');
+                // }else {
+                //     $('#count-header-button').removeClass('d-none');
+                // }
+
+            });
+
+            function markNotificationAsRead(notificationId) {
+                Livewire.dispatch('mark-as-read', [notificationId]);
+            }
         </script>
 	</body>
 	<!--end::Body-->

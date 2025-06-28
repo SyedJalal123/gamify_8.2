@@ -77,7 +77,7 @@
         @foreach ($chatMessages as $message)
             {{-- @if($message->sender_id == auth()->id()) --}}
                 <div class="d-flex @if($message->sender_id == auth()->id()) justify-content-end @else justify-content-start @endif mb-4">
-                    <div class="msg_cotainer @if($message->sender_id == auth()->id()) msg_cotainer_send @endif p-0">
+                    <div class="msg_cotainer @if($message->sender_id == auth()->id() || (auth()->user()->role == 'admin' && $message->sender_id == $buyerRequestConversation->buyer_id)) msg_cotainer_send @endif p-0">
                         @if (str_starts_with($message->file_type, 'image/') || str_starts_with($message->file_type, 'video/'))
                             @if (str_starts_with($message->file_type, 'video/'))
                                 <div class="position-relative d-inline-block cursor-pointer" style="width: 312px; height: 170px;"data-toggle="modal" 
@@ -113,7 +113,19 @@
                             </a>
                         @endif
                         <div class="message-box d-flex flex-row justify-content-between align-items-end">
-                            <span class="message-formatting">{{$message->message}}</span>     
+                            <span class="message-formatting">
+                                @if (auth()->user()->role == 'admin')
+                                    @if($message->sender_id !== auth()->user()->id)
+                                    <span class="text-black-50-2"><i>{{$message->sender_id == $buyerRequestConversation->seller_id ? 'Seller' : 'Buyer'}}:</i></span>
+                                    @endif
+                                @endif
+
+                                @if ($message->sender->role == 'admin' && auth()->user()->role != 'admin')
+                                    <span class="text-black-50-2"><i>Gamify: </i></span>
+                                @endif
+                                
+                                {{$message->message}}
+                                </span>     
                             @if($message->sender_id == auth()->id())
                             <i class="fs-10 fw-bold px-1 text-black-40" style="letter-spacing: -2.5px;">✓@if($message->read_at !== null)✓@endif</i>
                             @endif

@@ -224,7 +224,8 @@ class CatalogController extends Controller
     public function itemDetail(Item $item)
     {
         $item->load(['attributes','categoryGame.game', 'categoryGame.attributes']);
-
+        // dd($item->attributes['0']->pivot->categoryGameAttribute);
+        
         // Detect if category is explicitly 'Gold'
         $isCurrency = strtolower($item->categoryGame->category->id) == 1;
         $isTopup = strtolower($item->categoryGame->category->id) == 3;

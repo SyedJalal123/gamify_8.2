@@ -27,6 +27,10 @@ class ServiceController extends Controller
 {
     public function store(Request $request) {
 
+        if(auth()->user()->role == 'admin') {
+            return redirect()->back()->with('error', 'You can\'t perform this action.');
+        }
+
         // dd($request->all());
         try {
             // Validate the input
@@ -102,6 +106,10 @@ class ServiceController extends Controller
 
     public function create_offer(Request $request) {
         // dd($request->all());
+
+        if(auth()->user()->role == 'admin') {
+            return redirect()->back()->with('error', 'You can\'t perform this action.');
+        }
 
         $request->validate([
             'buyer_request_id' => 'required|exists:buyer_requests,id',

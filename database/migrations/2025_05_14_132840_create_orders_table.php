@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('order_status')->default('pending delivery');
             $table->boolean('disputed')->default('0');
 
+            $table->integer('dispute_won')->nullable();
             $table->integer('cancelation_reason')->nullable();
             $table->text('cancelation_details')->nullable();
             $table->integer('dispute_reason')->nullable();

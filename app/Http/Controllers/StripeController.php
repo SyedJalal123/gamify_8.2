@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Game;
 use App\Models\Attribute;
 use App\Models\BuyerRequest;
+use App\Models\User;
 use App\Models\RequestOffer;
 use App\Models\BuyerRequestConversation;
 use App\Events\GroupServiceSellerEvent;
@@ -30,6 +31,10 @@ class StripeController extends Controller
 {
     public function create(Request $request)
     {
+        if(auth()->user()->role == 'admin') {
+            return redirect()->back()->with('error', 'You can\'t perform this action.');
+        }
+        
         $amountInCents = (int) round($request->total_price * 100); // 65.543 → 6554
 
         
@@ -205,17 +210,31 @@ class StripeController extends Controller
             }else {
                 $seller = $item->seller;
                 $categoryGame = $item->categoryGame;
-            }
 
+            }
+            $admins = User::where('role','admin')->get();
+            
             $data = [
                 'title'     => 'New Order',
                 'data1'     => $categoryGame->game->name.' - '.$categoryGame->category->name,
-                'data2'     => 'Buyer: '.auth()->user()->name,
+                'data2'     => 'Buyer: '.auth()->user()->username,
                 'link'      => url('order/' . $order->order_id),
                 'game_id'   => $categoryGame->game_id,
+                'admin'     => '0',
+            ];
+
+            $data1 = [
+                'title'     => 'New Order',
+                'data1'     => $categoryGame->game->name.' - '.$categoryGame->category->name,
+                'data2'     => 'Buyer: '.auth()->user()->username,
+                'link'      => url('order/' . $order->order_id),
+                'game_id'   => $categoryGame->game_id,
+                'admin'     => '1',
             ];
 
             Notification::send($seller, new BoostingOfferNotification($data));
+
+            // Notification::send($admins, new BoostingOfferNotification($data1));
 
             DB::commit();
             return $order;

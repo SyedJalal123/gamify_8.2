@@ -3,10 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\User;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
+use App\Notifications\UserOrderDisputedNotification;
+use App\Notifications\OrderDisputedNotification;
 use App\Events\OrderEvent;
+use Illuminate\Support\Facades\Notification;
 
 class SellerVerificationComponent extends Component
 {
@@ -31,6 +35,7 @@ class SellerVerificationComponent extends Component
     #[On('deliverOrder')]
     public function deliverOrder($orderStatus)
     {
+
         if (is_null($this->order->delivered_at)) {
             $this->order->update([
                 'delivered_at' => now(),
@@ -40,6 +45,36 @@ class SellerVerificationComponent extends Component
             $this->order->update([
                 'order_status' => $orderStatus,
             ]);
+        }
+
+        if($this->order->disputed == 1 && $orderStatus == 'received'){
+            $this->order->update([
+                'dispute_won' => $this->order->seller_id,
+            ]);
+
+
+            $data = [
+                'title'     => 'Dispute won',
+                'data1'     => $this->order->categoryGame->game->name. '-' .$this->order->categoryGame->category->name,
+                'data2'     => '',
+                'game_id'   => $this->order->categoryGame->game->id,
+                'link'      => url('order/' . $this->order->order_id),
+                'category'  => 'notification',
+            ];
+
+            $data1 = [
+                'title'     => 'Dispute lost',
+                'data1'     => $this->order->categoryGame->game->name. '-' .$this->order->categoryGame->category->name,
+                'data2'     => '',
+                'link'      => url('order/' . $this->order->order_id),
+                'game_id'   => $this->order->categoryGame->game->id,
+                'category'     => 'notification',
+            ];
+
+            Notification::send($this->conversation->seller, new BoostingOfferNotification($data));
+
+            if(auth()->user()->role == 'admin')
+            Notification::send($this->conversation->buyer, new BoostingOfferNotification($data1));
         }
 
         $this->order->refresh(); // ensure latest data
@@ -58,6 +93,35 @@ class SellerVerificationComponent extends Component
                 'cancelation_details' => $details,
                 'order_status' => $orderStatus,
             ]);
+
+            if($this->order->disputed == 1){
+                $this->order->update([
+                    'dispute_won' => $this->order->buyer_id,
+                ]);
+
+                $data = [
+                    'title'     => 'Dispute won',
+                    'data1'     => $this->order->categoryGame->game->name. ' - ' .$this->order->categoryGame->category->name,
+                    'data2'     => '',
+                    'link'      => url('order/' . $this->order->order_id),
+                    'game_id'   => $this->order->categoryGame->game->id,
+                    'category'  => 'notification',
+                ];
+
+                $data1 = [
+                    'title'     => 'Dispute lost',
+                    'data1'     => $this->order->categoryGame->game->name. ' - ' .$this->order->categoryGame->category->name,
+                    'data2'     => '',
+                    'link'      => url('order/' . $this->order->order_id),
+                    'game_id'   => $this->order->categoryGame->game->id,
+                    'category'  => 'notification',
+                ];
+
+                Notification::send($this->conversation->buyer, new BoostingOfferNotification($data));
+                
+                if(auth()->user()->role == 'admin')
+                Notification::send($this->conversation->seller, new BoostingOfferNotification($data1));
+            }
         }
 
         $this->order->refresh(); // ensure latest data
@@ -76,6 +140,29 @@ class SellerVerificationComponent extends Component
                 'dispute_details' => $details,
                 'disputed' => 1,
             ]);
+
+            $admins = User::where('role','admin')->get();
+
+            $data = [
+                'title'     => 'Order Dispute',
+                'data1'     => $this->order->categoryGame->game->name. ' - ' .$this->order->categoryGame->category->name,
+                'reason'     => $reason,
+                'link'      => url('order/' . $this->order->order_id),
+                'admin'     => '1',
+            ];
+
+            $data1 = [
+                'title'     => 'Dispute created',
+                'data1'     => $this->order->categoryGame->game->name. ' - ' .$this->order->categoryGame->category->name,
+                'data2'     => 'Buyer: '.$this->conversation->seller->username,
+                'link'      => url('order/' . $this->order->order_id),
+                'game_id'   => $this->order->categoryGame->game->id,
+                'category'  => 'notification',
+            ];
+
+            Notification::send($admins, new OrderDisputedNotification($data));
+            Notification::send($this->conversation->seller, new BoostingOfferNotification($data1));
+
         }
         $this->order->refresh(); // ensure latest data
 

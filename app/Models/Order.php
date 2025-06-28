@@ -27,6 +27,7 @@ class Order extends Model
         'disputed',
         'cancelation_reason',
         'cancelation_details',
+        'dispute_won',
         'dispute_reason',
         'dispute_details',
         'feedback',

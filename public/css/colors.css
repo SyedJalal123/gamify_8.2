@@ -48,21 +48,50 @@ body.dark-theme {
 }
 
 body.light-theme {
-    --background-body-1: #ffffff;
-    --background-body-2: #f6f6f6;
+    --background-body-1: #1b222e;
+    --background-body-2: #313e54;
 
     --alice-blue: aliceblue;
     --text-default: #a782e9;
-    --text-primary: #14131a;
-    --text-primary-2: #14131a;
+    --text-primary: #7e8299;
+    --text-primary-2: #dddddd;
     --text-secondary: #8a869d;
-    --brand-dark: #14131a;
     --text-grey: #898a93;
+    --brand-marine: #4783ff;
+    --brand-marine-light: #dcf5ff;
+    --brand-dark: #14131a;
+    --brand-teal: #20c997;
+    --brand-emerald: #00e4c9;
+    --brand-cherry: #e81b16;
+    --brand-cherry-light: #e81b167a;
+    --brand-yellow-1: #ffc950;
 
-    --background-card: #f6f6f6;
+    --background-card: rgba(167,130,233,0.03);
+    --background-card-dark: #a782e926;
+    --background-card-yellow: rgba(233, 194, 130, 0.082);
+    --background-card-yellow-dark: rgb(233 193 130 / 15%);
+    --background-card-blue: #4183e517;
+    --background-card-blue-dark: #4183e526;
+    --background-card-red: #e5414103;
+    --background-card-red-dark: #e5414118;
+    --background-card-green: rgba(130, 233, 133, 0.027);
+    --background-card-green-dark: rgba(130, 233, 133, 0.116);
+    --background-card-white: rgb(255 255 255 / 3%);
+    --background-card-white-dark: #a9a9a926;
 
-    --border-1: 1px solid rgba(167,130,233,0.06);
-    --border-yellow-1: 1px solid rgb(233 203 130 / 50%);
-    --border-blue-1: 1px solid rgb(74 151 219 / 50%);
-    --border-active: 1px solid rgba(167,130,233,0.5);
+    --border-1: rgba(167,130,233,0.06);
+    --border-active: rgba(167,130,233,0.5);
+    --border-yellow-1: rgba(233, 204, 130, 0.26);
+    --border-yellow-1-active: rgb(233 203 130 / 50%);
+    --border-blue-1: rgba(74, 151, 219, 0.226);
+    --border-blue-1-active: rgb(74 151 219 / 50%);
+    --border-red-1: rgb(219 74 74 / 10%);
+    --border-red-1-active: rgba(219, 74, 74, 0.5);
+    --border-white-1: rgb(255 255 255 / 6%);
+    --border-white-1-active: rgb(135 135 135 / 50%);
+    --border-green-1: rgba(154, 233, 130, 0.212);
+    --border-green-1-active: rgb(154 233 130 / 50%);
+    --dividor-border: rgba(167, 130, 233, 0.06);
+
+    --shadow-1: #0000002e;
 }

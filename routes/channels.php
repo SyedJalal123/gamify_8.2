@@ -21,6 +21,10 @@ Broadcast::channel('chat-channel.{recieverId}', function ($user, $recieverId) {
     return (int) $user->id === (int) $recieverId;
 });
 
+Broadcast::channel('admin-chat-channel', function ($user) {
+    return $user->role === 'admin';
+});
+
 Broadcast::channel('order-chat-channel.{conversationId}', function ($user, $conversationId) {
     return \App\Models\BuyerRequestConversation::where('id', $conversationId)->exists();
 });
