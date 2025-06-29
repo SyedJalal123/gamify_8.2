@@ -2446,6 +2446,8 @@
 		<!--end::Javascript-->
 
         <script>
+            const mainUrl = "{{ url('/') }}";
+
             window.Laravel = {
                 user: @json(auth()->user())
             };

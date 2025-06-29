@@ -64,9 +64,9 @@
                     @if ($notification->read_at == null)
                         <span wire:click="markAsRead('{{ $notification->id }}')" class="d-none" id="mark-read-{{ $notification->id }}"></span>
                         
-                        <span class="fs-13 underline position-absolute right-0 text-theme-primary cursor-pointer"
+                        <span class="fs-13 hover-underline position-absolute right-0 @if($type == 'header') top--9px @endif text-theme-primary cursor-pointer"
                         onclick="markNotificationAsRead('{{ $notification->id }}'); event.preventDefault(); event.stopImmediatePropagation();"
-                        >Mark&nbsp;as&nbsp;Read</span>
+                        ><i class="bi bi-x fs-20"></i></span>
                     @else
                         <i class="bi bi-check2 text-theme-secondary"></i>
                     @endif

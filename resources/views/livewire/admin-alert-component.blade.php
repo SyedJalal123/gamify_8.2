@@ -74,7 +74,7 @@
                     {{-- @php $order = getOrder('$notification->data['data1']'); @endphp --}}
                     <a href="{{ url($notification->data['link']) }}" @if($type == 'header') wire:click="markAsRead('{{ $notification->id }}');" @endif 
                         {{ $notification->data['title'] == 'Order Dispute' ? 'target="_blank"' : '' }}
-                        class="text-gray-800 text-hover-primary fs-12 fw-bold">{!! $notification->data['data1'] !!}</a>
+                        class="text-gray-800 text-hover-primary fs-11 fw-bold">{!! $notification->data['data1'] !!}</a>
                     {{-- <a href="#" class="text-gray-800 text-hover-primary fw-bold">New order</a> --}}
                 </div>
                 <!--end::Section-->

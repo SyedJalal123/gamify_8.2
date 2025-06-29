@@ -1185,8 +1185,7 @@ class AdminDashboardController extends Controller
                                 </a>
                             </div>
                             <div class="menu-item px-3">
-                                Instead of onclick here show a modal and add reasons in it and show that reason to seller if not rejected
-                                <a href="#" onclick="change_seller_status('.$data->id.', 2)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                <a href="#" onclick="reject_seller('.$data->id.')" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
                                     Reject Seller
                                 </a>
                             </div>
@@ -1258,18 +1257,20 @@ class AdminDashboardController extends Controller
         }
 
         if($request->sellerStatus == 1){
-            $title_data = 'Now you are verfied as seller';
+            $title_data = 'Your seller account has been successfully verified.';
+            $url = url('items/create');
         } 
         elseif ($request->sellerStatus == 2)
         {
-            $title_data = 'You are not verfied as seller';
+            $title_data = 'Seller verification failed';
+            $url = url('seller-verification');
         }
 
         $data = [
             'title' => $title_data,
-            'data1' => '',
+            'data1' => $request->reason,
             'data2' => '',
-            'link' => '#',
+            'link' => $url,
             'game_id' => 0,
         ];
 

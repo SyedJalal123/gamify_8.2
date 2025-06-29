@@ -151,13 +151,18 @@
             });
         });
 
-        function change_seller_status(sellerId, sellerStatus) {
-             $.ajax({
+        function change_seller_status(sellerId, sellerStatus, reason = null) {
+            if(reason != null) {
+                reason = $('input[name="cancelation_reason"]:checked').val();
+            }
+
+            $.ajax({
                 url: '/admin/change_seller_status',
                 method: 'GET',
                 data: { 
                     sellerId: sellerId, 
                     sellerStatus: sellerStatus, 
+                    reason: reason,
                 },
                 success: function (response) {
                     const pill = $(`#user-status-${response['id']}`);
@@ -183,15 +188,93 @@
             });
         }
 
+        function reject_seller(id, reject = 0) {
+
+            if(reject == 0){
+                $('#kt_modal_reject_seller').modal('show');
+                $('#kt_modal_reject_seller .modal-body #modal_seller_id').val(id);
+            }
+            else if(reject == 1){
+                $('#kt_modal_reject_seller').modal('hide');
+                var seller_id = $('#kt_modal_reject_seller .modal-body #modal_seller_id').val();
+                change_seller_status(seller_id, 2, 1);
+            }
+        }
+
         $(document).on('click', '.show-details', function () {
             let sellerId = $(this).data('id');
 
             $.get(`/admin/get-seller/${sellerId}`, function (seller) {
-                console.log(seller);
+                if (seller.verified == 0) {
+                    var verified = '<span class="badge badge-warning">Pending</span>';
+                } else if (seller.verified == 1) {
+                    var verified = '<span class="badge badge-success">Verified</span>';
+                } else if (seller.verified == 2) {
+                    var verified = '<span class="badge badge-danger">Rejected</span>';
+                } else if (seller.verified == 3) {
+                    var verified = '<span class="badge badge-danger">Banned</span>';
+                }
+
+                const dob = new Date(seller.dob);
+
+                const year = dob.getFullYear();
+                const month = dob.toLocaleString('en-US', { month: 'short' }); // "Jan", "Feb", etc.
+                const day = String(dob.getDate()).padStart(2, '0');
+
+                const formattedDob = `${year}-${month}-${day}`;
+
                 // Now you can use the seller data
                 $('#kt_modal_edit_game .modal-body').html(`
-                    <p>Name: ${seller.user.name}</p>
-                    <p>Email: ${seller.user.email}</p>
+                    <div class="card-body px-9 ">
+
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-bold text-muted">Full Name</label>
+                            <div class="col-lg-8">
+                                <span class="fw-bolder fs-6 text-gray-800">${seller.first_name} ${seller.middle_name ?? ''} ${seller.last_name}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-bold text-muted">Email</label>
+                            <div class="col-lg-8">
+                                <span class="fw-bolder fs-6 text-gray-800">${seller.user.email}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-bold text-muted">Date of Birth</label>
+                            <div class="col-lg-8">
+                                <span class="fw-bolder fs-6 text-gray-800">${formattedDob}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-bold text-muted">Address</label>
+                            <div class="col-lg-8">
+                                <span class="fw-bolder fs-6 text-gray-800">${seller.street_address} ${seller.postal_code}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <label class="col-lg-4 fw-bold text-muted">Nationality</label>
+                            <div class="col-lg-8">
+                                <span class="fw-bolder fs-6 text-gray-800">${seller.nationality}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <div class="col-lg-12">
+                                <img src="${mainUrl}/${seller.main_photo_1}" style="width:100%;" onclick="window.open(this.src, '_blank')" class="cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="row mb-7">
+                            <div class="col-lg-12">
+                                <img src="${mainUrl}/${seller.main_photo_2}" style="width:100%;" onclick="window.open(this.src, '_blank')" class="cursor-pointer">
+                            </div>
+                        </div>
+
+                    </div>
                 `);
                 $('#kt_modal_edit_game').modal('show');
             });
@@ -199,7 +282,64 @@
         });
     </script>
 
-    <!--begin::Modal - Edit game-->
+    <!--begin::Modal - Reject Seller-->
+    <div class="modal fade" id="kt_modal_reject_seller" tabindex="-1" aria-hidden="true">
+        <!--begin::Modal dialog-->
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <!--begin::Modal content-->
+            <div class="modal-content">
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_reject_seller_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Rejection reasons</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                    <input type="hidden" id="modal_seller_id">
+                    <div x-data="" class="d-flex flex-column fs-14">
+                        <div class="form-check mb-2 d-flex align-items-center">
+                            <input type="radio" name="cancelation_reason" value="Please check your information and try again." class="w-auto me-2" checked="" id="radio_account_incorrect_info">
+                            <label class="m-0" for="radio_account_incorrect_info">Please check your information and try again.</label>
+                        </div>
+                        {{-- <div class="form-check textarea-box w-100 mb-2">
+                            <div class="textarea-head d-flex flex-row justify-content-between">
+                                <label>Share details</label>
+                                <span class="text-black-70"> 0/500</span>
+                            </div>
+                            <textarea id="cancelation_details" class="textarea input-theme-1 form-control" placeholder="Tell us what happened" aria-label="Tell us what happened" maxlength="500" required=""></textarea>
+                        </div> --}}
+                    </div>
+                </div>
+                <!--end::Modal body-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="
+                            reject_seller(0, 1);
+                            $('#kt_modal_reject_seller').modal('hide'); // jQuery-based close
+                    " class="btn btn-danger">Reject</button>
+                </div>
+            </div>
+            <!--end::Modal content-->
+        </div>
+        <!--end::Modal dialog-->
+    </div>
+    <!--end::Modal - Reject Seller-->
+
+    <!--begin::Modal - Seller Details-->
     <div class="modal fade" id="kt_modal_edit_game" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -225,7 +365,7 @@
                 </div>
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
-                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <div class="modal-body scroll-y mx-5 mx-xl-15 mx-7">
                     
                 </div>
                 <!--end::Modal body-->
@@ -234,5 +374,5 @@
         </div>
         <!--end::Modal dialog-->
     </div>
-    <!--end::Modal - Edit game-->
+    <!--end::Modal - Seller Details-->
 @endsection

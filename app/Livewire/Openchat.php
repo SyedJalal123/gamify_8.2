@@ -101,7 +101,6 @@ class Openchat extends Component
             }else {
                 broadcast(new MessageSentEvent($sentMessage, $this->reciever->id));
                 broadcast(new AdminMessageSentEvent($sentMessage));
-                
             }
 
             $this->dispatch('message-updated');
