@@ -199,6 +199,38 @@
             @yield('js')
         </div>
         
+        <script>
+            var botmanWidget = {
+                aboutText: 'Support Bot',
+                introMessage: "", // 🔥 Remove default message
+                placeholderText: "Type a message...",
+                mainColor: "#0d6efd",
+                title: "Support Chat",
+                chatServer: "{{ url('/botman') }}",
+                frameEndpoint: '/botman/chat'
+            };
+        </script>
+
+        <!-- Load BotMan Widget -->
+        <script src="{{ asset('js/widget.js') }}" defer></script>
+
+        <!-- Auto Trigger a Button at Startup -->
+        <script>
+
+            function waitForWidget() {
+                if (typeof botmanChatWidget !== 'undefined') {
+                    console.log("✅ BotManChatWidget loaded");
+                    botmanChatWidget.whisper("/init");
+                    botmanChatWidget.close();
+                } else {
+                    console.warn("⏳ Waiting for BotManChatWidget...");
+                    setTimeout(waitForWidget, 500); // keep trying until it loads
+                }
+            }
+
+            window.addEventListener('load', waitForWidget);
+        </script>
+
         {{-- Notification Sound --}}
         @auth
         <script>
@@ -271,6 +303,7 @@
                     Livewire.navigate(window.location);
                 });
             });
+            
         </script>
         @endauth
             

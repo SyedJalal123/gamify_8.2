@@ -23,6 +23,9 @@ use App\Http\Controllers\StripeController;
 use App\Notifications\Testing;
 use App\Notifications\BoostingOfferNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Http\Controllers\BotManController;
+use App\BotMan\Conversations\SupportConversation;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -116,6 +119,8 @@ Route::middleware('verified')->group(function () {
     Route::post('/update_account', [SellerDashboardController::class, 'update_account'])->name('seller-dashboard.update_account')->middleware(['auth']);
     Route::get('/toggle-email-notification', [SellerDashboardController::class, 'toggle_email_notification'])->name('seller-dashboard.toggle_email_notification')->middleware(['auth']);
     Route::get('/user-profile/{username}', [SellerDashboardController::class, 'profile'])->name('profile'); 
+
+    Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
 
 });
 
