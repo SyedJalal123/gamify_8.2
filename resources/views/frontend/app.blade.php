@@ -43,7 +43,7 @@
         <div id="dynamic-css">
             @yield('css')
         </div>
-
+        
         @vite(['resources/js/app.js'])
         @livewireStyles
     </head>
@@ -199,37 +199,78 @@
             @yield('js')
         </div>
         
-        <script>
-            var botmanWidget = {
-                aboutText: 'Support Bot',
-                introMessage: "", // 🔥 Remove default message
-                placeholderText: "Type a message...",
-                mainColor: "#0d6efd",
-                title: "Support Chat",
-                chatServer: "{{ url('/botman') }}",
-                frameEndpoint: '/botman/chat'
-            };
-        </script>
 
         <!-- Load BotMan Widget -->
-        <script src="{{ asset('js/widget.js') }}" defer></script>
+            {{-- <script>
+                var botmanWidget = {
+                    aboutText: 'Support Bot',
+                    introMessage: "", // 🔥 Remove default message
+                    placeholderText: "Type a message...",
+                    mainColor: "#0d6efd",
+                    title: "Support Chat",
+                    chatServer: "{{ url('/botman') }}",
+                    frameEndpoint: '/botman/chat'
+                };
+            </script>
+            
+            <script src="{{ asset('js/widget.js') }}" defer></script>
 
-        <!-- Auto Trigger a Button at Startup -->
-        <script>
+            <!-- Auto Trigger a Button at Startup -->
+            <script>
 
-            function waitForWidget() {
-                if (typeof botmanChatWidget !== 'undefined') {
-                    console.log("✅ BotManChatWidget loaded");
-                    botmanChatWidget.whisper("/init");
-                    botmanChatWidget.close();
-                } else {
-                    console.warn("⏳ Waiting for BotManChatWidget...");
-                    setTimeout(waitForWidget, 500); // keep trying until it loads
+                function waitForWidget() {
+                    if (typeof botmanChatWidget !== 'undefined') {
+                        console.log("✅ BotManChatWidget loaded");
+                        botmanChatWidget.whisper("/init");
+                        botmanChatWidget.close();
+                    } else {
+                        console.warn("⏳ Waiting for BotManChatWidget...");
+                        setTimeout(waitForWidget, 500); // keep trying until it loads
+                    }
                 }
-            }
 
-            window.addEventListener('load', waitForWidget);
+                window.addEventListener('load', waitForWidget);
+            </script> --}}
+        <!-- Load BotMan Widget -->
+
+
+        <script>
+            // document.addEventListener("DOMContentLoaded", function () {
+            //     if (!window.app_chatwoot) {
+            //         window.app_chatwoot = {};
+            //     }
+            // });
+
+            $(document).ready(function() {
+
+                (function(d,t) {
+                    
+                    var BASE_URL="https://app.chatwoot.com";
+                    var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+
+                    // if (!window.app_chatwoot) {
+                        // alert();
+                        // window.app_chatwoot = true;
+
+                        g.src=BASE_URL+"/packs/js/sdk.js";
+                    // }
+                    g.defer = true;
+                    g.async = true;
+                    s.parentNode.insertBefore(g,s);
+
+                    g.onload=function(){
+                        window.chatwootSDK.run({
+                            websiteToken: 'qFvA78pRpa8xx9umw2xYUfhm',
+                            baseUrl: BASE_URL
+                        })
+                    }
+                })(document,"script");
+
+            });
+
         </script>
+
+        
 
         {{-- Notification Sound --}}
         @auth

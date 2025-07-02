@@ -15,6 +15,7 @@ class SupportConversation extends Conversation
 
     public function askBuyerOrSeller()
     {
+        $this->bot->typesAndWaits(1);
         $question = Question::create("Are you a Buyer or Seller?")
             ->fallback("Please select an option.")
             ->callbackId('select_user_type')
@@ -39,6 +40,7 @@ class SupportConversation extends Conversation
 
     public function buyerOptions()
     {
+        $this->bot->typesAndWaits(1);
         $question = Question::create("How can I help you as a Buyer?")
             ->addButtons([
                 Button::create('👥I have a problem with my order')->value('order'),
@@ -47,6 +49,8 @@ class SupportConversation extends Conversation
 
         $this->ask($question, function ($answer) {
             if ($answer == 'order') {
+
+                $this->bot->typesAndWaits(1);
                 $question = Question::create("")
                     ->addButtons([
                         Button::create('💵 Issue with my currency/items')->value('items'),
@@ -64,6 +68,224 @@ class SupportConversation extends Conversation
                 
                 $this->ask($question, function ($answer) {
                     
+                    $this->bot->typesAndWaits(1);
+                    if ($answer == 'items') {
+                        $question = Question::create("")
+                            ->addButtons([
+                                Button::create('✖️ My order was not delivered')->value('not_delivered'),
+                                Button::create('😕 My order is not as described')->value('not_as_described'),
+                                Button::create('💲 Refund & Return Policy')->value('refund'),
+                                Button::create('📢 I would like to report my seller')->value('report_seller'),
+                                Button::create('🌐 Other')->value('other'),
+                            ]);
+                        
+                        $this->ask($question, function ($answer) {
+                            $this->bot->typesAndWaits(1);
+
+                            if ($answer == 'not_delivered') {
+                                
+                                $this->bot->reply('
+                                    If your order wass not delivered within guaranteed delivery time, please raise a dispute and our team will cancel it within 15 minutes.<br><br>
+
+                                    If there is another issue with your order delivery, please select the option below, it will redirect you to our team.');
+
+                                $this->bot->typesAndWaits(1);
+                                $question = Question::create("")
+                                    ->addButtons([
+                                        Button::create('👥 I have another issue')->value('other_issue'),
+                                        Button::create('✔️ Close conversation')->value('close'),
+                                    ]);
+                                
+                                $this->ask($question, function ($answer) {
+                                    $this->bot->typesAndWaits(1);
+
+                                    if($answer == 'other_issue') {
+                                        $this->bot->reply('
+                                            We are sorry to hear you have issues with your order.
+                                            ​<br><br>
+                                            Please fill out the form below and provide as much information as possible to support your claims.
+                                            ​​<br><br>
+                                            Usual response time is within 12 hours. 🕐
+                                            ​<br><br>
+                                            I will be closing this chat, but don\'t worry, you are still able to submit a ticket below!');
+                                        
+                                        $this->bot->typesAndWaits(1);
+                                        $question = Question::create("")
+                                            ->addButtons([
+                                                Button::create('Create Ticket')->value('#')->url('#'),
+                                            ]);
+
+                                        $this->ask($question, function () {
+                                            // Optional: Handle next response
+                                        });
+                                    } else if ($answer == 'close') {
+                                        $this->say("❌ Conversation closed. Thank you!");
+
+                                        $question = Question::create("👋 Hi! Please click the button below to begin:")
+                                            ->addButtons([
+                                                Button::create('Start New Conversation')->value('start_over'),
+                                            ]);
+
+                                        $this->ask($question, function ($answer) {
+                                            if ($answer->getValue() === 'start_over') {
+                                                $this->askBuyerOrSeller(); // Properly restart the flow here
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else if ($answer == 'boosting') {
+                        $question = Question::create("If there are any issues with your order, we recommend contacting your seller first. In any other case, we are here to help you!")
+                            ->addButtons([
+                                Button::create('✖️ Seller has ruined my account')->value('ruined_account'),
+                                Button::create('✖️ Seller has taken items from my account')->value('taken_items'),
+                                Button::create('✖️ Seller did not complete my order in time')->value('not_complete'),
+                                Button::create('💲 Refund & Return Policy')->value('refund'),
+                                Button::create('🌐 Other')->value('other'),
+                            ]);
+                        
+                        $this->ask($question, function ($answer) {
+
+                            $this->bot->typesAndWaits(1);
+                            if ($answer == 'ruined_account') {
+                                
+                                $this->bot->reply('
+                                    Please fill out the ticket below to send a report to our team.<br><br>
+
+                                    I will be closing the chat, but don\'t worry, we will still receive your ticket.');
+
+                                $this->bot->typesAndWaits(1);
+                                $question = Question::create("")
+                                    ->addButtons([
+                                        Button::create('Create Ticket')->value('#')->url('#'),
+                                    ]);
+
+                                $this->ask($question, function () {
+                                    // Optional: Handle next response
+                                });
+                            } else if ($answer == 'taken_items') {
+                                
+                                $this->bot->reply('
+                                    Please fill out the ticket below to send a report to our team.<br><br>
+
+                                    I will be closing the chat, but don\'t worry, we will still receive your ticket.');
+
+                                $this->bot->typesAndWaits(1);
+                                $question = Question::create("")
+                                    ->addButtons([
+                                        Button::create('Create Ticket')->value('#')->url('#'),
+                                    ]);
+
+                                $this->ask($question, function () {
+                                    // Optional: Handle next response
+                                });
+                            } else if ($answer == 'not_complete') {
+                                
+                                $this->bot->reply('
+                                    It seems like you\'re having an issue that needs to be addressed by our dispute team. You will be redirected to them, since our general support is not able to investigate your issue.<br><br>
+
+                                    I will be closing the chat, but don\'t worry, we will still receive your ticket.');
+
+                                $this->bot->typesAndWaits(1);
+                                $question = Question::create("")
+                                    ->addButtons([
+                                        Button::create('Create Ticket')->value('#')->url('#'),
+                                    ]);
+
+                                $this->ask($question, function () {
+                                    // Optional: Handle next response
+                                });
+                            } else if ($answer == 'refund') {
+                                
+                                $this->bot->reply('
+                                    Your order is eligible for a refund, if:<br>
+                                    <ul style="padding-inline-start: 10px;">
+                                        <li>📌 The seller has failed to fully deliver the order within guaranteed delivery time.</li>
+                                        <li>📌 The seller caused harm to the account (e.g., continuous demotions, loss of status such as OSRS Ironman, ruined stats like pure accounts, etc.).</li>
+                                        <li>📌 The seller used/took valuable items from the account without your permission.*</li>
+                                        <li>📌 The seller changed the login details of your account without your permission.*</li>
+                                        <li>📌 The seller used third-party programs, leading to account restriction or banning.*</li>
+                                    </ul>
+                                ');
+
+                                $this->bot->typesAndWaits(1);
+                                $this->bot->reply('
+                                    *In such cases, please report the seller to us immediately.
+                                ');
+
+                                $this->bot->typesAndWaits(1);
+                                $this->bot->reply('
+                                    Your order is not eligible for a refund, if:<br>
+                                    <ul style="padding-inline-start: 10px;">
+                                        <li>📌 You purchased the order by mistake and it was delivered.</li>
+                                        <li>📌 Guaranteed delivery time has not passed</li>
+                                        <li>📌 The seller was unable to proceed with the boost due to lack of access to the account or interruptions from outside actions.</li>
+                                        <li>📌 Evidence of incomplete delivery is shared on external platforms other than Eldorado.</li>
+                                        <li>📌 The boost was not purchased on Eldorado.</li>
+                                        <li>📌 The account was banned/shadow banned due to your actions (i.e. botting, toxic behavior, contacting game developers, etc.).</li>
+                                    </ul>
+                                ');
+
+                                $this->bot->typesAndWaits(1);
+                                $question = Question::create("")
+                                    ->addButtons([
+                                        Button::create('Refund & Return Policy')->value('#')->url('#'),
+                                    ]);
+
+                                $this->ask($question, function () {
+                                    // Optional: Handle next response
+                                });
+                            } else if ($answer == 'other') {
+                                $this->bot->reply('
+                                    ​Please describe your issue to the best of your ability in the message so I can transfer you to our team.');
+                            }
+
+
+
+                            //     $question = Question::create("")
+                            //     ->addButtons([
+                            //         Button::create('👥 I have another issue')->value('other_issue'),
+                            //         Button::create('✔️ Close conversation')->value('close'),
+                            //     ]);
+                                
+                            //     $this->ask($question, function ($answer) {
+                            //         if($answer == 'other_issue') {
+                            //             $this->bot->reply('
+                            //                 We are sorry to hear you have issues with your order.
+                            //                 ​<br><br>
+                            //                 Please fill out the form below and provide as much information as possible to support your claims.
+                            //                 ​​<br><br>
+                            //                 Usual response time is within 12 hours. 🕐
+                            //                 ​<br><br>
+                            //                 I will be closing this chat, but don\'t worry, you are still able to submit a ticket below!');
+                                        
+                            //             $question = Question::create("")
+                            //                 ->addButtons([
+                            //                     Button::create('Create Ticket')->value('#')->url('#'),
+                            //                 ]);
+
+                            //             $this->ask($question, function () {
+                            //                 // Optional: Handle next response
+                            //             });
+                            //         } else if ($answer == 'close') {
+                            //             $this->say("❌ Conversation closed. Thank you!");
+
+                            //             $question = Question::create("👋 Hi! Please click the button below to begin:")
+                            //                 ->addButtons([
+                            //                     Button::create('Start New Conversation')->value('start_over'),
+                            //                 ]);
+
+                            //             $this->ask($question, function ($answer) {
+                            //                 if ($answer->getValue() === 'start_over') {
+                            //                     $this->askBuyerOrSeller(); // Properly restart the flow here
+                            //                 }
+                            //             });
+                            //         }
+                            //     });
+                            // }
+                        });
+                    }
                 });
 
             } else if ($answer == 'another') {
