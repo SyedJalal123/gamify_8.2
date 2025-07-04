@@ -233,44 +233,54 @@
             </script> --}}
         <!-- Load BotMan Widget -->
 
-
+        <!-- Load chatWoot Widget -->
         <script>
-            // document.addEventListener("DOMContentLoaded", function () {
-            //     if (!window.app_chatwoot) {
-            //         window.app_chatwoot = {};
-            //     }
-            // });
+            window.chatwootSettings = {
+                websiteToken: 'qFvA78pRpa8xx9umw2xYUfhm',
+                baseUrl: 'https://app.chatwoot.com'
+            };
 
-            $(document).ready(function() {
+            window.isChatwootLoaded = window.isChatwootLoaded || false;
 
-                (function(d,t) {
-                    
-                    var BASE_URL="https://app.chatwoot.com";
-                    var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            function destroyChatwootIframe() {
+                const iframe = document.querySelector('iframe[src*="chatwoot"]');
+                const holder = document.querySelector('#cw-bubble-holder');
+                if (iframe) iframe.remove();
+                if (holder) holder.remove();
+                window.chatwootSDK = undefined;
+                window.$chatwoot = undefined;
+                window.isChatwootLoaded = false;
+            }
 
-                    // if (!window.app_chatwoot) {
-                        // alert();
-                        // window.app_chatwoot = true;
+            function initChatwoot() {
+                if (window.isChatwootLoaded) return;
 
-                        g.src=BASE_URL+"/packs/js/sdk.js";
-                    // }
-                    g.defer = true;
-                    g.async = true;
-                    s.parentNode.insertBefore(g,s);
+                const script = document.createElement('script');
+                script.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
+                script.defer = true;
+                script.async = true;
 
-                    g.onload=function(){
-                        window.chatwootSDK.run({
-                            websiteToken: 'qFvA78pRpa8xx9umw2xYUfhm',
-                            baseUrl: BASE_URL
-                        })
-                    }
-                })(document,"script");
+                script.onload = function () {
+                    window.chatwootSDK.run({
+                        websiteToken: window.chatwootSettings.websiteToken,
+                        baseUrl: window.chatwootSettings.baseUrl
+                    });
+                    window.isChatwootLoaded = true;
+                    console.log("[Chatwoot] Initialized");
+                };
 
+                document.body.appendChild(script);
+            }
+
+            document.addEventListener('DOMContentLoaded', initChatwoot);
+
+            document.addEventListener('livewire:navigated', function () {
+                console.log("[Livewire] Navigated - resetting Chatwoot...");
+                destroyChatwootIframe();
+                setTimeout(initChatwoot, 300);
             });
-
         </script>
-
-        
+        <!-- Load chatWoot Widget -->
 
         {{-- Notification Sound --}}
         @auth

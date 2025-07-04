@@ -17,7 +17,6 @@ class ChatWootBotController extends Controller
             
             $conversationId = $payload['id'];
 
-
             $response = Http::withHeaders([
                 'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
             ])->post("https://app.chatwoot.com/api/v1/accounts/126164/conversations/{$conversationId}/toggle_typing_status", [
@@ -53,6 +52,7 @@ class ChatWootBotController extends Controller
             ],
         ]);
 
+
     }
 
     public function seletedOptions(Request $request) 
@@ -87,6 +87,8 @@ class ChatWootBotController extends Controller
         $text3 = null;
         $image_path = null;
         $image = null;
+        $customer_support = 0;
+        $close_conversation = 0;
 
         if($message == 'buyer') {
             $data = [
@@ -150,7 +152,7 @@ class ChatWootBotController extends Controller
 
                                 \n\nUsual response time is within 12 hours. 🕐";
                         $text1 = "I will be closing this chat, but don't worry, you are still able to submit a ticket below!";
-                        $text2 = "[**Create Ticket 🎫**\Order issues.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nOrder issues.](" . url('/') . ")";
                     }
 
                     if($message == 'buyer_items_refund') {
@@ -613,8 +615,28 @@ class ChatWootBotController extends Controller
             }
         // end seller
 
+        if($message == 'live_support') {
+            $text = "Let me connect you with one of our agents!";
 
+            $customer_support = 1;
+        }
 
+        if($message == 'close_conversation') {
+            $response = Http::withHeaders([
+                'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
+            ])->post("https://app.chatwoot.com/api/v1/accounts/126164/conversations/{$conversationId}/toggle_status", [
+                'status' => 'resolved',
+            ]);
+        }
+
+        if ($customer_support == 1) {
+            $response = Http::withHeaders([
+                'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
+            ])->post("https://app.chatwoot.com/api/v1/accounts/126164/conversations/{$conversationId}/assignments", [
+                'assignee_id' => 130189,
+            ]);
+
+        }
 
         $response = Http::withHeaders([
                 'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
