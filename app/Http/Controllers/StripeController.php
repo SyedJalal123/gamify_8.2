@@ -89,35 +89,38 @@ class StripeController extends Controller
         $session = CheckoutSession::retrieve($session_id);
 
         $order = $this->createOrder($session->metadata);
+
         // Access the metadata
-        // $order_id = $session->metadata->order_id;
-        // $conversation_id = $session->metadata->conversation_id;
-        // $user_id = $session->metadata->user_id;
+            // $order_id = $session->metadata->order_id;
+            // $conversation_id = $session->metadata->conversation_id;
+            // $user_id = $session->metadata->user_id;
 
-        // $order = Order::with('buyer', 'item.seller', 'offer.user', 'item.categoryGame.game', 'item.categoryGame.category', 'offer.buyerRequest.service.categoryGame.game', 'offer.buyerRequest.service.categoryGame.category')->find($order_id);
+            // $order = Order::with('buyer', 'item.seller', 'offer.user', 'item.categoryGame.game', 'item.categoryGame.category', 'offer.buyerRequest.service.categoryGame.game', 'offer.buyerRequest.service.categoryGame.category')->find($order_id);
 
-        // if($order->item_id == null){
-        //     $seller = $order->offer->user;
-        //     $categoryGame = $order->offer->buyerRequest->service->categoryGame;
-        // }else {
-        //     $seller = $order->item->seller;
-        //     $categoryGame = $order->item->categoryGame;
-        // }
+            // if($order->item_id == null){
+            //     $seller = $order->offer->user;
+            //     $categoryGame = $order->offer->buyerRequest->service->categoryGame;
+            // }else {
+            //     $seller = $order->item->seller;
+            //     $categoryGame = $order->item->categoryGame;
+            // }
 
-        // $data = [
-        //     'title' => 'New Order',
-        //     'data1' => $categoryGame->game->name.' - '.$categoryGame->category->name,
-        //     'data2' => 'Buyer: '.$order->buyer->name,
-        //     'link' => url('order/' . $order->order_id),
-        // ];
+            // $data = [
+            //     'title' => 'New Order',
+            //     'data1' => $categoryGame->game->name.' - '.$categoryGame->category->name,
+            //     'data2' => 'Buyer: '.$order->buyer->name,
+            //     'link' => url('order/' . $order->order_id),
+            // ];
 
-        // Notification::send($seller, new BoostingOfferNotification($data));
+            // Notification::send($seller, new BoostingOfferNotification($data));
 
-        // if($order->item_id != null && $order->item->delivery_method == 'automatic'){
-        //     $order->update(['payment_status' => 'paid', 'order_status' => 'received']);
-        // }else {
-        //     $order->update(['payment_status' => 'paid', 'created_at' => Carbon::now()]);
-        // }
+            // if($order->item_id != null && $order->item->delivery_method == 'automatic'){
+            //     $order->update(['payment_status' => 'paid', 'order_status' => 'received']);
+            // }else {
+            //     $order->update(['payment_status' => 'paid', 'created_at' => Carbon::now()]);
+            // }
+        /////////////////////
+        
         if($order->order_id){
             return redirect()->route('order-detail', ['order_id' => $order->order_id])->with('success', 'Payment successful!');
         }else {

@@ -65,11 +65,33 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
+        
         if(auth()->user()->role == 'admin') {
             return redirect()->back()->with('error', 'You can\'t perform this action.');
         }
         
-        // dd($request->all());
+        if($request->category_id == 1 || $request->category_id == 3) {
+            $attributes = [];
+            foreach ($request->all() as $key => $value) {
+                if (str_starts_with($key, 'attribute_')) {
+                    $attributeId = str_replace('attribute_', '', $key);
+                    $attributes[] = $value;
+                }
+            }
+            // dd($attributes);
+
+            $items = Item::where('seller_id', auth()->id())
+                ->where('category_game_id', $request->category_game_id)
+                ->whereHas('attributes', function ($query) use ($attributes) {
+                    $query->whereIn('item_attributes.value', $attributes);
+                }, '=', count($attributes)) // Require all values to match
+                ->with('attributes', 'categoryGame.game', 'seller')
+                ->get();
+
+            return redirect()->back()->with('error', 'Offer already existed!');
+        }
+
         try {
             // Validate the input
             $request->validate([
