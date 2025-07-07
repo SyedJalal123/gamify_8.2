@@ -9,6 +9,83 @@ use App\Models\User;
 use Carbon\Carbon;
 
 
+function parseDeliveryTime($str) {
+    $str = strtolower(trim($str));
+
+    if (str_contains($str, 'instant')) return 0;
+
+    if (preg_match('/(\d+)\s*min/', $str, $m)) return (int)$m[1];
+    if (preg_match('/(\d+)\s*h/', $str, $m)) return (int)$m[1] * 60;
+    if (preg_match('/(\d+)\s*day/', $str, $m)) return (int)$m[1] * 1440;
+    
+    return null; // unknown format
+}
+
+function getAverageDeliveryTime($item_id) {
+    $orders = Order::with('item') // load item for delivery_time
+        ->where('item_id', $item_id)
+        ->where('order_status', 'completed')
+        ->whereNotNull('delivered_at')
+        ->get();
+
+    if ($orders->isEmpty()) return 0;
+
+    $totalDelay = 0;
+    $count = 0;
+
+    foreach ($orders as $order) {
+        $item = $order->item;
+        $deliveryTimeStr = null;
+
+        if ($order->item && $order->item->delivery_time) {
+            $deliveryTimeStr = $order->item->delivery_time;
+        } elseif ($order->offer && $order->offer->delivery_time) {
+            $deliveryTimeStr = $order->offer->delivery_time;
+        }
+
+        if (!$deliveryTimeStr) continue;
+
+        // Parse expected delivery time string like "1 h", "20 min", "1 day"    
+        $expectedMinutes = parseDeliveryTime($deliveryTimeStr);
+        if ($expectedMinutes === null) continue;
+
+        // $actualMinutes = $order->created_at->diffInMinutes($order->delivered_at);
+        $actualMinutes = Carbon::parse($order->created_at)->diffInMinutes(Carbon::parse($order->delivered_at));
+
+        $delay = max(0, $actualMinutes - $expectedMinutes);
+        
+
+        $totalDelay += $delay;
+        $count++;
+    }
+
+    return $count > 0 ? round($totalDelay / $count) : 0;
+}
+
+
+
+function computeTrustScore($stats)
+{
+    $feedback       = $stats['feedback'];
+    $feedbackCount  = $stats['feedback_count'];
+    $completed      = $stats['completed'];
+    $delivery       = $stats['delivery']; // fallback high value
+
+    $completedWeight = $completed >= 20 ? 15 : 10;
+
+    return 
+        ($feedback * 2) +            // Trust (max 200)
+        ($completed * $completedWeight) -  // Reward experience more
+        ($delivery * 0.4);           // Penalize slow delivery, but gently
+}
+
+function isBetter($current, $existing)
+{
+    // dd(computeTrustScore($existing));
+    return computeTrustScore($current) > computeTrustScore($existing);
+}
+
+
 function seller_data($id) {
     $seller = Seller::with('user')->first();
 

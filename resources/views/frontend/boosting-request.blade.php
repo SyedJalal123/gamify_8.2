@@ -162,13 +162,13 @@
                                         @else
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
                                                 <div class="seller-avatar mr-2 d-flex align-items-center justify-content-center rounded-circle text-white" style="width: 40px; height: 40px; background-color: #c0392b;">
-                                                    {{ strtoupper(substr($buyerRequest->user->name, 0, 1)) }}
+                                                    {{ strtoupper(substr($buyerRequest->user->username, 0, 1)) }}
                                                 </div>
                                             </a>
                                         @endif
                                         <div class="d-flex flex-column">
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
-                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{$buyerRequest->user->name}}</div>
+                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{$buyerRequest->user->username}}</div>
                                             </a>
                                             <div class="d-flex align-items-center">
                                                 <i class="text-success bi bi-star-fill"></i>

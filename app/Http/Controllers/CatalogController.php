@@ -47,34 +47,60 @@ class CatalogController extends Controller
 
         if ($categoryGame->category->id == 3) {
             $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->get();
+            // dd($items);
             $grouped = collect();  // Holds the lowest price items
-            
-            foreach ($items as $item) {
+            $sellerStats = [];
+
+
+            foreach ($items as $m => $item) {
+                
+                $sellerId = $item->seller_id;
+                
+                $positive = userPositiveFeebacks($sellerId)->count();
+                $negative = userNegativeFeebacks($sellerId)->count();
+
+                if (!isset($sellerStats[$sellerId])) {
+                    $sellerStats[$sellerId] = [
+                        'feedback' => userFeedbackScore($sellerId),
+                        'feedback_count' => $positive + $negative,
+                        'completed' => userCompletedOrders($sellerId)->count(),
+                        'delivery' => getAverageDeliveryTime($item->id),
+                    ];
+                }
+
+                $stats = $sellerStats[$sellerId];
+
+
                 $keyAttribute = $item->attributes->first(fn($attr) => $attr->topup == 1);
                 if (!$keyAttribute) continue;
-            
-                $value = $keyAttribute->pivot->value;
-            
+
+                $value = $keyAttribute->pivot->value ?? null;
+                if (!$value) continue;
+
+                $performance = [
+                    'feedback' => $stats['feedback'],
+                    'feedback_count' => $stats['feedback_count'],
+                    'completed' => $stats['completed'],
+                    'delivery' => $stats['delivery'],
+                    'created' => $item->created_at,
+                ];
+
                 if (!isset($grouped[$value])) {
-                    // First occurrence, set as lowest
-                    $grouped[$value] = $item;
+                    $grouped[$value] = ['item' => $item, 'performance' => $performance];
                 } else {
                     $existing = $grouped[$value];
-            
-                    if (
-                        $item->price < $existing->price ||
-                        ($item->price == $existing->price && $item->created_at < $existing->created_at)
-                    ) {
-                        // New item is better; update the grouped item
-                        $grouped[$value] = $item;
+
+                    if (isBetter($performance, $existing['performance'])) {
+                        $grouped[$value] = ['item' => $item, 'performance' => $performance];
                     }
                 }
             }
 
-            // Sort by topup value
-            $sortedItems = $grouped->sortBy(
+            $groupedItems = collect($grouped)->map(fn($entry) => $entry['item']);
+
+            $sortedItems = $groupedItems->sortBy(
                 fn($item) => $item->attributes->first(fn($attr) => $attr->topup == 1)->pivot->value ?? PHP_INT_MAX
-            );
+            )->values();
 
             // Paginating
             $page = request()->get('page', 1);
@@ -101,47 +127,178 @@ class CatalogController extends Controller
             return view('frontend.catalog.topupCatalog', compact('categoryGame', 'attributes', 'sortedItems', 'items', 'paginatedItems'));
         }else if ($categoryGame->category->id == 5){
             return view('frontend.catalog.boostingCatalog', compact('categoryGame'));
+        }else if($categoryGame->category->id == 1) {
+            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->get();
+
+            $grouped = collect();  // Holds the best seller's item for each topup value
+            $sellerStats = [];
+    
+            foreach ($items as $item) {
+                $sellerId = $item->seller_id;
+    
+                $positive = userPositiveFeebacks($sellerId)->count();
+                $negative = userNegativeFeebacks($sellerId)->count();
+    
+                if (!isset($sellerStats[$sellerId])) {
+                    $sellerStats[$sellerId] = [
+                        'feedback' => userFeedbackScore($sellerId),
+                        'feedback_count' => $positive + $negative,
+                        'completed' => userCompletedOrders($sellerId)->count(),
+                        'delivery' => getAverageDeliveryTime($item->id),
+                    ];
+                }
+    
+                $stats = $sellerStats[$sellerId];
+    
+                // New grouping key (e.g., product_id)
+                if ($item->attributes->isNotEmpty()) {
+                    $values = $item->attributes
+                        ->map(fn($attr) => $attr->pivot->value)
+                        ->filter()
+                        ->implode('-'); // Example: "100-VIP"
+                    
+                    if (!$values) continue;
+    
+                    $value = $values;
+                } else {
+                    // Fallback: use item ID if no attributes exist
+                    $value = $item->category_game_id;
+                }
+    
+                $performance = [
+                    'feedback' => $stats['feedback'],
+                    'feedback_count' => $stats['feedback_count'],
+                    'completed' => $stats['completed'],
+                    'delivery' => $stats['delivery'],
+                    'created' => $item->created_at,
+                ];
+    
+                if (!isset($grouped[$value])) {
+                    $grouped[$value] = ['item' => $item, 'performance' => $performance];
+                } else {
+                    $existing = $grouped[$value];
+                    if (isBetter($performance, $existing['performance'])) {
+                        $grouped[$value] = ['item' => $item, 'performance' => $performance];
+                    }
+                }
+            }
+
+            if(count($grouped) == 1) {
+                return redirect()->route('item.detail', $grouped->first()['item']->id);
+            }
+
+            // Extract items only
+            $groupedItems = collect($grouped)->map(fn($entry) => $entry['item']);
+            
+            // Sort by topup value
+            $sortedItems = $groupedItems->sortBy(
+                fn($item) => $item->attributes->first(fn($attr) => $attr->topup == 1)->pivot->value ?? PHP_INT_MAX
+            )->values();
+    
+            // Paginate manually
+            $page = request()->get('page', 1);
+            $perPage = 12;
+    
+            $paginatedItems = new LengthAwarePaginator(
+                $sortedItems->slice(($page - 1) * $perPage, $perPage)->values(),
+                $sortedItems->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
+    
+            // AJAX response
+            if ($request->ajax()) {
+                return view('frontend.catalog._items', ['items' => $paginatedItems])->render();
+            }
+    
+            return view('frontend.catalog.catalog', [
+                'categoryGame' => $categoryGame,
+                'items' => $paginatedItems,
+                'attributes' => $attributes,
+            ]);
+        } else {
+            // Default category view
+            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->paginate(12)->withQueryString();
+        
+            if ($request->ajax()) {
+                // Optional: render differently if needed
+                return view('frontend.catalog._items', compact('items'))->render();
+            }
+        
+            return view('frontend.catalog.catalog', compact('categoryGame', 'items', 'attributes'));
         }
 
-        // Default category view
-        $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->paginate(12)->withQueryString();
-    
-        if ($request->ajax()) {
-            // Optional: render differently if needed
-            return view('frontend.catalog._items', compact('items'))->render();
-        }
-    
-        return view('frontend.catalog.catalog', compact('categoryGame', 'items', 'attributes'));
     }
-    public function getItemDetails($id)
+
+    public function getItemDetails($id, $category)
     {
         $item = Item::with('categoryGame.game', 'seller', 'attributes')->find($id);
-
 
         $categoryGameId = $item->category_game_id;
         $attributes = $item->attributes;
 
-        // If the current item exists and has attributes
-        if ($item && $attributes->count()) {
-            // Get attribute ID => value map from pivot
-            $attributeValues = $attributes->mapWithKeys(fn($attr) => [$attr->id => $attr->pivot->value]);
+        $secondary = collect();
+        $sellerStats = [];
 
-            // Fetch all items with the same category_game_id, excluding the current item
+        if ($item) {
+
+            if($attributes->isNotEmpty()) {
+                $attributeValues = $attributes->mapWithKeys(fn($attr) => [$attr->id => $attr->pivot->value]);
+            } else {
+                $attributeValues = $item->id;
+            }
+
             $candidates = Item::with('categoryGame.game', 'seller', 'attributes')
                 ->where('category_game_id', $categoryGameId)
                 ->where('id', '!=', $item->id)
                 ->get();
+            
+            if($attributes->isNotEmpty()) {
+                // Only keep items that match the same attributes
+                $matched = $candidates->filter(function ($candidate) use ($attributeValues) {
+                    $candidateAttributes = $candidate->attributes->mapWithKeys(fn($attr) => [$attr->id => $attr->pivot->value]);
+    
+                    return $candidateAttributes->count() === $attributeValues->count()
+                        && $candidateAttributes->diffAssoc($attributeValues)->isEmpty();
+                });
+            }else {
+                $matched = $candidates;
+                // Add roblox currency and test this becuase it has no attributes
+            }
 
-            // Filter items that match all attribute-value pairs
-            $secondary = $candidates->filter(function ($candidate) use ($attributeValues) {
-                $candidateAttributes = $candidate->attributes->mapWithKeys(fn($attr) => [$attr->id => $attr->pivot->value]);
+            // Add stats to each item
+            $ranked = $matched->map(function ($item) use (&$sellerStats) {
+                $sellerId = $item->seller_id;
 
-                return $candidateAttributes->count() === $attributeValues->count()
-                    && $candidateAttributes->diffAssoc($attributeValues)->isEmpty();
+                if (!isset($sellerStats[$sellerId])) {
+                    $positive = userPositiveFeebacks($sellerId)->count();
+                    $negative = userNegativeFeebacks($sellerId)->count();
+
+                    $sellerStats[$sellerId] = [
+                        'feedback' => userFeedbackScore($sellerId),
+                        'feedback_count' => $positive + $negative,
+                        'completed' => userCompletedOrders($sellerId)->count(),
+                        'delivery' => getAverageDeliveryTime($sellerId),
+                        'created' => $item->created_at,
+                    ];
+                }
+
+                return [
+                    'item' => $item,
+                    'performance' => $sellerStats[$sellerId],
+                ];
             });
+
+            // Sort by trust score
+            $sorted = $ranked->sort(function ($a, $b) {
+                return computeTrustScore($b['performance']) <=> computeTrustScore($a['performance']);
+            });
+
+            // Return only the items
+            $secondary = $sorted->pluck('item')->values();
         } else {
-            // If the item has no attributes or doesn't exist
-            $secondary = collect(); // Empty collection
+            $secondary = collect(); // If item or attributes missing
         }
 
         $secondary = view('frontend.catalog.topup-items-secondary', compact('secondary'))->render();
@@ -170,6 +327,7 @@ class CatalogController extends Controller
 
 
     }   
+ 
     public function liveSearch(Request $request)
     {
         $query = $request->get('q');
@@ -221,6 +379,7 @@ class CatalogController extends Controller
         
         return response()->json($mapped);
     }
+
     public function itemDetail(Item $item)
     {
         $item->load(['attributes','categoryGame.game', 'categoryGame.attributes']);

@@ -223,7 +223,7 @@
                             @endif
                             <div class="d-flex justify-content-between">
                                 <span class="text-theme-secondary">Seller</span>
-                                <span class="text-theme-primary"><a href="#" class="">{{ $item != null ? $item->seller->name : $offer->user->name }}</a></span>
+                                <span class="text-theme-primary"><a href="#" class="">{{ $item != null ? $item->seller->name : $offer->user->username }}</a></span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span class="text-theme-secondary">Total Price</span>

@@ -99,7 +99,7 @@
                                                 </div>
                                                 @if ($tag == 'received-requests')
                                                     <div class="custom-table-col w-17">
-                                                        <span>{{ $request->user->name }}</span>
+                                                        <span>{{ $request->user->username }}</span>
                                                     </div>
                                                 @endif
                                                 <div class="custom-table-col w-20">
@@ -157,7 +157,7 @@
                                                         @if($tag == 'received-requests')
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <div class="d-flex">Buyer</div>
-                                                            <div class="d-flex">{{ $request->user->name }}</div>
+                                                            <div class="d-flex">{{ $request->user->username }}</div>
                                                         </div>
                                                         @else
                                                         <div class="d-flex flex-row justify-content-between">

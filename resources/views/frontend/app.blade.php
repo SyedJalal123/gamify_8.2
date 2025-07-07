@@ -266,7 +266,6 @@
                         baseUrl: window.chatwootSettings.baseUrl
                     });
                     window.isChatwootLoaded = true;
-                    console.log("[Chatwoot] Initialized");
                 };
 
                 document.body.appendChild(script);
@@ -275,7 +274,6 @@
             document.addEventListener('DOMContentLoaded', initChatwoot);
 
             document.addEventListener('livewire:navigated', function () {
-                console.log("[Livewire] Navigated - resetting Chatwoot...");
                 destroyChatwootIframe();
                 setTimeout(initChatwoot, 300);
             });

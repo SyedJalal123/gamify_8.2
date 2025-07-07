@@ -137,10 +137,10 @@
                                         <p class="m-0 text-muted">Price</p>
                                         <div class="d-flex flex-row">
                                             @if(!$isTopup)
-                                                <h5 class="m-0 fw-bold">${{ number_format($item->price, 3) }}</h5>
+                                                <h5 class="m-0 fw-bold">${{ number_format($item->price, 4) }}</h5>
                                                 <span class="pl-1">/ {{ $item->categoryGame->currency_type }}</span>
                                             @else
-                                                <h5 class="m-0 fw-bold">${{ number_format($item->price * (int) $topupValue, 3) }}</h5>
+                                                <h5 class="m-0 fw-bold">${{ number_format($item->price * (int) $topupValue, 4) }}</h5>
                                             @endif
                                         </div>
                                     </div>
@@ -600,6 +600,11 @@
                         </div>
                     @endif
                 </div>
+                @if ($isCurrency || $isTopup)
+                <div class="col-12 mt-2 pt-5 px-0 secondaryItemsContainer">
+                    {{-- Other Sellers --}}
+                </div>
+                @endif
             </div>
         </div>
     </section>
@@ -634,6 +639,21 @@
     </div>
 
     <script>
+        $(document).ready(function() {
+            const item_id = "{{$item->id}}";
+            fetch(`/get-item-details/${item_id}/other`)
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    const item = data.item;
+                
+                    $('.secondaryItemsContainer').fadeOut(200, function() {
+                        $(this).html(data.secondary).fadeIn(300);
+                    });
+                }
+            });
+        });
+        
         function adjustQty() {
             const quantityInput = document.getElementById('quantity-input');
             const quantity = parseInt(quantityInput.value);

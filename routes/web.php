@@ -85,7 +85,7 @@ Route::middleware('verified')->group(function () {
 
     // Catalog Routes
     Route::get('catalog/{category_id}', [CatalogController::class, 'index'])->name('catalog.index');
-    Route::get('/get-item-details/{id}', [CatalogController::class, 'getItemDetails'])->name('get.item.details');
+    Route::get('/get-item-details/{id}/{category}', [CatalogController::class, 'getItemDetails'])->name('get.item.details');
     Route::get('/live-search', [CatalogController::class, 'liveSearch'])->name('live.search');
     Route::get('/item/{item}', [CatalogController::class, 'itemDetail'])->name('item.detail');
     

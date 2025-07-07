@@ -559,7 +559,7 @@
                     ////////////////////////////
 
                     // AJAX fetch by item ID
-                    fetch(`/get-item-details/${id}`)
+                    fetch(`/get-item-details/${id}/topup`)
                     .then(function (res) { return res.json(); })
                     .then(function (data) {
                         if (data.success) {

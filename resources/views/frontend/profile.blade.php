@@ -71,7 +71,7 @@
                         @else
                             <div class="mr-2 d-flex align-items-center justify-content-center rounded-circle text-white fs-25 fw-bold"
                                 style="width: 84px; height: 84px; background-color: #c0392b;">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                                {{ strtoupper(substr($user->username, 0, 1)) }}
                             </div>
                         @endif
                         <div class="d-flex flex-column">
