@@ -17,7 +17,7 @@ class CatalogController extends Controller
         $categoryGame = CategoryGame::with('category', 'game', 'services')->find($category_game_id);
     
         $attributes = Attribute::whereHas('categoryGames', fn($q) => $q->where('category_game_id', $category_game_id))->get();
-        $itemsQuery = Item::where('category_game_id', $category_game_id);
+        $itemsQuery = Item::where('category_game_id', $category_game_id)->where('pause', 0);
     
         ////// FILTERS ////////////////////////////////////////////////////////////
             // Apply attribute filters
@@ -251,6 +251,7 @@ class CatalogController extends Controller
 
             $candidates = Item::with('categoryGame.game', 'seller', 'attributes')
                 ->where('category_game_id', $categoryGameId)
+                ->where('pause', 0)
                 ->where('id', '!=', $item->id)
                 ->get();
             

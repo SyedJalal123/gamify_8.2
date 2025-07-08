@@ -106,7 +106,7 @@
                                                 <div class="d-flex fs-14" style="white-space: pre-line; overflow: hidden;">{!! $order->feedback_comment !!}</div>
                                             </div>
 
-                                            <div class="position-absolute top-0 right-0 p-1 px-2 cursor-pointer fs-12 text-theme-secondary">{{ shortTimeAgo($order->feedback_at) }} ago</div>
+                                            <div class="position-absolute top-0 right-0 p-1 px-2 cursor-pointer fs-12 text-theme-secondary">{{ shortTimeAgo($order->feedback_at) }} {{ shortTimeAgo($order->feedback_at) != 'now' ? 'ago' : ''}}</div>
                                         </a>
                                     @endforeach
                                 @else

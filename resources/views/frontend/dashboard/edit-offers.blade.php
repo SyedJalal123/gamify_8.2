@@ -178,7 +178,7 @@
 
                             <!-- Delivery Method -->
                             <div class="card-section">
-                                <div class="accounts accounts_class">
+                                <div class="accounts {{ !in_array($categoryId, [2]) ? 'd-none' : '' }}">
                                     <label class="form-label">Delivery method</label>
                                     <div>
                                         <input type="radio" name="delivery_method" value="automatic" class="w-auto" {{ $offer->delivery_method == 'automatic' ? 'checked' : '' }} id="automatic_method">
@@ -213,7 +213,7 @@
                             </div>
 
                             <!-- Account Information -->
-                            <div class="card-section {{ !in_array($categoryId, [2]) ? 'd-none' : '' }}">
+                            <div class="card-section {{ !in_array($categoryId, [2]) || (in_array($categoryId, [2]) && $offer->delivery_method == 'manual') ? 'd-none' : '' }}" id="accounts_section">
 
                                 <label class="form-label">Account Information Shared With Buyer</label>
                                 <small class="form-text">
@@ -228,11 +228,18 @@
                                 
                                 <!-- Default Account 1 -->
                                 @if ($offer->account_info != null)    
-                                    @foreach (json_decode($offer->account_info, true) as $key => $info)    
-                                        <div class="account-field mt-4">
-                                            <label class="form-label">Account {{ $key + 1 }}</label>
-                                            <textarea class="form-control auto-resize-textarea resize-none overflow-hidden input-theme-1" id="account_info" name="account_info[]" rows="2" placeholder="Type here..." {{ in_array($categoryId, [2]) ? 'required' : '' }}>{{ $info }}</textarea>
+                                    @php $n = 1; @endphp
+                                    @foreach ($offer->account_info as $key => $info) 
+                                        <div class="@if($info['sold'] == 'no') account-field mt-4 position-relative @else d-none @endif">
+                                            <label class="form-label">Account {{ $n }}</label>
+                                            @if ($n !== 1)
+                                            <button type="button" class="btn-delete btn-remove-account" style="position:absolute;top:0;right:0;"><i class="bi bi-trash"></i></button>
+                                            @endif
+                                            <textarea class="form-control auto-resize-textarea resize-none overflow-hidden input-theme-1" id="account_info" name="account_info[]" rows="2" placeholder="Type here..." {{ in_array($categoryId, [2]) ? 'required' : '' }}>{{ $info['info'] }}</textarea>
+                                            <input type="hidden" name="account_id[]" value="{{ $info['id'] }}">
+                                            <input type="hidden" name="account_sold[]" value="{{ $info['sold'] }}">
                                         </div>
+                                        @php if($info['sold'] == 'no'){ $n++; } @endphp
                                     @endforeach
                                 @endif
                                 
@@ -244,7 +251,7 @@
                             </div>
 
                             <!-- Quantity Section -->
-                            <div class="card-section {{ !in_array($categoryId, [1, 3, 4]) ? 'd-none' : '' }}">
+                            <div class="card-section {{ !in_array($categoryId, [1, 3, 4]) && $offer->delivery_method == 'automatic' ? 'd-none' : '' }}" id="quantity_section">
                                 <label class="form-label">Quantity</label>
                                 <div class="row g-2">
                                     <div class="col-md-6">
@@ -605,10 +612,31 @@
 
             manualMethodRadio.addEventListener('click', () => {
                 manualSection.style.display = 'block'; // Show
+                $('#quantity_section').removeClass('d-none');
+                $('#accounts_section').addClass('d-none');
+
+                $(`#accounts_section textarea`)[0].removeAttribute('required', 'required');
+                $('#delivery_time').attr('required', 'required');
+                $('#quantity_available').attr('required', 'required');
+
             });
 
             automaticMethodRadio.addEventListener('click', () => {
                 manualSection.style.display = 'none'; // Hide
+                $('#quantity_section').addClass('d-none');
+                $('#accounts_section').removeClass('d-none');
+
+                $(`#accounts_section textarea`)[0].setAttribute('required', 'required');
+                $('#delivery_time').removeAttr('required', 'required');
+                $('#quantity_available').removeAttr('required', 'required');
+
+                const textareas = document.querySelectorAll('.auto-resize-textarea');
+                setTimeout(function() {
+                    textareas.forEach(textarea => {
+                        autoResize(textarea); // Resize on load
+                        textarea.addEventListener('input', () => autoResize(textarea)); // Resize on input
+                    });
+                }, 10);
             });
         }
 
@@ -691,7 +719,7 @@
             const quantityAvailable = parseFloat($('#quantity_available').val());
             var valid = true;
 
-            if (categoryId == 1 || categoryId == 3 || categoryId == 4) {
+            if (categoryId == 1 || categoryId == 3 || categoryId == 4 || (categoryId == 2 && $('#quantity_available').is('[required]'))) {
                 if (quantityAvailable <= 0 || (quantityAvailable < minimumQuantity)) {
                     $('#quantity_available').addClass("invalid");
                     $('.quanity_must_error').removeClass("d-none");

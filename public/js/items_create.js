@@ -64,6 +64,15 @@ function nextPrev(n) {
             showTab(currentTab);
         }
     }, 1);
+
+    const textareas = document.querySelectorAll('.auto-resize-textarea');
+
+    setTimeout(function() {
+        textareas.forEach(textarea => {
+            autoResize(textarea); // Resize on load
+            textarea.addEventListener('input', () => autoResize(textarea)); // Resize on input
+        });
+    }, 10);
 }
 
 function validateForm2() {
@@ -72,7 +81,7 @@ function validateForm2() {
     const quantityAvailable = parseFloat($('#quantity_available').val());
     var valid = true;
 
-    if (categoryId == 1 || categoryId == 3 || categoryId == 4) {
+    if (categoryId == 1 || categoryId == 3 || categoryId == 4 || (categoryId == 2 && $('#quantity_available').is('[required]'))) {
         if (quantityAvailable <= 0 || (quantityAvailable < minimumQuantity)) {
             $('#quantity_available').addClass("invalid");
             $('.quanity_must_error').removeClass("d-none");
@@ -222,11 +231,33 @@ $(document).ready(function() {
 
     manualMethodRadio.addEventListener('click', () => {
         manualSection.style.display = 'block'; // Show
+        $('#quantity_section').show();
+        $('#accounts_section').hide();
+
+
+        $(`#accounts_section textarea`)[0].removeAttribute('required', 'required');
+        $('#delivery_time').attr('required', 'required');
+        $('#quantity_available').attr('required', 'required');
     });
 
     automaticMethodRadio.addEventListener('click', () => {
         manualSection.style.display = 'none'; // Hide
+        $('#quantity_section').hide();
+        $('#accounts_section').show();
+
+        $(`#accounts_section textarea`)[0].setAttribute('required', 'required');
+        $('#delivery_time').removeAttr('required', 'required');
+        $('#quantity_available').removeAttr('required', 'required');
+
+        const textareas = document.querySelectorAll('.auto-resize-textarea');
+        setTimeout(function() {
+            textareas.forEach(textarea => {
+                autoResize(textarea); // Resize on load
+                textarea.addEventListener('input', () => autoResize(textarea)); // Resize on input
+            });
+        }, 10);
     });
+
 });
 
 // Get data and other functions
@@ -309,6 +340,7 @@ function selectCategory(categoryId) {
     });
     //
 }
+
 $(document).ready(function() {
     $('.category-item').click(function() {
         let categoryId = $(this).data('category-id');

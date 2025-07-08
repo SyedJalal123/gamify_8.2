@@ -136,6 +136,17 @@ class StripeController extends Controller
             $item = Item::with('categoryGame','seller')->find($request->item_id);
             $categoryGameId = $item->category_game_id;
             $seller_id = $item->seller_id;
+            $account_id = null;
+
+            if($item->account_info != null) {
+                foreach($item->account_info as $info) {
+                    if($info['sold'] === 'no') {
+                        $account_id = $info['id'];
+                        break;
+                    }
+                }
+            }
+
         }else {
             $offer = RequestOffer::with('buyerRequest.service.categoryGame','user')->find($request->offer_id);
             $categoryGameId = $offer->buyerRequest->service->categoryGame->id;
@@ -155,6 +166,7 @@ class StripeController extends Controller
                 'title'              => $request->product_name,
                 'quantity'           => $request->quantity,
                 'price'              => $request->price,
+                'account_id'         => $account_id,
                 'discount_in_per'    => $request->discountPercentage ?? 0,
                 'payment_fees'       => $request->payment_fees ?? 0,
                 'total_price'        => $request->total_price,
@@ -213,8 +225,40 @@ class StripeController extends Controller
             }else {
                 $seller = $item->seller;
                 $categoryGame = $item->categoryGame;
+                $pause = 0;
+
+                if($item->categoryGame->category_id != 2 || ($item->categoryGame->category_id == 2 && $item->delivery_method == 'manual')) {
+                    $available_quantity = (float) $item->quantity_available - (float) $request->quantity;
+                    
+                    if ($available_quantity == 0) {
+                        $pause = 1;
+                    }
+
+                    $item->update([
+                        'quantity_available'    => $available_quantity,
+                        'pause'                 => $pause,
+                    ]);
+                }elseif ($account_id != null) {
+                    $available_quantity = (int) $item->quantity_available - 1;
+                    $accountInfo = $item->account_info;
+
+                    if ($available_quantity == 0) {
+                        $pause = 1;
+                    }
+                    
+                    if (isset($accountInfo[$account_id])) {
+                        $accountInfo[$account_id]['sold'] = 'yes';
+
+                        $item->update([
+                            'quantity_available' => $available_quantity,
+                            'account_info' => $accountInfo,
+                            'pause'                 => $pause,
+                        ]);
+                    }
+                }
 
             }
+
             $admins = User::where('role','admin')->get();
             
             $data = [

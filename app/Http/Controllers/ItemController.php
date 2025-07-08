@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Str;
 
 class ItemController extends Controller
 {
@@ -79,7 +80,6 @@ class ItemController extends Controller
                     $attributes[] = $value;
                 }
             }
-            // dd($attributes);
 
             $items = Item::where('seller_id', auth()->id())
                 ->where('category_game_id', $request->category_game_id)
@@ -89,7 +89,9 @@ class ItemController extends Controller
                 ->with('attributes', 'categoryGame.game', 'seller')
                 ->get();
 
-            return redirect()->back()->with('error', 'Offer already existed!');
+            if(count($items) != 0) {
+                return redirect()->back()->with('error', 'Offer already existed!');
+            }
         }
 
         try {
@@ -110,6 +112,18 @@ class ItemController extends Controller
             $featureImagePath = null;
             $cateId = $request->category_id;
     
+            $account_info = [];
+            foreach ($request->account_info as $key => $info) {
+                $account_id = Str::uuid()->toString();
+                $sold = 'no';
+
+                $account_info[$account_id] = [
+                    'id'    => $account_id,
+                    'info'  => $info,
+                    'sold'  => $sold
+                ];
+            }
+
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $index => $image) {
                     $randomNumber = rand(1, 99999);
@@ -137,7 +151,7 @@ class ItemController extends Controller
                     }
                 }
             }
-    
+            
             // Save item
             $item = Item::create([
                 'category_id'         => $request->category_id,
@@ -149,9 +163,9 @@ class ItemController extends Controller
                 'images_path'         => $folderPath ?? null,
                 'description'         => $request->description ?? null,
                 'delivery_method'     => ($cateId == 2) ? $request->delivery_method : null,
-                'delivery_time'       => ($request->delivery_time && $request->delivery_method == 'manual') ? $request->delivery_time : 'instant',
-                'account_info'        => ($cateId == 2) ? json_encode($request->account_info) : null,
-                'quantity_available'  => ($cateId == 2) ? count($request->account_info) : $request->quantity_available,
+                'delivery_time'       => ($request->delivery_method == 'manual' || ($cateId !== 2 && $request->delivery_time)) ? $request->delivery_time : 'instant',
+                'account_info'        => ($cateId == 2) ? $account_info : null,
+                'quantity_available'  => ($cateId == 2 && $request->delivery_method == 'automatic') ? count($request->account_info) : $request->quantity_available,
                 'minimum_quantity'    => $request->minimum_quantity ?? null,
                 'price'               => $request->price,
             ]);
@@ -200,7 +214,7 @@ class ItemController extends Controller
     public function update(Request $request) 
     {
         // dd($request->all());
-        try {
+        // try {
             // Validate the input
             $request->validate([
                 'category_id' => 'required|exists:categories,id',
@@ -255,6 +269,34 @@ class ItemController extends Controller
                 }
             }
             
+            $availableQuantity = $request->quantity_available;
+            $account_info = [];
+            
+            if($request->account_info != null) {
+                foreach ($request->account_info as $key => $info) {
+                    if(isset($request->account_id[$key])) {
+                        $account_id = $request->account_id[$key];
+                        $sold = $request->account_sold[$key];
+                    }else {
+                        $account_id = Str::uuid()->toString();
+                        $sold = 'no';
+                    }
+                    
+                    $account_info[$account_id] = [
+                        'id'    => $account_id,
+                        'info'  => $info,
+                        'sold'  => $sold
+                    ];
+                }
+            }
+
+            if(count($account_info) != 0) {
+                $UnsoldAccounts = collect($account_info)
+                    ->where('sold', 'no');
+
+                $availableQuantity = count($UnsoldAccounts);
+            }
+
 
             // Save item
             $item = Item::with('categoryGame.category')->find($request->offer_id);
@@ -268,8 +310,8 @@ class ItemController extends Controller
                 'description'         => $request->description ?? null,
                 'delivery_method'     => ($cateId == 2) ? $request->delivery_method : null,
                 'delivery_time'       => ($request->delivery_time && $request->delivery_method == 'manual') ? $request->delivery_time : 'instant',
-                'account_info'        => ($cateId == 2) ? json_encode($request->account_info) : null,
-                'quantity_available'  => $request->quantity_available,
+                'account_info'        => ($cateId == 2) ? $account_info : null,
+                'quantity_available'  => $availableQuantity,
                 'minimum_quantity'    => $request->minimum_quantity ?? 1,
                 'price'               => $request->price,
             ]);
@@ -290,10 +332,10 @@ class ItemController extends Controller
             DB::commit(); // All done safely!
     
             return redirect('offers/'.$item->categoryGame->category->name)->with('success', 'Offer updated successfully!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return redirect()->back()->with('error', $e->getMessage());
+        // }
 
     }
 

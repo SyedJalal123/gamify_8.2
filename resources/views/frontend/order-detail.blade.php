@@ -95,9 +95,7 @@
                                 <div class="d-flex flex-column w-100">
                                     <h4 class="fw-bold">Order {{ $order->order_status }}:</h4>
                                     <div class="border-theme-1 background-theme-card br-7 p-2">
-                                        @foreach (json_decode($item->account_info) as $account)
-                                            <div style="white-space: pre-line; overflow: hidden;">{!! $account !!}</div>
-                                        @endforeach
+                                        <div style="white-space: pre-line; overflow: hidden;">{!! $item->account_info[$order->account_id]['info'] !!}</div>
                                     </div>
                                 </div>
                             </div>
@@ -105,9 +103,7 @@
                             <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary w-100 p-3 br-7 mb-3">
                                 <h4 class="fw-bold">Account details:</h4>
                                 <div class="border-theme-1 background-theme-card br-7 p-2">
-                                    @foreach (json_decode($item->account_info) as $account)
-                                        <div style="white-space: pre-line; overflow: hidden;">{!! $account !!}</div>
-                                    @endforeach
+                                    <div style="white-space: pre-line; overflow: hidden;">{!! $item->account_info[$order->account_id]['info'] !!}</div>
                                 </div>
                             </div>
                         @endif

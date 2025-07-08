@@ -16,6 +16,7 @@ class Order extends Model
         'title',
         'quantity',
         'price',
+        'account_id',
         'discount_in_per',
         'payment_fees',
         'other_taxes',

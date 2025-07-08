@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->integer('quantity')->default('1');
             $table->float('price', 10, 4);
+            $table->string('account_id')->nullable();
             $table->integer('discount_in_per')->default('0');
             $table->decimal('payment_fees', 10, 2);
             $table->decimal('other_taxes', 10, 2)->default('0');

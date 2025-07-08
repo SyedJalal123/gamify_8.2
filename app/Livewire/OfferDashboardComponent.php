@@ -23,26 +23,31 @@ class OfferDashboardComponent extends Component
         $category = $this->category;
 
         $offer = Item::find($offerId);
-        $offer->update([
+
+        if($offer->quantity_available == 0) {
+            $this->dispatch('toast.error', message: "Quantity must be greater then 0");
+        }else {
+            $offer->update([
                 'pause' => $pause,
             ]);
-
-        $this->offers = Item::where('seller_id', auth()->id())->with('categoryGame.attributes', 'categoryGame.game')->whereHas('categoryGame', function ($query) use  ($category){
-            return $query->where('category_id', $category->id);
-        })->orderBy('created_at', 'desc')->get();
-
-        $this->games = Game::whereHas('categoryGames', function($query) use ($category) {
-            $query->where('category_id', $category->id);
-        })->get();
-
-        $pause = $pause == 0 ? 'Active' : 'Paused';
-        
-        $this->dispatch('componentUpdate');
-
-        if($pause == 'Active'){
-            $this->dispatch('toast.success', message: "Offer ".$pause);
-        }else {
-            $this->dispatch('toast.changed', message: "Offer ".$pause);
+    
+            $this->offers = Item::where('seller_id', auth()->id())->with('categoryGame.attributes', 'categoryGame.game')->whereHas('categoryGame', function ($query) use  ($category){
+                return $query->where('category_id', $category->id);
+            })->orderBy('created_at', 'desc')->get();
+    
+            $this->games = Game::whereHas('categoryGames', function($query) use ($category) {
+                $query->where('category_id', $category->id);
+            })->get();
+    
+            $pause = $pause == 0 ? 'Active' : 'Paused';
+            
+            $this->dispatch('componentUpdate');
+    
+            if($pause == 'Active'){
+                $this->dispatch('toast.success', message: "Offer ".$pause);
+            }else {
+                $this->dispatch('toast.changed', message: "Offer ".$pause);
+            }
         }
     }
 

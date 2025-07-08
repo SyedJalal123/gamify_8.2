@@ -166,7 +166,7 @@
                                     <!-- Offer Title -->
                                     <div class="card-section accounts_class items_class">
                                         <label class="form-label">Offer Title</label>
-                                        <textarea class="form-control accounts_r items_r" id="title" name="title" required rows="2" placeholder="Type here..."></textarea>
+                                        <textarea class="form-control auto-resize-textarea accounts_r items_r" id="title" name="title" required rows="2" placeholder="Type here..."></textarea>
                                         <small class="form-text">Give your item a descriptive title. What would buyers search for to find your item? Add the most searchable words at the front of your title. Titles have a 160 character limit.</small>
                                     </div>
 
@@ -193,7 +193,7 @@
                                     <div class="card-section">
                                         <label class="form-label currency_class accounts_class items_class">Description (Optional)</label>
                                         <label class="form-label topup_class">Delivery instructions</label>
-                                        <textarea class="form-control topup_r" id="description" name="description" rows="4" required placeholder="Type here..."></textarea>
+                                        <textarea class="form-control auto-resize-textarea topup_r" id="description" name="description" rows="4" required placeholder="Type here..."></textarea>
                                         <small class="form-text">The listing title and description must be accurate and informative. Misleading description violates Seller Rules.</small>
                                     </div>
 
@@ -234,7 +234,7 @@
                                     </div>
 
                                     <!-- Account Information -->
-                                    <div class="card-section accounts_class">
+                                    <div class="card-section accounts_class" id="accounts_section">
 
                                         <label class="form-label">Account Information Shared With Buyer</label>
                                         <small class="form-text">
@@ -250,7 +250,7 @@
                                         <!-- Default Account 1 -->
                                         <div class="account-field mt-4">
                                             <label class="form-label">Account 1</label>
-                                            <textarea class="form-control accounts_r" id="account_info" name="account_info[]" rows="2" required placeholder="Type here..."></textarea>
+                                            <textarea class="form-control auto-resize-textarea accounts_r" id="account_info" name="account_info[]" rows="2" required placeholder="Type here..."></textarea>
                                         </div>
                                       
                                         <!-- Container for dynamic accounts -->
@@ -261,7 +261,7 @@
                                     </div>
 
                                     <!-- Quantity Section -->
-                                    <div class="card-section currency_class topup_class items_class">
+                                    <div class="card-section currency_class topup_class items_class" id="quantity_section">
                                         <label class="form-label">Quantity</label>
                                         <div class="row g-2">
                                             <div class="col-md-6">
