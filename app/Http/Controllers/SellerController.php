@@ -72,7 +72,9 @@ class SellerController extends Controller
         $seller->main_photo_1   = $path_1;
         $seller->main_photo_2   = $path_2;
         $seller->save();
-    
+
+
+
         $sellerData = [
             'name'    => "{$seller->first_name} {$seller->last_name}",
             'status'  => 'Pending',

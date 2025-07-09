@@ -9,6 +9,18 @@ use App\Models\User;
 use Carbon\Carbon;
 
 
+function get_user($id) {
+    $data = User::find($id);
+
+    return $data;
+}
+
+function get_order($order_id) {
+    $data = Order::where('order_id',$order_id)->first();
+
+    return $data;
+}
+
 function parseDeliveryTime($str) {
     $str = strtolower(trim($str));
 

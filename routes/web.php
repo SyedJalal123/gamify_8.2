@@ -88,7 +88,7 @@ Route::middleware('verified')->group(function () {
     Route::get('/get-item-details/{id}/{category}', [CatalogController::class, 'getItemDetails'])->name('get.item.details');
     Route::get('/live-search', [CatalogController::class, 'liveSearch'])->name('live.search');
     Route::get('/item/{item}', [CatalogController::class, 'itemDetail'])->name('item.detail');
-    
+
     // Boosting Services Routes
     Route::get('/save-service', [ServiceController::class, 'store'])->middleware(['auth']);
     Route::get('/get-service-attributes', [ServiceController::class, 'getServiceAttributes']);
@@ -96,7 +96,7 @@ Route::middleware('verified')->group(function () {
     Route::post('/create-offer', [ServiceController::class, 'create_offer'])->name('offer.create')->middleware(['auth']);
     Route::get('/cancel-request', [ServiceController::class, 'cancelRequest'])->middleware(['auth']);
 
-    
+
     // Checkout Routes
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout')->middleware(['auth']);
     Route::post('/order', [CheckoutController::class, 'create'])->name('checkout.create')->middleware(['auth']);

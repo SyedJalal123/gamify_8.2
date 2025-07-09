@@ -100,7 +100,7 @@
                                 <h5 class="fw-bold">Total: $<span id="totalPrice" id="totalPrice">7.15</span></h5>
                             </div>
                             <div class="d-flex flex-column px-4 p-2">
-                                <button type="button" onclick="form_check()" class="btn btn-dark w-100 mb-2">
+                                <button type="button" onclick="form_check()" class="btn btn-dark w-100 mb-2" id="submit-button">
                                     $<span id="buyNowPrice">7.15 |</span>  Buy now
                                 </button>
                                 <div class="d-flex flex-column border-top-1-dashed mt-3 pt-2">
@@ -169,6 +169,7 @@
 
 @section('js')
     <script>
+        const authId = "{{auth()->id()}}";
         // Toggle Description
         function setupClampToggle() {
             const content = document.getElementById('deliveryInstructions');
@@ -564,12 +565,19 @@
                     .then(function (data) {
                         if (data.success) {
                             const item = data.item;
-
+                            
                             document.querySelector('#itemTitle').textContent = item.title;
                             document.querySelector('#itemImage').src = item.image;
                             document.querySelector('#deliveryTime').textContent = item.delivery_time;
                             document.querySelector('#totalPrice').textContent = item.price;
-                            document.querySelector('#buyNowPrice').textContent = item.price;
+                            
+                            if(authId == item.seller_id) {
+                                $('#submit-button').text('You can\'t buy you own items');
+                                $('#submit-button').off('click');
+                                $('#submit-button').attr('disabled',true);
+                            }else {
+                                document.querySelector('#buyNowPrice').textContent = item.price;
+                            }
                             document.querySelector('#deliveryInstructions').textContent = item.description;
                             document.querySelector('#sellerName').textContent = item.seller;
                             setupClampToggle();

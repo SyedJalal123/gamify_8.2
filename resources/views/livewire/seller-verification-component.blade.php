@@ -311,7 +311,7 @@
                 </div>
                 <div class="d-flex flex-column flex-md-row">
                     @if($order->delivered_at == null)
-                    <button wire:click="deliverOrder('delivered')" class="btn form__btn mb-2 mr-2 py-2">Order delivered</button>
+                    <button wire:click="deliverOrder('delivered')" onclick="click_disable(this)" class="btn form__btn mb-2 mr-2 py-2">Order delivered</button>
                     @endif
                     <button data-toggle="modal" data-target="#cancelOrderModal" class="btn btn-theme btn-theme-red py-2">Cancel order</button>
                 </div>
@@ -325,7 +325,7 @@
             <div class="d-flex flex-column justify-content-center">
                 <h5 class="d-flex mb-3">Chat with buyer to arrange delivery</h5>
                 <div class="d-flex flex-column flex-md-row">
-                    <button wire:click="deliverOrder('delivered')" class="btn form__btn mb-2 mr-2 py-2">Order delivered</button>
+                    <button wire:click="deliverOrder('delivered')" onclick="click_disable(this)" class="btn form__btn mb-2 mr-2 py-2">Order delivered</button>
                     <button data-toggle="modal" data-target="#cancelOrderModal" class="btn btn-theme btn-theme-red py-2">Cancel order</button>
                 </div>
             </div>

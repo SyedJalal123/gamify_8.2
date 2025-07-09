@@ -14,11 +14,14 @@ use App\Events\GroupServiceSellerEvent;
 use App\Models\BuyerRequestAttribute;
 use App\Notifications\BoostingOfferUpdate;
 use App\Notifications\BoostingRequestNotification;
+use App\Notifications\BoostingRequestEmail;
 use App\Notifications\BoostingOfferNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderMail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -32,7 +35,7 @@ class ServiceController extends Controller
         }
 
         // dd($request->all());
-        try {
+        // try {
             // Validate the input
             $request->validate([
                 'service_id' => 'required',
@@ -77,7 +80,7 @@ class ServiceController extends Controller
 
             $sellers = Seller::whereHas('user.services', function ($query) use ($serviceId) {
                 $query->where('services.id', $serviceId);
-            })->with('user')->get();
+            })->where('verified', 1)->with('user')->get();
             
             $users = $sellers->pluck('user')->filter(function ($user) {
                 return $user->id !== Auth::id(); // Exclude the current authenticated user
@@ -93,15 +96,39 @@ class ServiceController extends Controller
             ];
 
             Notification::send($users, new BoostingRequestNotification($data));
+            
+            // Email
+                $emailData = [
+                    'title'         => 'New Boosting Request',
+                    'data'          => 'A buyer has posted a new boosting request that matches your service. Check your dashboard for details.',
+                    'data1'         => $boostingOffer->service->categoryGame->game->name.' - '.$boostingOffer->service->name,
+                    'boosting_id'   => $boostingOffer->id,
+                    'buyer_id'      => auth()->id(),
+                    'link'          => url('boosting-request/' . $boostingOffer->id),
+                    'game_id'       => $boostingOffer->service->categoryGame->game_id,
+                    'admin'         => '0',
+                ];
+                
+                $usersToNotify = $sellers
+                ->pluck('user')
+                ->filter(fn($user) => $user->id !== Auth::id())
+                ->filter(fn($user) => $user->emailNotifications
+                    ->contains('name', 'Boosting offers')
+                );
 
+                // dd($usersToNotify);
+
+                Notification::send($usersToNotify, new BoostingRequestEmail($emailData));
+                // Mail::to($this->order->seller->email)->send(new OrderMail($emailData));
+            // Email
 
             return redirect('boosting-request/'.$buyerRequest->id);
             return redirect()->back()->with('success', 'Offer created successfully!');
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return redirect()->back()->with('error', $e->getMessage());
+        // }
     }
 
     public function create_offer(Request $request) {
@@ -117,7 +144,7 @@ class ServiceController extends Controller
             'delivery_time'    => 'required|string',
         ]);
 
-        RequestOffer::create([
+        $requestOffer = RequestOffer::create([
             'buyer_request_id' => $request->buyer_request_id,
             'price'            => $request->price,
             'delivery_time'    => $request->delivery_time,
@@ -145,6 +172,30 @@ class ServiceController extends Controller
         Notification::send($user, new BoostingOfferNotification($data));
 
         broadcast(new GroupServiceSellerEvent('update', $service_id));
+
+        // Email
+            $emailData = [
+                'title'         => 'New Boosting Offer',
+                'data'          => 'You’ve received a new offer on your boosting request.',
+                'data1'         => $boostingOffer->service->categoryGame->game->name.' - '.$boostingOffer->service->name,
+                'boosting_id'   => $boostingOffer->id,
+                'seller_id'     => auth()->id(),
+                'price'         => $requestOffer->price,
+                'delivery_time' => $requestOffer->delivery_time,
+                'link'          => url('boosting-request/' . $boostingOffer->id),
+                'game_id'       => $boostingOffer->service->categoryGame->game_id,
+                'admin'         => '0',
+            ];
+            
+            $notification_exists = User::where('id', $boostingOffer->user_id)->whereHas('emailNotifications', function($query){
+                $query->where('name','Boosting offers');
+            })->first();
+            
+            if($notification_exists != null){
+                Mail::to($notification_exists->email)->send(new OrderMail($emailData));
+            }
+        // Email
+        
         // if($other_users)
         // Notification::send($other_users, new BoostingOfferUpdate($data));
 

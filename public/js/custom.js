@@ -138,6 +138,10 @@ $('select').on('select2:open', function () {
     }
 });
 
+function click_disable(att) {
+    $(att).attr('disabled',true);
+}
+
 // Define the shortTimeAgo function
 function shortTimeAgo(date) {
     const time = new Date(date);

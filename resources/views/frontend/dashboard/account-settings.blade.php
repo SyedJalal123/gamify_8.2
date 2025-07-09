@@ -251,23 +251,25 @@
                                 <h6 class="fw-bold">All email notifications</h6>
                             </div>
                             <div class="d-flex flex-column">
-                                @foreach ($email_notifications as $key => $notification)    
-                                    <div class="d-flex flex-row align-items-center email-notification w-100 px-2 px-md-5 mb-4">
-                                        <div class="d-flex flex-column email-notification-header">
-                                            <span class="fw-bold">{{ $notification->name }}</span>
-                                            <span class="text-theme-secondary">{{ $notification->description }}</span>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" onchange="toggleNotification(this)"
-                                                {{ optional(auth()->user()->emailNotifications)->contains($notification->id) ? 'checked' : '' }}
-                                                class="custom-control-input service-toggle"
-                                                data-notification-id="{{ $notification->id }}" 
-                                                id="email_notification_{{$key}}">
-                                                <label class="custom-control-label cursor-pointer" for="email_notification_{{$key}}"></label>
+                                @foreach ($email_notifications as $key => $notification)
+                                    @if (!in_array($notification->name, ['Message received', 'Payment updates']))
+                                        <div class="d-flex flex-row align-items-center email-notification w-100 px-2 px-md-5 mb-4">
+                                            <div class="d-flex flex-column email-notification-header">
+                                                <span class="fw-bold">{{ $notification->name }}</span>
+                                                <span class="text-theme-secondary">{{ $notification->description }}</span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" onchange="toggleNotification(this)"
+                                                    {{ optional(auth()->user()->emailNotifications)->contains($notification->id) ? 'checked' : '' }}
+                                                    class="custom-control-input service-toggle"
+                                                    data-notification-id="{{ $notification->id }}" 
+                                                    id="email_notification_{{$key}}">
+                                                    <label class="custom-control-label cursor-pointer" for="email_notification_{{$key}}"></label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif    
                                 @endforeach
                             </div>
                         </div>

@@ -185,18 +185,23 @@
                                             </div>
 
                                         </div>
-
-                                        <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
-                                            id="price-submit-button">
-                                            $<span
-                                            @if($isTopup)
-                                                id="totalPrice" name="totalPrice">{{ number_format($item->price * (int) $topupValue * $item->minimum_quantity, 2) }}
-                                            @else
-                                                id="totalPrice" name="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}
-                                            @endif
-                                            </span>
-                                            | Buy now
-                                        </button>
+                                        @if(auth()->id() == $item->seller_id) 
+                                            <button type="button" class="btn btn-dark w-fill mb-2 mx-2 py-3 fs-14 br-10" disabled>
+                                                You can't buy your own item
+                                            </button>
+                                        @else
+                                            <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10" 
+                                                id="price-submit-button">
+                                                $<span
+                                                @if($isTopup)
+                                                    id="totalPrice" name="totalPrice">{{ number_format($item->price * (int) $topupValue * $item->minimum_quantity, 2) }}
+                                                @else
+                                                    id="totalPrice" name="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}
+                                                @endif
+                                                </span>
+                                                | Buy now
+                                            </button>
+                                        @endif
 
                                         @if ($discountArray[0]['amount'] != 0 && $discountArray[0]['discount_percentage'] != 0)
                                             <div class="discount-dropdown align-items-center d-flex flex-column">
@@ -444,12 +449,19 @@
 
                                             </div>
 
-                                            <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
-                                                id="price-submit-button">
-                                                $<span
-                                                    id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
-                                                | Buy now
-                                            </button>
+                                            @if(auth()->id() == $item->seller_id) 
+                                                <button type="button" class="btn btn-dark w-fill mb-2 mx-2 py-3 fs-14 br-10" disabled>
+                                                    You can't buy your own item
+                                                </button>
+                                            @else
+                                            
+                                                <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
+                                                    id="price-submit-button">
+                                                    $<span
+                                                        id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
+                                                    | Buy now
+                                                </button>
+                                            @endif
 
                                             @if ($discountArray[0]['amount'] != 0 && $discountArray[0]['discount_percentage'] != 0)
                                                 <div class="discount-dropdown align-items-center d-flex flex-column">
@@ -503,12 +515,18 @@
                                             <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price }}">
                                             <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
 
-                                            <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
-                                                id="price-submit-button">
-                                                $<span
-                                                    id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
-                                                | Buy now
-                                            </button>
+                                            @if(auth()->id() == $item->seller_id) 
+                                                <button type="button" class="btn btn-dark w-fill mb-2 mx-2 py-3 fs-14 br-10" disabled>
+                                                    You can't buy your own item
+                                                </button>
+                                            @else
+                                                <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
+                                                    id="price-submit-button">
+                                                    $<span
+                                                        id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
+                                                    | Buy now
+                                                </button>
+                                            @endif
                                         </form>
                                     @endif
                                 </div>

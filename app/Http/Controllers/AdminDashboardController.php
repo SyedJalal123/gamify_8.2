@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\BoostingOfferNotification;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderMail;
 use Illuminate\Support\Str;
 
 class AdminDashboardController extends Controller
@@ -1245,7 +1247,7 @@ class AdminDashboardController extends Controller
     public function change_seller_status(Request $request) {
         // dd($request->all());
 
-        $seller = Seller::find($request->sellerId);
+        $seller = Seller::with('user')->find($request->sellerId);
         $seller->verified = $request->sellerStatus;
         $seller->save();
 
@@ -1257,14 +1259,38 @@ class AdminDashboardController extends Controller
         }
 
         if($request->sellerStatus == 1){
+            $email_title = 'Seller account verified';
             $title_data = 'Your seller account has been successfully verified.';
+            $email_data = 'You can now sell your items seamlessly on Gamify.';
             $url = url('items/create');
         } 
         elseif ($request->sellerStatus == 2)
         {
+            $email_title = 'Seller verification failed';
+            $email_data = 'Don\'t worry, check the reason from Gamify Team below and try again.';
             $title_data = 'Seller verification failed';
             $url = url('seller-verification');
         }
+
+        // Email
+            $emailData = [
+                'title'     => $email_title,
+                'name'      => $seller->user->username,
+                'data'      => $email_data,
+                'reason'    => $request->reason,
+                'buyer_id'  => $seller->user->id,
+                'link'      => $url,
+                'admin'     => '0',
+            ];
+
+            $notification_exists = User::where('id', $seller->user->id)->whereHas('emailNotifications', function($query){
+                $query->where('name','Verification updates');
+            })->first();
+            
+            if($notification_exists != null){
+                Mail::to($seller->user->email)->send(new OrderMail($emailData));
+            }
+        // Email
 
         $data = [
             'title' => $title_data,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class NowPaymentController extends Controller
 {
@@ -13,12 +14,14 @@ class NowPaymentController extends Controller
     public function create(Request $request)
     {
         // dd($request->all());
+
         if(isset($request->product_name)){
             $description = $request->product_name;
         }else {
-            $description = 'Order #---';
-
+            $description = 'Order#'.$orderId;
         }
+
+        $orderId = Str::uuid()->toString();
 
         $validatedData = $request->validate([
             'total_price' => 'required|numeric|min:0.01',
@@ -33,10 +36,10 @@ class NowPaymentController extends Controller
         ])->post('https://api.nowpayments.io/v1/invoice', [
             'price_amount' => $validatedData['total_price'],
             'price_currency' => 'usd',
-            'order_id' => uniqid(),
+            'order_id' => $orderId,
             'order_description' => $description,
             'ipn_callback_url' => route('nowpayments.callback'),
-            'success_url' => route('nowpayments.success', ['order_id' => $request->order_id]),
+            'success_url' => route('nowpayments.success', ['order_id' => $orderId]),
             'cancel_url' => route('nowpayments.cancel'),
         ]);
 
@@ -55,6 +58,8 @@ class NowPaymentController extends Controller
      */
     public function callback(Request $request)
     {
+        dd($request->all());
+
         $paymentStatus = $request->input('payment_status');
         $orderId = $request->input('order_id');
 

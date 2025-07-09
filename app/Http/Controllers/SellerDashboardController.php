@@ -247,7 +247,7 @@ class SellerDashboardController extends Controller
     public function boosting(Request $request, $tag) {
 
         if($tag == 'my-requests') {
-            $boostingRequests = BuyerRequest::with('requestOffers')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate('1');
+            $boostingRequests = BuyerRequest::with('requestOffers')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate('20');
         }else if($tag == 'received-requests') {
             $boostingRequests = auth()->user()
                 ->notifications()

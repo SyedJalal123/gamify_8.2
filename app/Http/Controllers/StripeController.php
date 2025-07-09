@@ -19,6 +19,8 @@ use App\Events\GroupServiceSellerEvent;
 use App\Models\ItemAttribute;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderMail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -132,6 +134,7 @@ class StripeController extends Controller
     {
         
         // dd($request);
+        
         if($request->item_id){
             $item = Item::with('categoryGame','seller')->find($request->item_id);
             $categoryGameId = $item->category_game_id;
@@ -155,7 +158,7 @@ class StripeController extends Controller
 
         DB::beginTransaction();
 
-        try {
+        // try {
             $order = Order::create([
                 'order_id'           => Str::uuid()->toString(),
                 'item_id'            => $request->item_id ?? null,
@@ -263,8 +266,10 @@ class StripeController extends Controller
             
             $data = [
                 'title'     => 'New Order',
+                'name'      => $seller->username,
                 'data1'     => $categoryGame->game->name.' - '.$categoryGame->category->name,
                 'data2'     => 'Buyer: '.auth()->user()->username,
+                'buyer_id'  => auth()->id(),
                 'link'      => url('order/' . $order->order_id),
                 'game_id'   => $categoryGame->game_id,
                 'admin'     => '0',
@@ -272,30 +277,61 @@ class StripeController extends Controller
 
             $data1 = [
                 'title'     => 'New Order',
+                'name'      => 'Gamify',
                 'data1'     => $categoryGame->game->name.' - '.$categoryGame->category->name,
                 'data2'     => 'Buyer: '.auth()->user()->username,
+                'buyer_id'  => auth()->id(),
                 'link'      => url('order/' . $order->order_id),
                 'game_id'   => $categoryGame->game_id,
                 'admin'     => '1',
             ];
 
+            $emailData = [
+                'title'     => 'New Order',
+                'name'      => $seller->username,
+                'data'      => 'You have a new Order. Please get in touch with the Buyer to arrange a delivery if the delivery method is not automatic.',
+                'data1'     => $categoryGame->game->name.' - '.$categoryGame->category->name,
+                'data2'     => 'Buyer: '.auth()->user()->username,
+                'data3'     => $order->order_id,
+                'buyer_id'  => auth()->id(),
+                'link'      => url('order/' . $order->order_id),
+                'game_id'   => $categoryGame->game_id,
+                'admin'     => '0',
+            ];
+
+            // $emailData = [
+            //     'name'    => "{$seller->first_name} {$seller->last_name}",
+            //     'status'  => 'Pending',
+            //     'email'   => auth()->user()->email,
+            //     'photo_1' => asset("$path_1"),
+            //     'photo_2' => asset("$path_2"),
+            // ];
+
             Notification::send($seller, new BoostingOfferNotification($data));
+
+            $notification_exists = User::where('id',$seller->id)->whereHas('emailNotifications', function($query){
+                $query->where('name','New order');
+            })->first();
+            
+            if($notification_exists != null){
+                Mail::to($seller->email)->send(new OrderMail($emailData));
+            }
 
             // Notification::send($admins, new BoostingOfferNotification($data1));
 
             DB::commit();
             return $order;
 
-        } catch (\Throwable $e) {
-            DB::rollBack();
+        // } catch (\Throwable $e) {
+        //     DB::rollBack();
 
-            Log::error('Order creation failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+        //     Log::error('Order creation failed', [
+        //         'error' => $e->getMessage(),
+        //         'trace' => $e->getTraceAsString(),
+        //     ]);
 
-            return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
-        }
+        //     return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
+        // }
     }
 
     /**
