@@ -24,7 +24,7 @@
                 flex-wrap: nowrap !important;
                 overflow: scroll;
             }
-            
+
             .section--first {
                 background: url('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 140px / auto 500px no-repeat;
             }
