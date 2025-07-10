@@ -16,7 +16,10 @@ body.dark-theme {
     --brand-cherry: #e81b16;
     --brand-cherry-light: #e81b167a;
     --brand-yellow-1: #ffc950;
+    --brand-yellow-4: #fce7b6;
+    --brand-sulu: #d1f08f;
 
+    
     --background-card: rgba(167,130,233,0.03);
     --background-card-dark: #a782e926;
     --background-card-yellow: rgba(233, 194, 130, 0.082);

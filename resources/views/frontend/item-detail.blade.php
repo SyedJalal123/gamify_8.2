@@ -28,7 +28,7 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') }}') center top 140px / auto 500px no-repeat;">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -729,10 +729,12 @@
             }
         }
 
-        document.getElementById('price-submit-button').addEventListener('click', () => {
-            const overlay = document.getElementById('pageOverlay');
-            overlay.style.display = 'flex';
-        });
+        if(document.getElementById('price-submit-button')) {
+            document.getElementById('price-submit-button').addEventListener('click', () => {
+                const overlay = document.getElementById('pageOverlay');
+                overlay.style.display = 'flex';
+            });
+        }
 
         function toggleReadMore(id) {
             const desc = document.getElementById('desc-' + id);

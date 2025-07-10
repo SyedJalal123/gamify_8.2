@@ -221,8 +221,8 @@ class SupportConversation extends Conversation
                                         <li>📌 You purchased the order by mistake and it was delivered.</li>
                                         <li>📌 Guaranteed delivery time has not passed</li>
                                         <li>📌 The seller was unable to proceed with the boost due to lack of access to the account or interruptions from outside actions.</li>
-                                        <li>📌 Evidence of incomplete delivery is shared on external platforms other than Eldorado.</li>
-                                        <li>📌 The boost was not purchased on Eldorado.</li>
+                                        <li>📌 Evidence of incomplete delivery is shared on external platforms other than Gamify.</li>
+                                        <li>📌 The boost was not purchased on Gamify.</li>
                                         <li>📌 The account was banned/shadow banned due to your actions (i.e. botting, toxic behavior, contacting game developers, etc.).</li>
                                     </ul>
                                 ');

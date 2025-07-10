@@ -13,6 +13,7 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Models\BuyerRequest;
 use App\Models\Game;
+use App\Models\CategoryGame;
 use App\Models\Seller;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NowPaymentController;
@@ -66,8 +67,14 @@ Route::get('/clear-cache', function () {
 Route::middleware('verified')->group(function () {
     Route::get('/', function () {
         $categories = Category::with('games')->get();
-        return view('frontend.home', compact('categories'));
+        $currencies = CategoryGame::where('category_id',1)->with('game')->get();
+        $accounts = CategoryGame::where('category_id',2)->with('game')->get();
+        $topups = CategoryGame::where('category_id',3)->with('game')->get();
+        $items = CategoryGame::where('category_id',4)->with('game')->get();
+
+        return view('frontend.home', compact('categories', 'accounts', 'currencies', 'topups', 'items'));
     })->name('home');
+
     Route::get('/seller-verification', function () {
         return view('frontend.seller_verification');
     });

@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-<section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+<section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') }}') center top 140px / auto 500px no-repeat;">
     <!-- MOBILE FILTER DRAWER -->
     <div id="filterDrawer" class="filter-drawer d-md-none">
         <div class="d-flex justify-content-between mx-3 mb-3 align-items-center">

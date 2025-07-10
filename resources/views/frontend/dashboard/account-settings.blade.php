@@ -111,7 +111,7 @@
                                     </form>
                                     <div class="d-flex flex-column fs-13">
                                         <div class="">
-                                            <span class="text-theme-secondary">Name that is visible to other Eldorado users. You can change your username once every 90 days.</span>
+                                            <span class="text-theme-secondary">Name that is visible to other Gamify users. You can change your username once every 90 days.</span>
                                         </div>
                                     </div>
                                 </div>

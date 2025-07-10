@@ -437,10 +437,6 @@ class ChatWootBotController extends Controller
                     'items' => [
                         ['title' => '💲 Payment Troubleshooting'    , 'value' => 'buyer_payment'],
                         ['title' => '💲 Refund Request'             , 'value' => 'buyer_another_refund'],
-                        // ['title' => '🛡️ Eldorado Account'           , 'value' => 'buyer_another_account'],
-                        // ['title' => '❔ I have a suggestion'        , 'value' => 'buyer_another_suggestion'],
-                        // ['title' => '📢 Report user'                , 'value' => 'buyer_another_report_user'],
-                        // ['title' => '🔍 FAQ'                        , 'value' => 'buyer_another_faq'],
                         ['title' => '🌍 Contact live support'       , 'value' => 'live_support'],
                         ['title' => '✔️ Close conversation'         , 'value' => 'close_conversation'],
                     ],
@@ -567,7 +563,7 @@ class ChatWootBotController extends Controller
                         \n\n1. **Pending delivery:** Customer is awaiting seller's delivery.
                         \n\n2. **Order delivered:** Seller has delivered the product.
                         \n\n3. **Order disputed/order delivered and disputed:** Buyer has raised a dispute on their order, awaiting resolution from seller.
-                        \n\n4. **Order canceled:** Order has been canceled by the seller or Eldorado dispute team.
+                        \n\n4. **Order canceled:** Order has been canceled by the seller or Gamify dispute team.
                         \n\n5. **Order received:** Customer has marked the order as received.
                         \n\n6. **Order completed:** The order is finished, and the seller has received payment.
                         \n\nStatus will be displayed on the order page.";
@@ -583,7 +579,7 @@ class ChatWootBotController extends Controller
             if($message == 'seller_rules') {
                 $text = "Please refer to these articles for the latest information:";
                 $text1 = "[**Seller Rules**\nSeller rules for existing offers will be applied on December...](" . url('/') . ")";
-                $text2 = "[**Account Seller Rules**\nPrepare to sell accounts on Eldorado by learning about the...](" . url('/') . ")";
+                $text2 = "[**Account Seller Rules**\nPrepare to sell accounts on Gamify by learning about the...](" . url('/') . ")";
             }
 
             if($message == 'seller_verification') {

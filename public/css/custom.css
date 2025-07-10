@@ -258,6 +258,10 @@
     border-radius: 40px;
 }
 
+.br-33 {
+    border-radius: 33px;
+}
+
 .br-10 {
     border-radius: 10px;
 }
@@ -1510,6 +1514,14 @@
         border: 1px solid var(--border-1);
     }
 
+    .border-theme-1-hover {
+        border: 1px solid var(--border-1);
+    }
+
+    .border-theme-1-hover:hover {
+        border: 1px solid var(--border-active);
+    }
+
     .dividor-border-theme-right {
         border-right: 1px solid var(--dividor-border);
     }
@@ -1928,4 +1940,8 @@ input[type=number] {
 
 .cursor-default {
     cursor: default !important;
+}
+
+.text-shadow-5 {
+    text-shadow: 0 0 5px black;
 }

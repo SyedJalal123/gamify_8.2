@@ -10,7 +10,7 @@
                             <span></span>
                         </button>
 
-                        <a href="{{url('/')}}" wire:navigate class="header__logo">
+                        <a wire:navigate href="{{url('/')}}" class="header__logo">
                             <h2 style="color: white;font-weight: 900;font-family: cursive;">Gamify</h2>
                         </a>
 
