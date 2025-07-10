@@ -28,6 +28,12 @@ class GoogleController extends Controller
                     'password' => bcrypt('password'),
                     'email_verified_at' => now(),
                 ]);
+
+                $user->emailNotifications()->attach(1);
+                $user->emailNotifications()->attach(3);
+                $user->emailNotifications()->attach(4);
+                $user->emailNotifications()->attach(6);
+                $user->emailNotifications()->attach(7);
             }
 
             Auth::login($user);

@@ -28,6 +28,13 @@ class FacebookController extends Controller
                     'password' => bcrypt('password'), // Default password (can be changed later)
                     'email_verified_at' => now(), // ✅ Auto-verify email
                 ]);
+
+                $user->emailNotifications()->attach(1);
+                $user->emailNotifications()->attach(3);
+                $user->emailNotifications()->attach(4);
+                $user->emailNotifications()->attach(6);
+                $user->emailNotifications()->attach(7);
+                // $user->emailNotifications()->attach(8);
             }
 
             Auth::login($user);
