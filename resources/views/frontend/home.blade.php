@@ -17,6 +17,16 @@
             width: 125px;
         }
 
+        .home-heading-text {
+            max-width: 650px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 34px;
+        }
+        .home-heading-text-2 {
+            font-size: 22px;
+        }
+
         @media (max-width:768px) {
             .home-items-row {
                 display: flex !important;
@@ -32,6 +42,16 @@
             .info-details-box {
                 height: 154px;
                 width: 125px;
+            }
+
+            .home-heading-text {
+                max-width: 650px;
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 29px;
+            }
+            .home-heading-text-2 {
+                font-size: 18px;
             }
         }
 
@@ -52,6 +72,8 @@
             width: 150px;height: 120px;
             box-shadow: 0 0 20px 4px rgb(0 0 0 / 10%);
         }
+
+        
         
     </style>
 @endsection
@@ -543,8 +565,9 @@
         <!-- end carousel --> --}}
 
         <div class="container dividor-border-theme-bottom">
+            <h1 class="home-heading-text">🔥 What’s Hot Right Now</h1>
             <div class="section__title-wrap mb-0 pb-1">
-                <h2 class="section__title fs-24 text-shadow-5">Trending Game <strong>Accounts</strong></h2>
+                <h2 class="section__title home-heading-text-2 text-shadow-5">Browse the most in-demand game accounts across top titles.</h2>
 
                 <div class="section__nav-wrap">
                     <a href="catalog.html" class="section__view">View All</a>
