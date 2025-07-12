@@ -8,16 +8,12 @@
             right: -67px;
             width: 69%;
         }
-        @media (max-width: 768px) { 
-            .section--first {
-                padding-top: 162px !important;
-            } 
-        }
+    
     </style>
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container mb-5" style="max-width: 1118px;">
             <div class="row col-12">
                 <img src="{{ asset($categoryGame->game->image) }}" style="width: 23px;height: max-content;">

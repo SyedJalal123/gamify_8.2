@@ -10,11 +10,11 @@
         <div class="user-info">
             <h6 class="username fw-bold m-0">
                 <a href="#" class="text-theme-primary"> {{ auth()->user()->name }} </a>
-                <i class="bi bi-shield-fill-check"></i>
+                <i class="bi bi-shield-fill-check text-theme-emerald"></i>
                 <!---->
             </h6>
-            <div class="registered-date">
-                <p class="m-0"> Registered: 3/3/25 </p>
+            <div class="registered-date text-theme-primary">
+                <p class="m-0"> Registered: {{ auth()->user()->created_at->format('d/m/y') }} </p>
             </div>
             <!---->
         </div>

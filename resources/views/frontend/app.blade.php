@@ -39,9 +39,64 @@
         <style lang="en" type="text/css" id="dark-mode-custom-style"></style>
         <style lang="en" type="text/css" id="dark-mode-native-style"></style>
         <style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
-
+        
         <div id="dynamic-css">
             @yield('css')
+
+            @if (Route::currentRouteName() == 'home')
+                <style>
+                    .section--first {
+                        background: url('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bgg.jpg') center top 0px / auto 500px no-repeat;
+                        padding-top: 130px;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            background: url('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 53px / auto 500px no-repeat;
+                            padding-top: 90px;
+                        }
+                    }
+                </style>
+            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout')
+                <style>
+                    .section--first {
+                        background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
+                        padding-top: 90px;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 53px / auto 500px no-repeat;
+                            padding-top: 60px;
+                        }
+                    }
+                </style>
+            @elseif(Str::startsWith(Route::currentRouteName(), 'seller-dashboard.'))
+                <style>
+                    .section--first {
+                        background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
+                        padding-top: 0px;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 53px / auto 500px no-repeat;
+                            padding-top: 70px;
+                        }
+                    }
+                </style>
+            @else
+                <style>
+                    .section--first {
+                        background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
+                        padding-top: 143px;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 53px / auto 500px no-repeat;
+                            padding-top: 90px;
+                        }
+                    }
+                </style>
+            
+            @endif
         </div>
         
         @vite(['resources/js/app.js'])

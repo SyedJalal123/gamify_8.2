@@ -36,11 +36,6 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-        @media (max-width: 768px) { 
-            .section--first {
-                padding-top: 155px !important;
-            } 
-        }
     </style>
 @endsection
 

@@ -2,14 +2,6 @@
 
 @section('css')
     <style>
-        .section--first {
-            padding-top: 144px !important;
-        }
-        @media (max-width: 768px) { 
-           .section--first {
-                padding-top: 144px !important;
-            } 
-        }
         .d-none {
             display: none !important;
         }
@@ -60,7 +52,7 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first fs-14" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first fs-14">
         <div class="container pb-5"> 
 
             <div class="d-flex flex-column border-theme-1 background-theme-body-1 text-theme-primary mt-2">

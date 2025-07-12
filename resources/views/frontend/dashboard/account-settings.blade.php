@@ -1,46 +1,44 @@
 @extends('frontend.app')
 
 @section('css')
-<style>
-    .section--first {
-        padding-top: 144px !important;
-    }
+    <link rel="stylesheet" href="{{asset('css/seller-dashboard.css')}}">
+    <style>
 
-    .d-none {
-        display: none !important;
-    }
-
-    @media (min-width: 768px) {
-        .d-md-flex {
-            display: flex !important;
+        .d-none {
+            display: none !important;
         }
 
-        .d-md-block {
-            display: block !important;
+        @media (min-width: 768px) {
+            .d-md-flex {
+                display: flex !important;
+            }
+
+            .d-md-block {
+                display: block !important;
+            }
+
+            .email-notification-header {
+                min-width: 400px;
+            }
         }
 
-        .email-notification-header {
-            min-width: 400px;
+        @media (max-width: 768px) {
+            .email-notification {
+                justify-content: space-between;
+            }
         }
-    }
 
-    @media (max-width: 768px) {
-        .email-notification {
-            justify-content: space-between;
-        }
-    }
-
-</style>
+    </style>
 @endsection
 
 @section('content')
-<section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+<section class="section section--bg section--first">
     <div class="row m-0 position-relative zi-2">
         <div class="d-none d-lg-block col-md-2 p-0">
             @include('frontend.includes.sidebar')
         </div>
 
-        <div class="col-md-12 col-lg-10 pt-5">
+        <div class="col-md-12 col-lg-10 pt-lg-5 mt-lg-5 pm-1200-0">
             <div class="row">
                 <div class="col-12 mb-5" style="max-width: 1048px;">
                     <div class="d-flex flex-row align-items-center mb-4">

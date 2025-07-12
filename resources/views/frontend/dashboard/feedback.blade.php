@@ -1,10 +1,8 @@
 @extends('frontend.app')
 
 @section('css')
+    <link rel="stylesheet" href="{{asset('css/seller-dashboard.css')}}">
     <style>
-        .section--first {
-            padding-top: 144px !important;
-        }
 
         .d-none {
             display: none !important;
@@ -25,13 +23,13 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first"  style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="row m-0 position-relative zi-2">
             <div class="d-none d-lg-block col-md-2 p-0">
                 @include('frontend.includes.sidebar')
             </div>
 
-            <div class="col-md-12 col-lg-10 pt-5">
+            <div class="col-md-12 col-lg-10 pt-lg-5 mt-lg-5 pm-1200-0">
                 <div class="row">
                     <div class="col-12" style="max-width: 1048px;">
                         <div class="d-flex flex-row align-items-center mb-4">

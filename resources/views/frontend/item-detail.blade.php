@@ -3,10 +3,6 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/item-detail.css') }}">
     <style>
-        .section--first {
-            padding-top: 144px !important;
-        }
-
         table td {
             padding: 0.55rem 1.2rem !important;
         }
@@ -28,7 +24,7 @@
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container">
             <div class="row">
                 <div class="col-12">

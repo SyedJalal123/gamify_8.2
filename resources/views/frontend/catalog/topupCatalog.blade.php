@@ -17,17 +17,16 @@
             .d-md-block {
                 display: block !important;
             }
+            .d-md-flex {
+                display: flex !important;
+            }
         }
-        @media (max-width: 768px) { 
-            .section--first {
-                padding-top: 162px !important;
-            } 
-        }
+        
     </style>
 @endsection
 
 @section('content')
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container mb-5" style="max-width: 1118px;">
             <div class="row col-12">
                 <img src="{{ asset($categoryGame->game->image) }}" style="width: 23px;height: max-content;">
@@ -169,7 +168,6 @@
 
 @section('js')
     <script>
-        const authId = "{{auth()->id()}}";
         // Toggle Description
         function setupClampToggle() {
             const content = document.getElementById('deliveryInstructions');
@@ -565,6 +563,7 @@
                     .then(function (data) {
                         if (data.success) {
                             const item = data.item;
+                            const authId = "{{auth()->id()}}";
                             
                             document.querySelector('#itemTitle').textContent = item.title;
                             document.querySelector('#itemImage').src = item.image;

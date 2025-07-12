@@ -2,15 +2,6 @@
 
 @section('css')
     <style>
-        @media (min-width: 1200px) {
-            .section--first {
-                padding-top: 210px;
-            }
-        }
-
-        .section--first {
-            background: url('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bgg.jpg') center top 140px / auto 500px no-repeat;
-        }
 
         .info-details-box {
             height: 154px;
@@ -35,10 +26,6 @@
                 overflow: scroll;
             }
 
-            .section--first {
-                background: url('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 140px / auto 500px no-repeat;
-            }
-
             .info-details-box {
                 height: 154px;
                 width: 125px;
@@ -53,6 +40,8 @@
             .home-heading-text-2 {
                 font-size: 18px;
             }
+
+            
         }
 
         .home-item-name {
@@ -1962,6 +1951,6 @@
 
 @section('js')
     <script>
-        
+
     </script>
 @endsection

@@ -1,5 +1,6 @@
-<header class="header">
-    <div class="header__wrap">
+<header class="header" style="position: relative;">
+    <div class="header__wrap" 
+        style="padding: 0px 0px;">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -14,7 +15,7 @@
                             <h2 style="color: white;font-weight: 900;font-family: cursive;">Gamify</h2>
                         </a>
 
-                        <ul class="header__nav mx-0">
+                        <div class="header_search justify-content-center header_search_pc">
                             <!-- Overlay -->
                             <div id="customSearchOverlay" class="custom-search-overlay"></div>
                         
@@ -39,7 +40,7 @@
                                 </div>
                             </div>
                             
-                        </ul>
+                        </div>
 
                         <div class="header__actions d-flex right-header justify-content-end">
                             {{-- Language settings --}}
@@ -329,13 +330,21 @@
         </div>
     </div>
 
-    <div class="header__wrap">
+    <div class="header__wrap" 
+        style="position: absolute;
+        right: 0;
+        left: 0;
+        border-bottom:0px;">
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <div class="header__content d-flex justify-content-center" 
-                    
-                    >
+                    <div class="header__content nav-pc d-flex justify-content-center" 
+                        style="margin-top: 19px;
+                            background: #1b222eba;
+                            border: 1px solid var(--border-1);
+                            border-radius: 40px;
+                            height: 49px;"
+                        >
                         {{-- <form action="https://gogame.volkovdesign.com/#" class="header__form">
                             <input type="text" class="header__input w-100" placeholder="I&#39;m searching for...">
                             <select class="header__select">
@@ -356,11 +365,16 @@
                             </button>
                         </form> --}}
 
-                        <div class="header_search d-flex justify-content-center">
+                        <ul class="header__nav mx-0">
                             @php $categories = categories(); @endphp
                             @foreach ($categories as $category)
-                                <li class="header__nav-item">
-                                    <a class="header__nav-link" href="#" role="button" id="dropdownMenu0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$category->name}} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 184l144 144 144-144"></path></svg></a>
+                                <li class="header__nav-item mr-0" style="padding-right: 99px;">
+                                    <a class="header__nav-link" href="#" role="button" id="dropdownMenu0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{$category->name}} 
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                            <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 184l144 144 144-144"></path>
+                                        </svg>
+                                    </a>
     
                                     <ul class="dropdown-menu header__nav-menu" aria-labelledby="dropdownMenu0">
                                         @foreach ($category->categoryGames as $item)
@@ -377,7 +391,8 @@
                                     </ul>
                                 </li>  
                             @endforeach
-                        </div>  
+                        </ul>  
+                        {{-- mega menu --}}
                         
 
                         {{-- <div class="header__actions header__actions--2">
@@ -391,7 +406,37 @@
                                 <span>$00.00</span>
                             </a>
                         </div> --}}
+
+                        <div class="header_search d-flex justify-content-center header_search_phone pt-3 w-100">
+                            <!-- Overlay -->
+                            <div id="customSearchOverlay2" class="custom-search-overlay"></div>
+                        
+                            <!-- Input + Dropdown -->
+                            <div class="custom-search-container w-100">
+                                <div class="header__form w-100">
+                                    <input type="text" id="customSearchInput2" class="header__input w-100" autocomplete="off" placeholder="Search Gamify">
+                                    <button class="header__btn" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 512 512">
+                                            <path d="M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z"
+                                                    style="fill:none;stroke:white;stroke-width:32px"/>
+                                            <line x1="338.29" y1="338.29" x2="448" y2="448"
+                                                    style="fill:none;stroke:white;stroke-linecap:round;stroke-width:32px"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                        
+                                <!-- Results Dropdown -->
+                                <div id="customSearchDropdown2" class="custom-search-dropdown">
+                                    <h4>POPULAR CATEGORIES</h4>
+                                    {{-- Optionally preload static popular ones here --}}
+                                </div>
+                            </div>
+                            
+                        </div>
+
                     </div>
+
+
                 </div>
             </div>
         </div>

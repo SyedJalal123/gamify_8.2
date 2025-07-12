@@ -1,3 +1,5 @@
+
+
 // const { event } = require("jquery");
 
 $('#myModal').on('shown.bs.modal', function() {
@@ -10,14 +12,18 @@ $('#myModal').on('shown.bs.modal', function() {
 
 // Live AJAX Search
 $(document).ready(function() {
-    const customSearchInput = document.getElementById('customSearchInput');
-    const customDropdown = document.getElementById('customSearchDropdown');
-    const customOverlay = document.getElementById('customSearchOverlay');
 
-    customSearchInput.addEventListener('focus', () => {
-        customDropdown.classList.add('show');
-        customOverlay.classList.add('show');
-    });
+    let customSearchInput, customDropdown, customOverlay;
+
+    if (window.matchMedia("(max-width: 768px)").matches) {
+        customSearchInput = document.getElementById('customSearchInput2');
+        customDropdown = document.getElementById('customSearchDropdown2');
+        customOverlay = document.getElementById('customSearchOverlay2');
+    } else {
+        customSearchInput = document.getElementById('customSearchInput');
+        customDropdown = document.getElementById('customSearchDropdown');
+        customOverlay = document.getElementById('customSearchOverlay');
+    }
 
     customOverlay.addEventListener('click', () => {
         customDropdown.classList.remove('show');
