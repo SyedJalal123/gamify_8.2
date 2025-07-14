@@ -107,7 +107,7 @@ class SellerController extends Controller
      */
     public function index()
     {
-        //
+        return view('frontend.seller_verification');
     }
 
     /**

@@ -1,4 +1,108 @@
 
+function get_header_search_items(categoryId) {
+    search = $(`#get-header-search-items-${categoryId}`).val();
+
+    $('.phone-header-search .append-items').empty();
+    $('.phone-header-search-items').addClass('d-none').removeClass('d-flex');
+    $('.phone-header-search .append-items').removeClass('d-none').addClass('d-flex');
+    $('.phone-header-search .append-items').append(`<div class="text-theme-primary">searching</div>`);
+    
+    setTimeout(function () {
+        if(search == '') {
+            $('.phone-header-search-items').removeClass('d-none').addClass('d-flex');
+            $('.phone-header-search .append-items').addClass('d-none').removeClass('d-flex');
+        }else {
+            $.ajax({
+                url: '/get-header-search',
+                method: 'GET',
+                data: { 
+                    search: search, 
+                    categoryId: categoryId, 
+                },
+                success: function (response) {
+                    var html = '';
+                    for(var i = 0; i < response.length; i++) {
+                        html += `<a href="${homePath}catalog/${response[i].id}" class="col-md-6 d-flex mb-3">
+                            <img src="${publicPath}${response[i].game.image}" width="25px" class="mr-2" alt="">
+                            <span class="fs-15">${response[i].game.name}</span>
+                        </a>`;
+                    }
+        
+                    if(response.length == 0) {
+                        // $('.phone-header-search-items').removeClass('d-none').addClass('d-flex');
+                        $('.phone-header-search .append-items').empty();
+
+                        $('.phone-header-search .append-items').append(`<div class="text-theme-primary">No items found</div>`);
+
+                    } else {
+                        $('.phone-header-search .append-items').empty();
+
+                        $('.phone-header-search .append-items').removeClass('d-none').addClass('d-flex');
+                        $('.phone-header-search-items').removeClass('d-flex').addClass('d-none');
+                        $('.phone-header-search .append-items').append(html);
+                    }
+                }
+            });
+        }
+    }, 1000);
+}
+
+function get_header_search_items_desktop(categoryId) {
+    search = $(`#get-header-search-items-desktop-${categoryId}`).val();
+
+    $('.desktop-header-search-append').empty();
+    $('.desktop-header-search-items').addClass('d-none').removeClass('d-flex');
+    $('.desktop-header-search-append').removeClass('d-none').addClass('d-flex');
+    $('.desktop-header-search-append').append(`<div class="text-theme-primary">searching</div>`);
+    
+    setTimeout(function () {
+        if(search == '') {
+            $('.desktop-header-search-items').removeClass('d-none').addClass('d-flex');
+            $('.desktop-header-search-append').addClass('d-none').removeClass('d-flex');
+        }else {
+            $.ajax({
+                url: '/get-header-search',
+                method: 'GET',
+                data: { 
+                    search: search, 
+                    categoryId: categoryId, 
+                },
+                success: function (response) {
+                    var html = '';
+                    for(var i = 0; i < response.length; i++) {
+                        html += `<a href="${homePath}catalog/${response[i].id}" class="d-flex mb-3 p-0">
+                            <span class="fs-15">${response[i].game.name}</span>
+                        </a>`;
+                    }
+        
+                    if(response.length == 0) {
+                        // $('.phone-header-search-items').removeClass('d-none').addClass('d-flex');
+                        $('.desktop-header-search-append').empty();
+
+                        $('.desktop-header-search-append').append(`<div class="text-theme-primary">No items found</div>`);
+
+                    } else {
+                        $('.desktop-header-search-append').empty();
+
+                        $('.desktop-header-search-append').removeClass('d-none').addClass('d-flex');
+                        $('.desktop-header-search-items').removeClass('d-flex').addClass('d-none');
+                        $('.desktop-header-search-append').append(html);
+                    }
+                }
+            });
+        }
+    }, 1000);
+}
+
+function empty_header_search_items(categoryId) {
+    setTimeout(function () {
+        $(`#get-header-search-items-${categoryId}`).val('')
+        $('.phone-header-search .append-items').empty();
+        $('.phone-header-search-items').removeClass('d-none').addClass('d-flex');
+        $('.phone-header-search .append-items').addClass('d-none').removeClass('d-flex');
+    }, 1000);
+}
+
 
 // const { event } = require("jquery");
 

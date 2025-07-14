@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CatalogController;
@@ -39,14 +40,7 @@ use App\BotMan\Conversations\SupportConversation;
 |
 */
 
-Route::get('/clear-cache', function () {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('optimize:clear');
-    Artisan::call('view:clear');
-    Artisan::call('config:cache');
-    return "Config and cache cleared!";
-});
+
 
 // Route::get('noti', function() {
 //     $boostingOffer = BuyerRequest::where('id', 1)->with('service.categoryGame.game','user','attributes')->first();
@@ -65,19 +59,13 @@ Route::get('/clear-cache', function () {
 // });
 
 Route::middleware('verified')->group(function () {
-    Route::get('/', function () {
-        $categories = Category::with('games')->get();
-        $currencies = CategoryGame::where('category_id',1)->with('game')->get();
-        $accounts = CategoryGame::where('category_id',2)->with('game')->get();
-        $topups = CategoryGame::where('category_id',3)->with('game')->get();
-        $items = CategoryGame::where('category_id',4)->with('game')->get();
 
-        return view('frontend.home', compact('categories', 'accounts', 'currencies', 'topups', 'items'));
-    })->name('home');
+    Route::get('/clear-cache', [HomeController::class, 'clearCache']);
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/get-header-search', [HomeController::class, 'getHeaderSearchItems']);
 
-    Route::get('/seller-verification', function () {
-        return view('frontend.seller_verification');
-    });
+
+    Route::get('/seller-verification', [SellerController::class, 'index']);
     Route::post('/seller-verification', [SellerController::class, 'verification'])->name('seller.verify');
 
     // Get Data for Item

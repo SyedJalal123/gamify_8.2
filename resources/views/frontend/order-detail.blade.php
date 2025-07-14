@@ -2,14 +2,6 @@
 
 @section('css')
     <style>
-        .section--first {
-            padding-top: 144px !important;
-        }
-        @media (max-width: 768px) { 
-           .section--first {
-                padding-top: 144px !important;
-            } 
-        }
         .d-none {
             display: none !important;
         }
@@ -32,7 +24,7 @@
         $discountPercentage = $order->discount_in_per;
         $loyaltyPoints = floor($totalPrice * 100);
     @endphp
-    <section class="section section--bg section--first fs-14" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first fs-14">
         <div class="container pb-5"> 
 
             <div class="top-bar-page text-white mt-2 mb-4">

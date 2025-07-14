@@ -56,7 +56,7 @@
                         }
                     }
                 </style>
-            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout')
+            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout'|| Route::currentRouteName() == 'order-detail')
                 <style>
                     .section--first {
                         background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
@@ -214,6 +214,7 @@
         <script src="{{asset('js/select2.min.js')}}"></script>
         
         <script> var publicPath = "{{ asset('/') }}"; </script>
+        <script> var homePath = "{{ url('/') }}"; </script>
         <script>
             window.Laravel = {
                 user: @json(auth()->user())

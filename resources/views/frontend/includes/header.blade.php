@@ -367,8 +367,8 @@
 
                         <ul class="header__nav mx-0">
                             @php $categories = categories(); @endphp
-                            @foreach ($categories as $category)
-                                <li class="header__nav-item mr-0" style="padding-right: 99px;">
+                            @foreach ($categories as $key => $category)
+                                <li class="header__nav-item header__nav-item-custom mr-0 py-0">
                                     <a class="header__nav-link" href="#" role="button" id="dropdownMenu0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{$category->name}} 
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -376,24 +376,104 @@
                                         </svg>
                                     </a>
     
-                                    <ul class="dropdown-menu header__nav-menu" aria-labelledby="dropdownMenu0">
-                                        @foreach ($category->categoryGames as $item)
-                                            <li>
-                                                <div class="d-flex">
-                                                    <img src="{{asset($item->game->image)}}" alt="" width="28px">
-                                                    <a href="{{url('catalog')}}/{{$item->id}}" wire:navigate>
-                                                        {{$item->game->name}} 
-                                                        @if(in_array($item->category_id, [1,3])){{ $item->title }}@endif
-                                                    </a>
+                                    <div class="dropdown-menu header__nav-menu header__nav-menu-custom p-0 br-7
+                                        @if($key == 0) nav-transfrom-0 @endif
+                                        @if($key == 1) nav-transfrom-1 @endif
+                                        @if($key == 2) nav-transfrom-2 @endif
+                                        @if($key == 3) nav-transfrom-3 @endif
+                                        @if($key == 4) nav-transfrom-4 @endif
+                                        "  aria-labelledby="dropdownMenu0">                                        
+                                        <div class="d-flex flex-column flex-md-row">
+                                            <div class="flex-column w-md-65 px-4 pb-2 pt-0 d-none d-md-flex">
+                                                <span class="fs-13 py-4 text-theme-primary">Popular Games</span>
+                                                <div class="row">
+                                                    @foreach ($category->categoryGames as $item)
+                                                        <a wire:navigate href="{{url('catalog')}}/{{$item->id}}" class="col-md-6 d-flex mb-3.5">
+                                                            <img src="{{ asset($item->game->image) }}" width="25px" class="mr-2" alt="">
+                                                            <span class="fs-15">{{ $item->game->name }}</span>
+                                                        </a>
+                                                    @endforeach
                                                 </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                            </div>
+                                            <div class="flex-column w-md-39 background-theme-body-2 px-4 pb-4 pt-0 scrollbar-bg-theme-body-2 d-none d-md-flex" style="overflow: scroll;height: 350px;">
+                                                <div class="header__form w-100 mt-3" style="height: 38px !important;">
+                                                    <input type="text"  class="header__input w-100" autocomplete="off" id="get-header-search-items-desktop-{{ $category->id }}" onkeyup="get_header_search_items_desktop({{ $category->id }});" onclick="event.stopPropagation();" placeholder="Search {{$category->name}}" style="height: 38px !important;">
+                                                    <button class="header__btn" type="button">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 512 512">
+                                                            <path d="M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z" style="fill:none;stroke:white;stroke-width:32px"></path>
+                                                            <line x1="338.29" y1="338.29" x2="448" y2="448" style="fill:none;stroke:white;stroke-linecap:round;stroke-width:32px"></line>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <span class="fs-13 pt-3 pb-2 text-theme-primary">All Games</span>
+
+                                                <div class="d-flex flex-column desktop-header-search-items">
+                                                    @foreach ($category->categoryGames as $item)
+                                                        <a wire:navigate href="{{url('catalog')}}/{{$item->id}}" class="d-flex mb-3 p-0">
+                                                            <span class="fs-15">{{ $item->game->name }}</span>
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                                <div class="d-flex flex-column desktop-header-search-append"></div>
+
+                                            </div>
+                                            <div class="d-flex flex-column w-100 d-md-none scrollbar-bg-theme-body-2" style="overflow: scroll;height: 742px;">
+                                                <div class="custom-search-container w-100 my-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="text-theme-primary right-0 d-md-none p-2" onclick="empty_header_search_items({{ $category->id }})">
+                                                            <i class="bi bi-caret-left-fill fs-20"></i>
+                                                        </div>
+                                                        <div class="header__form w-100" style="height: 38px !important;">
+                                                            <input type="text"  class="header__input w-100" autocomplete="off" id="get-header-search-items-{{ $category->id }}" onkeyup="get_header_search_items({{ $category->id }});" onclick="event.stopPropagation();" placeholder="Search {{$category->name}}" style="height: 38px !important;">
+                                                            <button class="header__btn" type="button">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 512 512">
+                                                                    <path d="M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z" style="fill:none;stroke:white;stroke-width:32px"></path>
+                                                                    <line x1="338.29" y1="338.29" x2="448" y2="448" style="fill:none;stroke:white;stroke-linecap:round;stroke-width:32px"></line>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column phone-header-search">
+                                                    <div class="d-flex flex-column phone-header-search-items px-4 pt-0">
+                                                        <span class="fs-13 pb-3 text-theme-primary">Popular Games</span>
+                                                        <div class="row">
+                                                            @foreach ($category->categoryGames as $item)
+                                                                <a wire:navigate href="{{url('catalog')}}/{{$item->id}}" class="col-md-6 d-flex mb-3">
+                                                                    <img src="{{ asset($item->game->image) }}" width="25px" class="mr-2" alt="">
+                                                                    <span class="fs-15">{{ $item->game->name }}</span>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column phone-header-search-items px-4 pb-4 pt-0">
+                                                        <span class="fs-13 pb-4 pt-3 text-theme-primary">All Games</span>
+                                                        <div class="d-flex flex-column">
+                                                            @foreach ($category->categoryGames as $item)
+                                                                <a wire:navigate href="{{url('catalog')}}/{{$item->id}}" class="d-flex mb-3 p-0">
+                                                                    <span class="fs-15">{{ $item->game->name }}</span>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column append-items px-3 pb-4 pt-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- <li>
+                                            <div class="d-flex">
+                                                <img src="{{asset($item->game->image)}}" alt="" width="28px">
+                                                <a href="{{url('catalog')}}/{{$item->id}}" wire:navigate>
+                                                    {{$item->game->name}} 
+                                                    @if(in_array($item->category_id, [1,3])){{ $item->title }}@endif
+                                                </a>
+                                            </div>
+                                        </li> --}}
+                                        
+                                    </div>
                                 </li>  
                             @endforeach
-                        </ul>  
-                        {{-- mega menu --}}
-                        
+                        </ul>                          
 
                         {{-- <div class="header__actions header__actions--2">
                             <a href="https://gogame.volkovdesign.com/favorites.html" class="header__link">
