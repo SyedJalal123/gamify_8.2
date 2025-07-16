@@ -5,6 +5,7 @@ body.dark-theme {
     --alice-blue: aliceblue;
     --text-default: #a782e9;
     --text-primary: #ffffff;
+    --text-light: rgb(219, 218, 218);
     --text-primary-2: #dddddd;
     --text-secondary: #8a869d;
     --text-grey: #898a93;

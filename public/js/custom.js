@@ -369,19 +369,59 @@ function updatePlusMinus() {
     });
 }
 
+
+
 updatePlusMinus2();
+
+// function updatePlusMinus2() {
+//     document.querySelectorAll('.btn-minus-2').forEach(btn => {
+//         btn.onclick = function () {
+//             const input = this.nextElementSibling.nextElementSibling;
+
+//             if (parseInt(input.value) > parseInt(input.min)) {
+//                 input.value--;
+//             }
+
+//             if (parseInt(input.value) < parseInt(input.min)) {
+//                 input.value = input.min;
+//             }
+
+//             if (typeof adjustQty === 'function') {
+//                 adjustQty();
+//             }
+//         };
+//     });
+//     document.querySelectorAll('.btn-plus-2').forEach(btn => {
+//         btn.onclick = function () {
+//             const input = this.previousElementSibling.previousElementSibling;
+//             input.value++;
+
+//             if (parseInt(input.value) < parseInt(input.min)) {
+//                 input.value = input.min;
+//             }
+
+//             if (typeof adjustQty === 'function') {
+//                 adjustQty();
+//             }
+//         };
+//     });
+// }
 
 function updatePlusMinus2() {
     document.querySelectorAll('.btn-minus-2').forEach(btn => {
         btn.onclick = function () {
-            const input = this.nextElementSibling.nextElementSibling;
+            var idParts = $(this).attr('id').split('-');
+            const input = $(`.quantity-input-${idParts[3]}`);
 
-            if (parseInt(input.value) > parseInt(input.min)) {
-                input.value--;
+            let value = parseInt(input.val());
+            let min = parseInt(input.attr('min'));
+
+            if (value > min) {
+                input.val(value - 1);
             }
 
-            if (parseInt(input.value) < parseInt(input.min)) {
-                input.value = input.min;
+            if (parseInt(input.val()) < min) {
+                input.val(min);
             }
 
             if (typeof adjustQty === 'function') {
@@ -389,13 +429,19 @@ function updatePlusMinus2() {
             }
         };
     });
+
     document.querySelectorAll('.btn-plus-2').forEach(btn => {
         btn.onclick = function () {
-            const input = this.previousElementSibling.previousElementSibling;
-            input.value++;
+            var idParts = $(this).attr('id').split('-');
+            const input = $(`.quantity-input-${idParts[3]}`);
 
-            if (parseInt(input.value) < parseInt(input.min)) {
-                input.value = input.min;
+            let value = parseInt(input.val());
+            let min = parseInt(input.attr('min'));
+
+            input.val(value + 1);
+
+            if (parseInt(input.val()) < min) {
+                input.val(min);
             }
 
             if (typeof adjustQty === 'function') {
@@ -404,6 +450,7 @@ function updatePlusMinus2() {
         };
     });
 }
+
 
 function showLiveImageModal(url, type) {
     const mediaContent = document.getElementById("liveMediaContent");

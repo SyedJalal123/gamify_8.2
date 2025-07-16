@@ -50,7 +50,7 @@
                     @if ($isCurrency || $isTopup)
                         <div class="row gold-layout mt-2">
                             <div class="col-lg-7 p-0 px-md-3">
-                                <div class="seller-box rounded text-black bg-white mb-3">
+                                <div class="seller-box rounded background-theme-body-1 border-theme-1 text-theme-primary mb-3">
                                     <div class="seller_details d-md-flex text-left border-m-bottom px-3 py-3 d-none">
                                         @if($item->seller->profile !== null)
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
@@ -66,11 +66,11 @@
                                         @endif
                                         <div class="d-flex flex-column">
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
-                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                                <div id="sellerName" class="fs-15 fw-bold text-theme-primary">{{ $item->seller->name }}</div>
                                             </a>
                                             <div class="d-flex align-items-center">
                                                 <i class="text-success bi bi-star-fill"></i>
-                                                <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
+                                                <span class="text-theme-light mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
                                                 <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
                                                     @php $totalFeedbacks = count(userPositiveFeebacks($item->seller->id)) + count(userNegativeFeebacks($item->seller->id)); @endphp
                                                     {{ number_format($totalFeedbacks) }} reviews
@@ -81,23 +81,23 @@
 
                                     <table class="table table-borderless mb-0">
                                         @foreach ($item->attributes as $attribute)
-                                            <tr class="border">
-                                                <td class="text-black-70">{{ $attribute->name }}</td>
-                                                <td class="fw-bold float-right">{{ $attribute->pivot->value }}</td>
+                                            <tr class="dividor-border-theme">
+                                                <td class="text-theme-light">{{ $attribute->name }}</td>
+                                                <td class="fw-bold text-theme-primary float-right">{{ $attribute->pivot->value }}</td>
                                             </tr>
                                         @endforeach
-                                        <tr class="border">
-                                            <td class="text-black-70">Guaranteed delivery time</td>
+                                        <tr class="dividor-border-theme">
+                                            <td class="text-theme-light">Guaranteed delivery time</td>
                                             <td class="fw-bold float-right">
                                                 <i class="bi-shield-check fw-bold text-success"></i>
-                                                <span class="ml-2">{{ $item->delivery_time }}</span>
+                                                <span class="ml-2 text-theme-primary">{{ $item->delivery_time }}</span>
                                             </td>
                                         </tr>
-                                        <tr class="border">
-                                            <td class="text-black-70">Average delivery time</td>
+                                        <tr class="dividor-border-theme">
+                                            <td class="text-theme-light">Average delivery time</td>
                                             <td class="fw-bold float-right">
                                                 <i class="bi-clock fw-bold text-success"></i>
-                                                <span class="ml-2">-</span>
+                                                <span class="ml-2 text-theme-primary">-</span>
                                             </td>
                                         </tr>
                                     </table>
@@ -107,7 +107,7 @@
                                             style="white-space: pre-line; overflow: hidden;">{!! $item->description !!}</div>
 
                                         <div class="pb-4 desc-{{ $item->id }} d-none">
-                                            <button class="btn btn-light-2"
+                                            <button class="btn btn-theme-default"
                                                 onclick="toggleReadMore({{ $item->id }})"
                                                 id="toggle-btn-{{ $item->id }}">
                                                 Read More
@@ -128,9 +128,9 @@
                             @endif
 
                             <div class="col-lg-5 p-0">
-                                <div class="price-box text-black bg-white p-0 rounded text-center">
+                                <div class="price-box text-black background-theme-body-1 border-theme-1 text-theme-primary p-0 rounded text-center">
                                     <div class="d-flex justify-content-between border-bottom px-4 py-3">
-                                        <p class="m-0 text-muted">Price</p>
+                                        <p class="m-0 text-theme-secondary">Price</p>
                                         <div class="d-flex flex-row">
                                             @if(!$isTopup)
                                                 <h5 class="m-0 fw-bold">${{ number_format($item->price, 4) }}</h5>
@@ -156,7 +156,22 @@
 
                                         <div class="d-flex flex-column p-2 @if($isTopup) d-none @endif">
 
-                                            <div class="input-group mb-2">
+                                            <div class="input-group justify-content-center mb-2 row gap-2">
+                                                <button onclick="adjustQty()" class="btn btn-theme-default btn-minus-2 col-1" id="qty-btn-minus-1" type="button">-</button>
+                                                <div class="tag-input-container col-9 p-0">
+                                                    <span class="input-tag-1 input-tag fs-13">Qty</span>
+                                                    <input type="number"
+                                                        class="form-control text-center input-group-text-input input-theme-1 tag-input px-4 quantity-input-1"
+                                                        id="quantity-input" @if($isTopup) value="{{(int) $topupValue}}" @else value="{{ $item->minimum_quantity }}" @endif name="quantity"
+                                                        min="{{ $item->minimum_quantity }}" oninput="adjustQty()"
+                                                        step="1" required>
+                                                    <span class="input-tag-2 input-tag fs-13">{{ $item->categoryGame->currency_type }}</span>
+                                                </div>  
+                                                <button onclick="adjustQty()" class="btn btn-theme-default btn-plus-2 col-1" id="qty-btn-plus-1" type="button">+</button>
+                                            </div>
+
+
+                                            {{-- <div class="input-group mb-2">
                                                 <button onclick="adjustQty()" class="btn btn-minus btn-minus-2 mr-1"
                                                     type="button">-</button>
                                                 <span class="input-group-text">Qty</span>
@@ -169,7 +184,7 @@
                                                     class="input-group-text">{{ $item->categoryGame->currency_type }}</span>
                                                 <button onclick="adjustQty()" class="btn btn-plus btn-plus-2 ml-1"
                                                     type="button">+</button>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="d-flex flex-row justify-content-between">
                                                 <small class="d-block mb-2 text-muted" id="minQuantityShow">Min Qty:
@@ -245,7 +260,7 @@
                                     </form>
                                 </div>
 
-                                <div class="phone-details text-black bg-white mt-3 d-md-none">
+                                <div class="phone-details text-black background-theme-body-1 border-theme-1 text-theme-primary mt-3 d-md-none">
                                     <div class="d-flex flex-column border-m-bottom px-3 pt-3 pb-2">
                                         <div class="d-flex mb-2">
                                             <span class="text-small text-black-70">Seller</span>
@@ -265,7 +280,7 @@
                                             @endif
                                             <div class="d-flex flex-column">
                                                 <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
-                                                    <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                                    <div id="sellerName" class="fs-15 fw-bold text-theme-primary">{{ $item->seller->name }}</div>
                                                 </a>
                                                 <div class="d-flex align-items-center">
                                                     <i class="text-success bi bi-star-fill"></i>
@@ -285,7 +300,7 @@
                                             style="white-space: pre-line; overflow: hidden;">{!! $item->description !!}</div>
 
                                         <div class="pb-4 d-none desc-{{ $item->id . '-phone' }}">
-                                            <button class="btn btn-light-2"
+                                            <button class="btn btn-theme-default"
                                                 onclick="toggleReadMore({{ $item->id }}+'-phone')"
                                                 id="toggle-btn-{{ $item->id . '-phone' }}">
                                                 Read More
@@ -298,9 +313,9 @@
                     @else
                         <div class="row">
                             <div class="col-lg-7 p-0 px-md-3">
-                                <div class="seller-box rounded text-black bg-white mb-3">
+                                <div class="seller-box rounded background-theme-body-1 border-theme-1 text-theme-primary mb-3">
                                     <div class="d-flex flex-column flex-md-column">
-                                        <div class="title-box d-flex px-3 py-4 p-md-4 border-bottom order-2 order-md-1">
+                                        <div class="title-box d-flex px-3 py-4 p-md-4 dividor-border-theme order-2 order-md-1">
                                             <h5 class="m-0 lh-1_3 fs-md-21 fs-18">{{ $item->title }}</h5>
                                         </div>
                                         @php
@@ -319,7 +334,7 @@
                                             
 
                                         @endphp
-                                        <div class="position-relative m-md-4 mx-3 my-2 border-md-bottom order-1 order-md-2">
+                                        <div class="position-relative m-md-4 mx-3 my-2 dividor-md-border-theme order-1 order-md-2">
                                             @if(count($imgArray) > 1)
                                                 <button
                                                     class="scroll-left btn btn-dark position-absolute fs-21 py-1 lh-2 pb-2 d-none d-md-block"
@@ -329,7 +344,7 @@
                                                     style="top: 40%; right: 0; z-index: 10;">&#8250;</button>
                                             @endif
 
-                                            <div class="item-gallery">
+                                            <div class="item-gallery scroll-bar-theme-bg-1">
 
                                                 @foreach ($imgArray as $index => $img)
                                                     <div class="img mr-2">
@@ -351,7 +366,7 @@
                                             style="white-space: pre-line; overflow: hidden;">{!! $item->description !!}</div>
 
                                         <div class="pb-4 d-none desc-{{ $item->id }}">
-                                            <button class="btn btn-light-2"
+                                            <button class="btn btn-theme-default"
                                                 onclick="toggleReadMore({{ $item->id }})"
                                                 id="toggle-btn-{{ $item->id }}">
                                                 Read More
@@ -362,9 +377,9 @@
                             </div>
 
                             <div class="col-lg-5 p-0">
-                                <div class="price-box text-black bg-white p-0 rounded">
+                                <div class="price-box text-black background-theme-body-1 border-theme-1 text-theme-primary p-0 rounded">
                                     <div class="d-flex justify-content-between px-4 py-3">
-                                        <p class="m-0 text-muted">Price</p>
+                                        <p class="m-0 text-theme-secondary">Price</p>
                                         <div class="d-flex flex-row">
                                             <h5 class="m-0 fw-bold">${{ number_format($item->price, 2) }}</h5>
                                             @if ($item->categoryGame->currency_type != null)
@@ -376,34 +391,34 @@
                                     <table class="table table-borderless mb-0">
                                         @foreach ($item->attributes as $attribute)
                                         @if($attribute->pivot->categoryGameAttribute->visible == 3 || $attribute->pivot->categoryGameAttribute->visible == 2)
-                                            <tr class="border">
-                                                <td class="text-black-70">{{ $attribute->name }}</td>
-                                                <td class="fw-bold float-right">{{ $attribute->pivot->value }}</td>
+                                            <tr class="dividor-border-theme">
+                                                <td class="text-theme-secondary">{{ $attribute->name }}</td>
+                                                <td class="fw-bold text-theme-primary float-right">{{ $attribute->pivot->value }}</td>
                                             </tr>
                                         @endif
                                         @endforeach
 
                                         @if($item->delivery_method !== 'automatic')
-                                            <tr class="border">
-                                                <td class="text-black-70">Delivery time</td>
+                                            <tr class="dividor-border-theme">
+                                                <td class="text-theme-secondary">Delivery time</td>
                                                 <td class="fw-bold float-right">
                                                     <i class="bi-shield-check fw-bold text-light-blue"></i>
-                                                    <span class="ml-2">{{ $item->delivery_time }}</span>
+                                                    <span class="ml-2 text-theme-primary">{{ $item->delivery_time }}</span>
                                                 </td>
                                             </tr>
-                                            <tr class="border">
-                                                <td class="text-black-70">Average delivery time</td>
-                                                <td class="fw-bold float-right">
+                                            <tr class="dividor-border-theme">
+                                                <td class="text-theme-secondary">Average delivery time</td>
+                                                <td class="fw-bold text-theme-primary float-right">
                                                     <i class="bi-clock fw-bold text-light-blue"></i>
-                                                    <span class="ml-2">-</span>
+                                                    <span class="ml-2 text-theme-primary">-</span>
                                                 </td>
                                             </tr>
                                         @else
-                                            <tr class="border">
-                                                <td class="text-black-70">Delivery time</td>
-                                                <td class="fw-bold float-right">
+                                            <tr class="dividor-border-theme">
+                                                <td class="text-theme-secondary">Delivery time</td>
+                                                <td class="fw-bold text-theme-primary float-right">
                                                     <i class="bi-lightning-charge-fill fw-bold text-light-blue"></i>
-                                                    <span class="ml-2">Instant</span>
+                                                    <span class="ml-2 text-theme-primary">Instant</span>
                                                 </td>
                                             </tr>
                                         @endif
@@ -419,7 +434,7 @@
 
                                             <div class="d-flex flex-column p-2">
 
-                                                <div class="input-group mb-2">
+                                                {{-- <div class="input-group mb-2">
                                                     <button onclick="adjustQty()" class="btn btn-minus btn-minus-2 mr-1"
                                                         type="button">-</button>
                                                     <span class="input-group-text">Qty</span>
@@ -432,6 +447,20 @@
                                                         class="input-group-text">{{ $item->categoryGame->currency_type }}</span>
                                                     <button onclick="adjustQty()" class="btn btn-plus btn-plus-2 ml-1"
                                                         type="button">+</button>
+                                                </div> --}}
+
+                                                <div class="input-group justify-content-center mb-2 row gap-2">
+                                                    <button onclick="adjustQty()" class="btn btn-theme-default btn-minus-2 col-1" id="qty-btn-minus-2" type="button">-</button>
+                                                    <div class="tag-input-container col-9 p-0">
+                                                        <span class="input-tag-1 input-tag fs-13">Qty</span>
+                                                        <input type="number"
+                                                            class="form-control text-center input-group-text-input input-theme-1 quantity-input-2"
+                                                            id="quantity-input" value="{{ $item->minimum_quantity }}" name="quantity"
+                                                            min="{{ $item->minimum_quantity }}" oninput="adjustQty()"
+                                                            step="1" required>
+                                                        <span class="input-tag-2 input-tag fs-14">{{ $item->categoryGame->currency_type }}</span>
+                                                    </div>  
+                                                    <button onclick="adjustQty()" class="btn btn-theme-default btn-plus-2 col-1" id="qty-btn-plus-2" type="button">+</button>
                                                 </div>
 
                                                 <div class="d-flex flex-row justify-content-between">
@@ -527,10 +556,10 @@
                                     @endif
                                 </div>
 
-                                <div class="phone-details text-black bg-white mt-3">
+                                <div class="phone-details text-black background-theme-body-1 border-theme-1 text-theme-primary mt-3">
                                     <div class="d-flex flex-column px-3 pt-3 pb-2">
                                         <div class="d-flex mb-2">
-                                            <span class="text-small text-black-70">Seller</span>
+                                            <span class="text-small text-theme-secondary">Seller</span>
                                         </div>
                                         <div class="d-flex seller_details text-left">
                                             @if($item->seller->profile !== null)
@@ -547,11 +576,11 @@
                                             @endif
                                             <div class="d-flex flex-column">
                                                 <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Offers&category=Currency">
-                                                    <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{ $item->seller->name }}</div>
+                                                    <div id="sellerName" class="fs-15 fw-bold text-theme-primary">{{ $item->seller->name }}</div>
                                                 </a>
                                                <div class="d-flex align-items-center">
                                                     <i class="text-success bi bi-star-fill"></i>
-                                                    <span class="text-black-70 mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
+                                                    <span class="text-theme-secondary mx-1 fs-13">{{ userFeedbackScore($item->seller->id) }}%</span>
                                                     <a wire:navigate href="{{ url('user-profile') }}/{{ $item->seller->username }}?tab=Feedback&feedbackRating=All" class="fs-13">
                                                         @php $totalFeedbacks = count(userPositiveFeebacks($item->seller->id)) + count(userNegativeFeebacks($item->seller->id)); @endphp
                                                         {{ number_format($totalFeedbacks) }} reviews
@@ -566,7 +595,7 @@
                                             class="d-flex pt-1 pb-3 fs-14"
                                             style="white-space: pre-line; overflow: hidden;">{!! $item->description !!}</div>
                                         <div class="pb-4 d-none desc-{{ $item->id . '-phone' }}">
-                                            <button class="btn btn-light-2"
+                                            <button class="btn btn-theme-default"
                                                 onclick="toggleReadMore({{ $item->id }}+'-phone')"
                                                 id="toggle-btn-{{ $item->id . '-phone' }}">
                                                 Read More
@@ -574,38 +603,38 @@
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column pt-2 d-none d-md-block">
-                                        <div class="fw-bold pb-2 border-bottom px-3">Recent feedback</div>
+                                        <div class="fw-bold pb-2 dividor-border-bottom px-3">Recent feedback</div>
                                         <div class="d-flex flex-column px-3 py-2">
-                                            <div class="review_1 d-flex flex-column py-2 border-bottom">
+                                            <div class="review_1 d-flex flex-column py-2 dividor-border-bottom">
                                                 <div class="d-flex flex-row justify-content-between">
                                                     <div class="d-flex align-items-center fs-14">
                                                         <i class="bi-hand-thumbs-up-fill text-light-blue pr-2 fs-17"></i>
                                                         <span>Accounts</span>
                                                         <span class="px-1">|</span>
-                                                        <span class="text-black-70">Rip***</span>
+                                                        <span class="text-theme-secondary">Rip***</span>
                                                     </div>
-                                                    <span class="text-small text-black-70">4 days ago</span>
+                                                    <span class="text-small text-theme-secondary">4 days ago</span>
                                                 </div>
-                                                <div class="d-flex text-black-70 fs-13 pt-1">
+                                                <div class="d-flex text-theme-secondary fs-13 pt-1">
                                                     fast easy good
                                                 </div>
                                             </div>
-                                            <div class="review_1 d-flex flex-column py-2 border-bottom">
+                                            <div class="review_1 d-flex flex-column py-2 dividor-border-bottom">
                                                 <div class="d-flex flex-row justify-content-between">
                                                     <div class="d-flex align-items-center fs-14">
                                                         <i class="bi-hand-thumbs-down-fill text-danger pr-2 fs-17"></i>
                                                         <span>Accounts</span>
                                                         <span class="px-1">|</span>
-                                                        <span class="text-black-70">Rip***</span>
+                                                        <span class="text-theme-secondary">Rip***</span>
                                                     </div>
-                                                    <span class="text-small text-black-70">4 days ago</span>
+                                                    <span class="text-small text-theme-secondary">4 days ago</span>
                                                 </div>
-                                                <div class="d-flex text-black-70 fs-13 pt-1">
+                                                <div class="d-flex text-theme-secondary fs-13 pt-1">
                                                     OOF
                                                 </div>
                                             </div>
                                             <div class="d-flex feedback py-2 pt-4">
-                                                <button class="btn btn-light-2">All feedback</button>
+                                                <button class="btn btn-theme-default">All feedback</button>
                                             </div>
                                         </div>
                                     </div>

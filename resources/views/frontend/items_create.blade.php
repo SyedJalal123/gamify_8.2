@@ -6,7 +6,7 @@
 
 @section('content')
     <!-- home -->
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container">
             <div class="row">
                 <!-- title -->

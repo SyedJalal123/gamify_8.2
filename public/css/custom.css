@@ -113,7 +113,7 @@ html, body {
 }
 
 .fs-16 {
-    font-size: 16px;
+    font-size: 16px !important;
 }
 
 .fs-15 {
@@ -125,7 +125,7 @@ html, body {
 }
 
 .fs-13 {
-    font-size: 13px;
+    font-size: 13px !important;
 }
 
 .fs-12 {
@@ -1498,6 +1498,10 @@ html, body {
         color: var(--text-secondary);    
     }
 
+    .text-theme-light {
+        color: var(--text-light);    
+    }
+
     .text-theme-primary {
         color: var(--text-primary);
     }
@@ -1614,6 +1618,10 @@ html, body {
         border: 1px solid var(--border-active);
     }
 
+    .dividor-border-theme {
+        border: 1px solid var(--dividor-border);
+    }
+
     .dividor-border-theme-right {
         border-right: 1px solid var(--dividor-border);
     }
@@ -1639,8 +1647,16 @@ html, body {
     }
 
     @media (min-width:768px) {
+        .dividor-md-border-theme {
+            border: 1px solid var(--dividor-border);
+        }
+
         .dividor-border-theme-top-md-0 {
             border-top: 0px solid var(--dividor-border);
+        }
+
+        .dividor-md-border-bottom {
+            border-bottom: 1px solid var(--dividor-border);
         }
     }
 
@@ -1949,7 +1965,7 @@ html, body {
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    font-size: 10px !important;
+    font-size: 10px;
 }
 
 .input-tag-1 {
@@ -2064,4 +2080,11 @@ input[type=number] {
 /* Optional: On hover */
 .scrollbar-bg-theme-body-2::-webkit-scrollbar-thumb:hover {
   background-color: var(--background-body-1);
+}
+
+@media (min-width: 768px) {
+    .d-md-flex, .dropdown-menu .d-md-flex {
+        display: flex !important;
+    }
+    
 }

@@ -81,7 +81,7 @@ body {
     justify-content: center;
     cursor: pointer;
     padding: 10px;
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 .volume-discount-icon {
@@ -102,7 +102,7 @@ body {
     display: none;
     padding: 10px;
     padding-top: 0px;
-    background-color: #fafafa;
+    /* background-color: #fafafa; */
 }
 
 .volume-discount-table {
@@ -118,7 +118,7 @@ body {
 
 .volume-discount-table th {
     font-weight: bold;
-    color: #555;
+    /* color: #555; */
 }
 
 .item-gallery {
