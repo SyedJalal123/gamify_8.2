@@ -207,6 +207,7 @@
 
             $('#edit-article-category').val(article.category.id).trigger('change');
             $('#edit-article-description').val(article.description);
+            $('#edit-short-description').val(article.short_description);
             $('#edit-article-title').val(article.title);
 
             $('#edit-article-id').val(id);
@@ -263,6 +264,15 @@
                                 <!--begin::Input-->
                                 <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0" id="edit-article-title" placeholder="title" required/>
                                 <input type="hidden" name="article_id" class="form-control form-control-solid mb-3 mb-lg-0" id="edit-article-id" />
+                                <!--end::Input-->
+                            </div>
+
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fw-bold fs-6 mb-2">Short Description</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <textarea name="short_description" id="edit-short-description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" required></textarea>
                                 <!--end::Input-->
                             </div>
 

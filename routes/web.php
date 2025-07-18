@@ -25,6 +25,7 @@ use App\Http\Controllers\StripeController;
 use App\Notifications\Testing;
 use App\Notifications\BoostingOfferNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BotManController;
 use App\BotMan\Conversations\SupportConversation;
 
@@ -116,6 +117,12 @@ Route::middleware('verified')->group(function () {
     Route::get('/user-profile/{username}', [SellerDashboardController::class, 'profile'])->name('profile'); 
 
     Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
+
+    Route::get('/article-collections', [ArticleController::class, 'index'])->name('article-collections');
+    Route::get('/article-collections/{slug}', [ArticleController::class, 'collections'])->name('article-collection');
+    Route::get('/articles/{slug}', [ArticleController::class, 'articles'])->name('articles');
+    Route::get('/get-articles-search', [ArticleController::class, 'get_articles_search'])->name('get-articles-search');
+    
 
 });
 

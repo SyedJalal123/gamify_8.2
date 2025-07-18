@@ -651,6 +651,10 @@ html, body {
     width: 100% !important;
 }
 
+.max-w-100 {
+    max-width: 100% !important;
+}
+
 .min-w-40 {
     min-width: 40%;
 }
@@ -966,6 +970,13 @@ html, body {
     gap: 24px;
 }
 
+.row-2-1 {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
 @media (max-width: 1280px) {
     .row-3-2-1 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -973,6 +984,13 @@ html, body {
 }
 
 @media (max-width: 960px) {
+    .row-2-1 {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: 24px;
+    }
+
     .row-3-2-1 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
         gap: 10px;
@@ -2096,4 +2114,26 @@ input[type=number] {
         display: flex !important;
     }
     
+}
+
+.default-box {
+    background-color: var(--background-body-1);
+    color: var(--text-primary);
+    border: 1px solid var(--border-1);
+}
+
+.default-box:hover {
+    color: var(--text-primary);
+    cursor: pointer;
+    border: 1px solid var(--border-active);
+}
+
+.default-border-box {
+    color: var(--text-primary);
+    border: 1px solid var(--border-1);
+}
+
+.default-border-box:hover {
+    cursor: pointer;
+    border: 1px solid var(--border-active);
 }

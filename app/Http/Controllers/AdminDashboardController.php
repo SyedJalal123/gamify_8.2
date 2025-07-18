@@ -68,6 +68,8 @@ class AdminDashboardController extends Controller
                 'category_id' => $request->category_id,
                 'title' => $request->title,
                 'description' => $request->description,
+                'short_description' => $request->short_description,
+                'slug' => Str::slug($request->title) . '-' . rand(100000, 999999),
             ]);
             
             return redirect()->back()->with('success', 'Article added successfully');
@@ -87,6 +89,8 @@ class AdminDashboardController extends Controller
             $article->category_id = $request->category_id;
             $article->title = $request->title;
             $article->description = $request->description;
+            $article->short_description = $request->short_description;
+            $article->slug = Str::slug($request->title) . '-' . rand(100000, 999999);
             $article->save();
 
             
@@ -140,6 +144,7 @@ class AdminDashboardController extends Controller
         try {
             ArticleCategory::create([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name) . '-' . rand(100000, 999999),
             ]);
             
             return redirect()->back()->with('success', 'Category added successfully');
@@ -157,6 +162,7 @@ class AdminDashboardController extends Controller
             $category = ArticleCategory::where('id', $request->category_id)->first();
 
             $category->name = $request->name;
+            $category->slug = Str::slug($request->name) . '-' . rand(100000, 999999);
             $category->save();
 
             

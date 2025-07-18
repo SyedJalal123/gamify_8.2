@@ -57,6 +57,15 @@
                         </div>
 
                         <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fw-bold fs-6 mb-2">Short Description</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea name="short_description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" required></textarea>
+                            <!--end::Input-->
+                        </div>
+
+                        <div class="fv-row mb-7">
                             <label class="required fw-bold fs-6 mb-2">Add description</label>
                             <textarea name="description" id="kt_docs_ckeditor_classic"></textarea>
                         </div>
