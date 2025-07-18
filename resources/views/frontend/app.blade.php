@@ -82,6 +82,20 @@
                         }
                     }
                 </style>
+            @elseif(Route::currentRouteName() == 'boosting-request')
+                <style>
+                    .section--first {
+                        background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
+                        padding-top: 130px;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 53px / auto 500px no-repeat;
+                            padding-top: 90px;
+                        }
+                    }
+                </style>
+            
             @else
                 <style>
                     .section--first {

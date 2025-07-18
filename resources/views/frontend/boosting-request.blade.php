@@ -27,7 +27,7 @@
             ? $buyerRequest->buyerRequestConversation
             : $buyerRequest->buyerRequestConversation->where('seller_id', auth()->id());
     @endphp
-    <section class="section section--bg section--first" style="background: url('{{ asset('GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg') }}') center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container mb-5 p-0" style="max-width: 1118px;">
             <div class="row d-flex flex-row justify-content-between align-items-center mb-5 px-3">
                 <div class="d-flex flex-row align-items-center col-md-8">
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex bg-white br-2 flex-column align-items-center" id="live-feed">
+                    <div class="d-flex background-theme-body-1 border-theme-1 text-theme-primary br-2 flex-column align-items-center" id="live-feed">
                         @include('frontend.offers-live-feed', ['buyerRequest' => $buyerRequest])
                     </div>
                 </div>
@@ -147,8 +147,8 @@
                 @endif
                 <div class="request-details row d-flex pb-4 pb-md-2 mb-4 m-md-0 mx-0">
                     <div class="col-md-8 p-0 pr-md-4 pb-4">
-                        <div class="bg-white">
-                            <div class="px-4 py-3 border-bottom fw-bold">
+                        <div class="background-theme-body-1 border-theme-1 text-theme-primary">
+                            <div class="px-4 py-3 dividor-border-theme-bottom fw-bold">
                                 Request Detials
                             </div>
                             <div>
@@ -168,7 +168,7 @@
                                         @endif
                                         <div class="d-flex flex-column">
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">
-                                                <div id="sellerName" class="fs-15 fw-bold brand-theme-dark">{{$buyerRequest->user->username}}</div>
+                                                <div id="sellerName" class="fs-15 fw-bold text-theme-primary">{{$buyerRequest->user->username}}</div>
                                             </a>
                                             <div class="d-flex align-items-center">
                                                 <i class="text-success bi bi-star-fill"></i>
@@ -183,7 +183,7 @@
                                 </div>
                                 @endif
                                 @foreach ($buyerRequest->attributes as $attribute)
-                                    <div class="d-flex justify-content-between px-4 py-2 border-bottom">
+                                    <div class="d-flex justify-content-between px-4 py-2 dividor-border-theme-bottom">
                                         @if ($attribute->type == 'select')
                                             <div class="">Select your {{$attribute->name}}</div>
                                             <div class="fw-bold">{{$attribute->pivot->value}}</div>
@@ -193,7 +193,7 @@
                                         @endif
                                     </div>
                                 @endforeach
-                                <div class="row m-0 d-flex justify-content-between px-4 py-2 border-bottom">
+                                <div class="row m-0 d-flex justify-content-between px-4 py-2 dividor-border-theme-bottom">
                                     @if ($buyerRequest->description != null && $buyerRequest->service->name !== 'Custom Request')
                                         <div class="col-6 p-0">Provide any additional information</div>
                                         <div class="fw-bold col-6 p-0 text-right">{{$buyerRequest->description}}</div>
@@ -225,10 +225,10 @@
                         </div>
                     </div>
                     <div class="col-md-4 p-0">
-                        <div class="px-4 py-3 border-bottom fw-bold bg-white">
+                        <div class="px-4 py-3 dividor-border-theme-bottom fw-bold background-theme-body-1 border-theme-1 text-theme-primary">
                             Attachments
                         </div>
-                        <div class="d-flex justify-content-center align-items-center h-50 bg-white">
+                        <div class="d-flex justify-content-center align-items-center h-50 background-theme-body-1 border-theme-1 text-theme-primary">
                             <span class="text-muted py-5">No photos uploaded</span>
                         </div>
                     </div>

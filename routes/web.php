@@ -59,7 +59,7 @@ use App\BotMan\Conversations\SupportConversation;
 // });
 
 Route::middleware('verified')->group(function () {
-
+    
     Route::get('/clear-cache', [HomeController::class, 'clearCache']);
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/get-header-search', [HomeController::class, 'getHeaderSearchItems']);
@@ -87,7 +87,7 @@ Route::middleware('verified')->group(function () {
     // Boosting Services Routes
     Route::get('/save-service', [ServiceController::class, 'store'])->middleware(['auth']);
     Route::get('/get-service-attributes', [ServiceController::class, 'getServiceAttributes']);
-    Route::get('/boosting-request/{id}', [ServiceController::class, 'boostingRequest'])->middleware(['auth']);
+    Route::get('/boosting-request/{id}', [ServiceController::class, 'boostingRequest'])->name('boosting-request')->middleware(['auth']);
     Route::post('/create-offer', [ServiceController::class, 'create_offer'])->name('offer.create')->middleware(['auth']);
     Route::get('/cancel-request', [ServiceController::class, 'cancelRequest'])->middleware(['auth']);
 

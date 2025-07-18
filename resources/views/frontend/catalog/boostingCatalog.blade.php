@@ -44,10 +44,10 @@
                 <div class="col-md-7 m-0 p-0 mb-4 pt-4">
                     <div class="d-flex flex-column">
                         <h4 class="bg-blue text-white text-center p-0 px-md-10 py-3 m-0 fw-bold fs-16 fs-md-22">Best boosting deals in under 2 minutes</h4>
-                        <div class="bg-white p-3 px-md-10 py-4">
-                            <form action="{{url('save-service')}}" id="service_form" class="">
+                        <div class="background-theme-body-1 border-theme-1 p-3 px-md-10 py-4">
+                            <form action="{{url('save-service')}}" id="service_form" class="select-2-dark">
                                 <div class="pb-4">
-                                    <select name="service_id" id="service" class="select2 hidden-until-ready" required>
+                                    <select name="service_id" id="service" class="select2  hidden-until-ready" required>
                                         <option value="" disabled selected>Choose a Service</option>
                                         @foreach ($categoryGame->services as $service)
                                             <option value="{{$service->id}}">{{$service->name}}</option>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="col-md-5 p-0 px-md-3">
                     <div class="pt-4 position-relative overflow-hidden">
-                        <div class="pt-2 pl-4 bg-white fw-bold w-100">
+                        <div class="pt-2 pl-4 background-theme-body-1 border-theme-1 text-theme-primary fw-bold w-100">
                             <ol class="list-unstyled circle-ol mb-0">
                                 <li class="fs-15">Get offers</li>
                                 <li class="fs-15">Choose the best booster</li>
@@ -179,7 +179,7 @@
                 }
 
                 if (attr.type === 'text') {
-                    inputField = `<input type="text" name="attribute_${attr.id}" placeholder="${attr.options[0]}" class="form-control" required/>`;
+                    inputField = `<input type="text" name="attribute_${attr.id}" placeholder="${attr.options[0]}" class="form-control input-theme-1" required/>`;
 
                     $(`#${targetId}`).append(`
                         <div class="attribute-item pb-4">
@@ -208,14 +208,14 @@
                 $(`#${targetId}`).append(`
                     <div class="attribute-item pb-4">
                         <label class="fs-13 text-black-70">Provide any additional information (Optional)</label>
-                        <input type="text" name="description" placeholder="e.g. I need it till tomorrow..." class="form-control"/>
+                        <input type="text" name="description" placeholder="e.g. I need it till tomorrow..." class="form-control input-theme-1"/>
                     </div>
                 `);
             }else {
                 $(`#${targetId}`).append(`
                     <div class="attribute-item pb-4">
                         <label class="fs-13 text-black-70">Describe your request</label>
-                        <input type="text" name="description" placeholder="e.g. need help ..." class="form-control" required/>
+                        <input type="text" name="description" placeholder="e.g. need help ..." class="form-control input-theme-1" required/>
                     </div>
                 `);
             }
