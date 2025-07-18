@@ -6,7 +6,7 @@
         <base href="">
 		<title>Gamify</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta charset="utf-8" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 		{{-- <link rel="shortcut icon" href="{{asset('backend/assets/media/logos/favicon.ico')}}" /> --}}
 		<!--begin::Fonts-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />

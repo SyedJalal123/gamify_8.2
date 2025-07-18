@@ -122,23 +122,39 @@ Route::middleware('verified')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Backend Routes
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/games', [AdminDashboardController::class, 'games'])->name('games');
     Route::post('/add_game', [AdminDashboardController::class, 'add_game'])->name('add_game');
     Route::post('/edit_game', [AdminDashboardController::class, 'edit_game'])->name('edit_game');
+
     Route::get('/items/{category}', [AdminDashboardController::class, 'items'])->name('items.category');
     Route::get('/item/add', [AdminDashboardController::class, 'add_item'])->name('item.add');
     Route::get('/item/edit/{id}', [AdminDashboardController::class, 'edit_item'])->name('item.edit');
     Route::get('/get_attribute', [AdminDashboardController::class, 'get_attribute'])->name('attribute.get');
     Route::post('/item/store', [AdminDashboardController::class, 'store_item'])->name('item.store');
     Route::post('/item/update', [AdminDashboardController::class, 'update_item'])->name('item.update');
+
     Route::get('/orders', [AdminDashboardController::class, 'orders'])->name('orders');
     Route::get('/change_order_status', [AdminDashboardController::class, 'change_order_status'])->name('change_order_status');
+
     Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
     Route::get('/change_user_status', [AdminDashboardController::class, 'change_user_status'])->name('change_user_status');
+
     Route::get('/alerts', [AdminDashboardController::class, 'alerts'])->name('alerts');
     Route::get('/disputes', [AdminDashboardController::class, 'disputes'])->name('disputes');
+
     Route::get('/sellerRequests', [AdminDashboardController::class, 'sellerRequests'])->name('sellerRequests');
     Route::get('/change_seller_status', [AdminDashboardController::class, 'change_seller_status'])->name('change_seller_status');
+
+    Route::get('/articles', [AdminDashboardController::class, 'articles'])->name('articles');
+    Route::get('/articles/add', [AdminDashboardController::class, 'add_article'])->name('articles.add');
+    Route::get('/articles/categories', [AdminDashboardController::class, 'article_catgories'])->name('articles.categories');
+    Route::post('/store_article', [AdminDashboardController::class, 'store_article'])->name('store_article');
+    Route::post('/edit_article', [AdminDashboardController::class, 'edit_article'])->name('edit_article');
+    Route::post('/add_article_category', [AdminDashboardController::class, 'add_article_category'])->name('add_article_category');
+    Route::post('/edit_article_category', [AdminDashboardController::class, 'edit_article_category'])->name('edit_article_category');
+    Route::post('/ckeditor/upload', [AdminDashboardController::class, 'ckeditor_upload'])->name('ckeditor.upload');
+
 
     Route::get('/get-seller/{id}', function ($id) {
         $seller = Seller::with('user')->where('id', $id)->first();

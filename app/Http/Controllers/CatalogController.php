@@ -14,6 +14,7 @@ class CatalogController extends Controller
 {
     public function index(Request $request, $category_game_id)
     {
+        // dd($request->all());
         $categoryGame = CategoryGame::with('category', 'game', 'services')->find($category_game_id);
     
         $attributes = Attribute::whereHas('categoryGames', fn($q) => $q->where('category_game_id', $category_game_id))->get();
@@ -29,6 +30,7 @@ class CatalogController extends Controller
                     );
                 }
             }
+
             // Apply search filter
             if ($searchTerm = $request->input('search')) {
                 $itemsQuery->where(fn($query) => $query->where('title', 'like', "%$searchTerm%")
@@ -129,7 +131,7 @@ class CatalogController extends Controller
             return view('frontend.catalog.boostingCatalog', compact('categoryGame'));
         }else if($categoryGame->category->id == 1) {
             $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->get();
-
+            
             $grouped = collect();  // Holds the best seller's item for each topup value
             $sellerStats = [];
     
@@ -183,7 +185,7 @@ class CatalogController extends Controller
                 }
             }
 
-            if(count($grouped) == 1) {
+            if(count($grouped) == 1 && !$request->ajax()) {
                 return redirect()->route('item.detail', $grouped->first()['item']->id);
             }
 
@@ -198,7 +200,6 @@ class CatalogController extends Controller
             // Paginate manually
             $page = request()->get('page', 1);
             $perPage = 12;
-    
             $paginatedItems = new LengthAwarePaginator(
                 $sortedItems->slice(($page - 1) * $perPage, $perPage)->values(),
                 $sortedItems->count(),
@@ -206,9 +207,10 @@ class CatalogController extends Controller
                 $page,
                 ['path' => request()->url(), 'query' => request()->query()]
             );
-    
+            
             // AJAX response
             if ($request->ajax()) {
+                // dd($sortedItems);
                 return view('frontend.catalog._items', ['items' => $paginatedItems])->render();
             }
     

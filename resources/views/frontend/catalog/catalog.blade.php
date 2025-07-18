@@ -397,7 +397,7 @@
         fetch(`${url}?${params}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(res => res.text())
             .then(html => {
-                    const doc = new DOMParser().parseFromString(html, 'text/html');;
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
                     ['itemsContainer', 'itemCount'].forEach(id =>
                         document.getElementById(id).innerHTML = doc.getElementById(id).innerHTML
                     );

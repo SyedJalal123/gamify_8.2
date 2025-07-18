@@ -153,7 +153,7 @@
                             </div>
                             <div>
                                 @if($identity == 'seller')
-                                <div class="d-flex justify-content-between px-4 py-2 border-bottom">
+                                <div class="d-flex justify-content-between px-4 py-2 dividor-border-theme-bottom">
                                     <div class="seller_details d-flex text-left">
                                         @if($buyerRequest->user->profile !== null)
                                             <a wire:navigate href="{{ url('user-profile') }}/{{ $buyerRequest->user->username }}?tab=Offers&category=Currency">

@@ -10,6 +10,8 @@ use App\Models\Attribute;
 use App\Models\Service;
 use App\Models\Game;
 use App\Models\Order;
+use App\Models\ArticleCategory;
+use App\Models\Article;
 use App\Models\Seller;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -27,6 +29,144 @@ class AdminDashboardController extends Controller
 {
     public function index() {
         return view('backend.dashboard');
+    }
+
+    public function articles(Request $request) {
+        $articles = Article::with('category')->orderBy('id', 'desc');
+        $categories = ArticleCategory::with('articles')->orderBy('id', 'desc')->get();
+
+        if($request->ajax()){
+
+            return DataTables::eloquent($articles)
+            ->addColumn('action_data', function($article) {
+                $title = addslashes($article->name);
+
+                return '
+                    <div data-bs-toggle="modal" onclick="edit_article_modal_values(' . $article->id . ')" data-bs-target="#kt_modal_edit_article" class="menu-item px-3 float-end">
+                        <span class="menu-link px-3">Show</span>
+                    </div>
+                ';
+            })
+            ->rawColumns(['title_data', 'action_data'])
+            ->make(true);
+        }
+
+        $articles = $articles->get();
+
+        return view('backend.articles', compact('articles','categories'));
+    }
+
+    public function add_article(Request $request) {
+        $categories = ArticleCategory::all();
+        return view('backend.add_article', compact('categories'));
+    }
+
+    public function store_article(Request $request) {
+        // dd($request->all());
+        try {
+            Article::create([
+                'category_id' => $request->category_id,
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
+            
+            return redirect()->back()->with('success', 'Article added successfully');
+        } catch (\Exception $e) {
+            Log::error('Article add failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while adding the article.');
+        }
+    }
+
+    public function edit_article(Request $request) {
+        // dd($request->all());
+
+        try {
+            $article = Article::where('id', $request->article_id)->first();
+
+            $article->category_id = $request->category_id;
+            $article->title = $request->title;
+            $article->description = $request->description;
+            $article->save();
+
+            
+
+            return redirect()->back()->with('success', 'Article updated successfully');
+        } catch (\Exception $e) {
+            Log::error('Article update failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while updating the article.');
+        }
+    }
+
+    public function article_catgories(Request $request) {
+        $categories = ArticleCategory::with('articles')->orderBy('id', 'desc');
+
+        if($request->ajax()){
+
+            return DataTables::eloquent($categories)
+            // ->addColumn('title_data', function($category) {
+            //     return '
+            //         <div class="d-flex align-items-center">
+            //             <div class="symbol symbol-50px overflow-hidden me-3">
+            //                 <img src="'.asset("uploads/games/".$category->image_name).'" alt="'.$category->name.'" style="width: 32px;height: 32px;" class="w-100" />
+            //             </div>
+            //             <div class="d-flex flex-column">
+            //                 <a href="#" class="text-gray-800 text-hover-primary mb-1">'.$category->name.'</a>
+            //             </div>
+            //         </div>
+            //     ';
+            // })
+            ->addColumn('action_data', function($category) {
+                $name = addslashes($category->name);
+
+                return '
+                    <div data-bs-toggle="modal" onclick="edit_category_modal_values(\'' . $name . '\', \'' . $category->id . '\')" data-bs-target="#kt_modal_edit_category" class="menu-item px-3 float-end">
+                        <span class="menu-link px-3">Edit</span>
+                    </div>
+                ';
+            })
+            ->rawColumns(['title_data', 'action_data'])
+            ->make(true);
+        }
+
+
+        return view('backend.article_catgories', compact('categories'));
+    }
+
+    public function add_article_category(Request $request) {
+        // dd($request->all());
+
+        try {
+            ArticleCategory::create([
+                'name' => $request->name,
+            ]);
+            
+            return redirect()->back()->with('success', 'Category added successfully');
+        } catch (\Exception $e) {
+            Log::error('Category add failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while adding the category.');
+        }
+    }
+
+    public function edit_article_category(Request $request) {
+        // dd($request->all());
+
+        try {
+            $category = ArticleCategory::where('id', $request->category_id)->first();
+
+            $category->name = $request->name;
+            $category->save();
+
+            
+
+            return redirect()->back()->with('success', 'Category updated successfully');
+        } catch (\Exception $e) {
+            Log::error('Category update failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while updating the category.');
+        }
     }
 
     public function games(Request $request) {
@@ -1303,5 +1443,39 @@ class AdminDashboardController extends Controller
         Notification::send($seller->user, new BoostingOfferNotification($data));
 
         return $seller;
+    }
+
+    public function ckeditor_upload(Request $request)
+    {
+        // dd($request->all());
+        
+        if ($request->has('token')) {
+            $request->headers->set('X-CSRF-TOKEN', $request->get('token'));
+        }
+        
+        $request->validate([
+            'upload' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('upload')) {
+            $image = $request->file('upload');
+
+            // Generate unique filename
+            $randomNumber = rand(1, 99999);
+            $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+
+            // Move image to public/uploads/ckeditor
+            $image->move(public_path('uploads/ckeditor'), $filename);
+
+            $url = asset('uploads/ckeditor/' . $filename);
+
+            return response()->json([
+                'fileName' => $filename,
+                'uploaded' => 1,
+                'url' => $url,
+            ]);
+        }
+
+        return response()->json(['error' => 'No file uploaded.'], 400);
     }
 }

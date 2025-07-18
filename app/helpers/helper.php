@@ -4,10 +4,17 @@ use App\Models\Seller;
 use App\Models\Item;
 use App\Models\Game;
 use App\Models\BuyerRequest;
+use App\Models\Article;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 
+
+function get_article($id) {
+    $data = Article::find($id);
+
+    return $data;
+}
 
 function get_user($id) {
     $data = User::find($id);

@@ -9,7 +9,8 @@
             justify-content: space-between;
         }
         .checkout-left, .checkout-right {
-            background: #fff;
+            background: var(--background-body-1);
+            color: var(--text-primary);
             padding: 2rem;
             box-shadow: 0 0 15px rgba(0,0,0,0.05);
         }
@@ -21,15 +22,15 @@
             flex: 1 1 520px;
         }
         .payment-method {
-            border: 1px solid #e2e2e2;
+            border: 1px solid var(--border-1);
             border-radius: 10px;
             padding: 1rem;
             margin-bottom: 1rem;
             cursor: pointer;
         }
         .payment-method.active {
-            border-color: #000;
-            background: #f8f8f8;
+            border-color: var(--border-active);
+            background: var(--background-body-2);
         }
         .checkout-title {
             font-weight: 600;
@@ -86,7 +87,7 @@
 
                 <!-- LEFT: Game Info + Payment -->
                 <div class="checkout-left p-3 p-md-4 br-4">
-                    <div class="d-flex pb-4 align-items-start border-bottom">
+                    <div class="d-flex pb-4 align-items-start dividor-border-theme-bottom">
                         @if($item != null)
                             <input type="hidden" name="product_name" value="{{ $item->title != null ? $item->title : $item->categoryGame->game->name .' '. $item->categoryGame->title }}">
                             <input type="hidden" name="item_id" value="{{ $item->id}}">
@@ -156,7 +157,7 @@
                                     {{ $item->categoryGame->game->name }} {{ $item->categoryGame->delivery_type }}
                                     <span title="Your order will be delivered to this character, ex. `Dragon499`." style="cursor: help; margin-right: 5px;"><i class="bi-question-circle text-black-60"></i></span>
                                 </label>
-                                <input type="text" name="delivery_type" id="delivery-type" class="form-control" placeholder="{{ $item->categoryGame->game->name }} {{ $item->categoryGame->delivery_type }}" required>
+                                <input type="text" name="delivery_type" id="delivery-type" class="form-control input-theme-1" placeholder="{{ $item->categoryGame->game->name }} {{ $item->categoryGame->delivery_type }}" required>
                             </div>
                         @elseif ($offer != null)
                             <div class="d-flex flex-column my-3">
@@ -164,7 +165,7 @@
                                     {{ $offer->buyerRequest->service->categoryGame->game->name }} {{ $offer->buyerRequest->service->categoryGame->delivery_type }}
                                     <span title="Your order will be delivered to this character, ex. `Dragon499`." style="cursor: help; margin-right: 5px;"><i class="bi-question-circle text-black-60"></i></span>
                                 </label>
-                                <input type="text" name="delivery_type" id="delivery-type" class="form-control" placeholder="{{ $offer->buyerRequest->service->categoryGame->game->name }} {{ $offer->buyerRequest->service->categoryGame->delivery_type }}" required>
+                                <input type="text" name="delivery_type" id="delivery-type" class="form-control input-theme-1" placeholder="{{ $offer->buyerRequest->service->categoryGame->game->name }} {{ $offer->buyerRequest->service->categoryGame->delivery_type }}" required>
                             </div>
                         @endif
 
@@ -267,14 +268,14 @@
                 </div>
 
                 <div class="checkout-right p-3 p-md-4 br-4">
-                    <h6 class="pb-3 mb-3 fw-bold border-bottom">Order Summary</h6>
-                    <ul class="list-unstyled mb-3 pb-3 border-bottom">
+                    <h6 class="pb-3 mb-3 fw-bold dividor-border-theme-bottom">Order Summary</h6>
+                    <ul class="list-unstyled mb-3 pb-3 dividor-border-theme-bottom">
                         <li class="d-flex justify-content-between mb-2">
-                            <span class="text-black-70">Order Price</span>
+                            <span class="text-theme-secondary">Order Price</span>
                             <strong>${{ number_format($totalPrice, 2) }}</strong>
                         </li>
                         <li class="d-flex justify-content-between mb-2">
-                            <span class="text-black-70">Payment Fees</span>
+                            <span class="text-theme-secondary">Payment Fees</span>
                             <strong>${{ number_format($paymentFee, 2) }}</strong>
                             <input type="hidden" name="payment_fees" value="{{$paymentFee}}">
                             <input type="hidden" name="price" value="{{$unitPrice}}">

@@ -1646,6 +1646,15 @@ html, body {
         border-left: 3px solid var(--text-default);
     }
 
+    @media (max-width:768px) {
+        .dividor-m-border-theme {
+            border: 1px solid var(--dividor-border);
+        }
+        .dividor-m-border-bottom {
+            border-bottom: 1px solid var(--dividor-border);
+        }
+    }
+
     @media (min-width:768px) {
         .dividor-md-border-theme {
             border: 1px solid var(--dividor-border);
