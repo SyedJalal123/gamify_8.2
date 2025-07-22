@@ -17,12 +17,14 @@ class ArticleController extends Controller
 
     public function collections(Request $request, $slug) 
     {
-        return view('frontend.article-collection');
+        $collection = ArticleCategory::where('slug', $slug)->with('articles')->first();
+        return view('frontend.article-collection', compact('collection'));
     }
 
     public function articles(Request $request, $slug) 
     {
-        return view('frontend.articles');
+        $article = Article::where('slug', $slug)->with('collection')->first();
+        return view('frontend.articles', compact('article'));
     }
 
     public function get_articles_search(Request $request) 

@@ -5,10 +5,16 @@ use App\Models\Item;
 use App\Models\Game;
 use App\Models\BuyerRequest;
 use App\Models\Article;
+use App\Models\Ticket;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 
+
+function pending_tickets() {
+    $data = Ticket::where('status', 0)->get();
+    return $data;
+}
 
 function get_article($id) {
     $data = Article::find($id);

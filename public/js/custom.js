@@ -1,3 +1,47 @@
+function get_articles() {
+    var search = $('#customArticleSearchInput').val();
+
+    $('#customArticleSearchDropdown').empty();
+
+    if(search == '' || search == null) {
+        $('#customArticleSearchDropdown').css('visibility','hidden').css('opacity',0);
+    } else {
+        $('#customArticleSearchDropdown').css('visibility','visible').css('opacity',1);
+
+        html = `<span class="p-3 text-theme-primary">Searching</span>`;
+        $('#customArticleSearchDropdown').append(html);
+    }
+
+    $.ajax({
+        url: '/get-articles-search',
+        method: 'GET',
+        data: { 
+            search: search, 
+        },
+        success: function (response) {
+            var html = '';
+            for(var i = 0; i < response.length; i++) {
+                html += 
+                
+                `<a href="${homePath}articles/${response[i].slug}" class="default-border-box br-7 mb-2">
+                    <div class="d-flex flex-column p-3 ">
+                        <h5 class="mb-2 fs-16  fw-bold">${response[i].title}</h5>
+                        <div class="d-flex flex-column fs-14 text-theme-secondary">${response[i].short_description}</div>
+                    </div>
+                </a>`;
+            }
+            
+            $('#customArticleSearchDropdown').empty();
+
+            if(html == '' || html == null) {
+                html = `<span class="p-3 text-theme-primary">No results found</span>`;
+                $('#customArticleSearchDropdown').append(html);
+            }else {
+                $('#customArticleSearchDropdown').append(html);
+            }
+        }
+    });
+}
 
 function get_header_search_items(categoryId) {
     search = $(`#get-header-search-items-${categoryId}`).val();

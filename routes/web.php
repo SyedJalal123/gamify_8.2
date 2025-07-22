@@ -18,6 +18,7 @@ use App\Models\CategoryGame;
 use App\Models\Seller;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NowPaymentController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\SellerDashboardController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
@@ -123,6 +124,9 @@ Route::middleware('verified')->group(function () {
     Route::get('/articles/{slug}', [ArticleController::class, 'articles'])->name('articles');
     Route::get('/get-articles-search', [ArticleController::class, 'get_articles_search'])->name('get-articles-search');
     
+    Route::get('/create-ticket/{tag}', [TicketController::class, 'index'])->name('create-ticket')->middleware(['auth']);
+    Route::post('/save-ticket', [TicketController::class, 'store'])->name('save-ticket')->middleware(['auth']);
+    Route::post('/save-suggestion', [TicketController::class, 'store_suggestion'])->name('save-suggestion')->middleware(['auth']);
 
 });
 
@@ -161,6 +165,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/add_article_category', [AdminDashboardController::class, 'add_article_category'])->name('add_article_category');
     Route::post('/edit_article_category', [AdminDashboardController::class, 'edit_article_category'])->name('edit_article_category');
     Route::post('/ckeditor/upload', [AdminDashboardController::class, 'ckeditor_upload'])->name('ckeditor.upload');
+    Route::delete('/articles/{id}', [AdminDashboardController::class, 'destroy_article'])->name('articles.destroy');
+
+    Route::get('/tickets', [AdminDashboardController::class, 'tickets'])->name('tickets');
+    Route::get('/change_ticket_status', [AdminDashboardController::class, 'change_ticket_status'])->name('change_ticket_status');
+    Route::get('/get-ticket/{id}', [AdminDashboardController::class, 'get_ticket'])->name('get-ticket');
 
 
     Route::get('/get-seller/{id}', function ($id) {

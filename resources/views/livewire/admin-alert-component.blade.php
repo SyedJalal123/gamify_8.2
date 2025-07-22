@@ -67,12 +67,17 @@
                             $pill_class = 'badge-light-primary';
                             $pill = $notification->data['title'];
                         @endphp
+                    @elseif ($notification->data['title'] == 'Ticket')
+                        @php
+                            $pill_class = 'badge-light-danger';
+                            $pill = 'Ticket';
+                        @endphp
                     @endif
                     
                     <span class="w-70px badge {{ $pill_class }} me-4">{{ $pill }}</span>
 
                     {{-- @php $order = getOrder('$notification->data['data1']'); @endphp --}}
-                    <a href="{{ url($notification->data['link']) }}" @if($type == 'header') wire:click="markAsRead('{{ $notification->id }}');" @endif 
+                    <a href="{{ url($notification->data['link']) }}" wire:click="markAsRead('{{ $notification->id }}');"
                         {{ $notification->data['title'] == 'Order Dispute' ? 'target="_blank"' : '' }}
                         class="text-gray-800 text-hover-primary fs-11 fw-bold">{!! $notification->data['data1'] !!}</a>
                     {{-- <a href="#" class="text-gray-800 text-hover-primary fw-bold">New order</a> --}}

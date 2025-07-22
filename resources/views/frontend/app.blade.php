@@ -56,7 +56,7 @@
                         }
                     }
                 </style>
-            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout'|| Route::currentRouteName() == 'order-detail')
+            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout'|| Route::currentRouteName() == 'order-detail' || Route::currentRouteName() == 'article-collection')
                 <style>
                     .section--first {
                         background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;
@@ -96,6 +96,19 @@
                     }
                 </style>
             
+            @elseif(Route::currentRouteName() == 'articles')
+                <style>
+                    .section--first {
+                        padding-top: 0px !important;
+                        background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat !important;
+                    }
+                    @media (max-width:1200px) {
+                        .section--first {
+                            padding-top: 0px !important;
+                            background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2-sm.jpg') center top 0px / auto 500px no-repeat !important;
+                        }
+                    }
+                </style>
             @else
                 <style>
                     .section--first {

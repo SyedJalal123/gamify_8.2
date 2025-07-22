@@ -256,6 +256,10 @@ html, body {
     height: fit-content;
 }
 
+.max-h-fit {
+    max-height: fit-content;
+}
+
 .h-42 {
     height: 42px;
 }
@@ -908,7 +912,14 @@ html, body {
 
 }
 
-.select-2-dark .select2-container .select2-selection__rendered {
+.select-2-theme .select2-container--default .select2-selection--single {
+    background-color: var(--background-card) !important;
+    border: 1px solid var(--border-1);
+
+}
+
+.select-2-dark .select2-container .select2-selection__rendered,
+.select-2-theme .select2-container .select2-selection__rendered {
     color: var(--text-primary-2) !important;
 }
 
@@ -2129,6 +2140,7 @@ input[type=number] {
 }
 
 .default-border-box {
+    display: block;
     color: var(--text-primary);
     border: 1px solid var(--border-1);
 }

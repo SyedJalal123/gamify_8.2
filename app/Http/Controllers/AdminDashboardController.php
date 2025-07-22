@@ -12,6 +12,8 @@ use App\Models\Game;
 use App\Models\Order;
 use App\Models\ArticleCategory;
 use App\Models\Article;
+use App\Models\Suggestion;
+use App\Models\Ticket;
 use App\Models\Seller;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -42,6 +44,13 @@ class AdminDashboardController extends Controller
                 $title = addslashes($article->name);
 
                 return '
+                    <div class="menu-item px-3 float-end">
+                        <form method="POST" action="' . route('admin.articles.destroy', $article->id) . '" class="d-inline" onsubmit="return confirm(\'Are you sure you want to delete this article?\');">
+                            <input type="hidden" name="_token" value="' . csrf_token() . '">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-link text-danger m-0 menu-link align-baseline">Delete</button>
+                        </form>
+                    </div>
                     <div data-bs-toggle="modal" onclick="edit_article_modal_values(' . $article->id . ')" data-bs-target="#kt_modal_edit_article" class="menu-item px-3 float-end">
                         <span class="menu-link px-3">Show</span>
                     </div>
@@ -90,7 +99,7 @@ class AdminDashboardController extends Controller
             $article->title = $request->title;
             $article->description = $request->description;
             $article->short_description = $request->short_description;
-            $article->slug = Str::slug($request->title) . '-' . rand(100000, 999999);
+            // $article->slug = Str::slug($request->title) . '-' . rand(100000, 999999);
             $article->save();
 
             
@@ -100,6 +109,19 @@ class AdminDashboardController extends Controller
             Log::error('Article update failed: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'An error occurred while updating the article.');
+        }
+    }
+
+    public function destroy_article(Request $request, $id){
+        try {
+            $article = Article::findOrFail($id);
+            $article->delete();
+
+            return redirect()->back()->with('success', 'Article deleted successfully');
+        } catch (\Exception $e) {
+            Log::error('Article delete failed: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while deleting the article.');
         }
     }
 
@@ -1449,6 +1471,172 @@ class AdminDashboardController extends Controller
         Notification::send($seller->user, new BoostingOfferNotification($data));
 
         return $seller;
+    }
+
+    public function tickets(Request $request) {
+        $dataset = Ticket::with('user');
+
+        if($request->ajax()){
+            $filterStatus = $request->filterStatus ?? null;
+            $filterDate = $request->filterDate ?? null;
+
+            if($filterStatus != null && $filterStatus != 'all') {
+                $dataset = $dataset->where('status', $filterStatus);
+            }
+
+            if($filterDate != null) {
+                [$start, $end] = explode(' - ', $filterDate);
+                $startDate = Carbon::createFromFormat('m/d/Y', trim($start))->startOfDay();
+                $endDate = Carbon::createFromFormat('m/d/Y', trim($end))->endOfDay();
+
+                $dataset->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            return DataTables::eloquent($dataset)
+            ->addColumn('title_data', function($data) {
+                return '
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row fs-11 align-items-center">
+                        '. $data->ticket_id .'
+                    </div>
+                </div>
+                ';
+            })
+            ->filterColumn('title_data', function($query, $keyword) {
+                $query->where(function($q) use ($keyword) {
+                    $q->where('ticket_id', 'like', "%{$keyword}%");
+                })->orWhereHas('user', function($q) use ($keyword) {
+                    $q->where('username', 'like', "%{$keyword}%");
+                });
+            })
+            ->addColumn('verified_data', function($data) {
+                if ($data->status == 0) {
+                    return '<span class="badge badge-light-warning" id="ticket-status-'.$data->id.'">Pending</span>';
+                } elseif($data->status == 1) {
+                    return '<span class="badge badge-light-success" id="ticket-status-'.$data->id.'">Resolved</span>';
+                }
+                
+            })
+            ->addColumn('category_data', function($data) {
+                $category = Str::headline($data->category);
+
+                return $category;
+                
+            })
+            ->addColumn('created_at_data', function($data) {
+                if($data->updated_at != null){
+                    return Carbon::parse($data->updated_at)->format('M d,Y, h:i A');
+                }else {
+                    return Carbon::parse($data->created_at)->format('M d,Y, h:i A');
+                }
+            })
+            ->orderColumn('created_at_data', function ($query, $order) {
+                $query->orderByRaw('COALESCE(updated_at, created_at) ' . $order);
+            })
+            ->addColumn('actions', function ($data) {
+                return '
+                        <button class="btn btn-light-primary btn-sm show-details" data-id="'.$data->id.'">Details</button>
+                        <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
+                            Actions
+                            <span class="svg-icon svg-icon-5 m-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <polygon points="0 0 24 0 24 24 0 24"></polygon>
+                                        <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-180.000000) translate(-12.000003, -11.999999)"></path>
+                                    </g>
+                                </svg>
+                            </span>
+                        </a>
+                        <!--begin::Menu-->
+                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 w-fit menu-state-bg-light-primary fw-bold fs-7 py-4" data-kt-menu="true">
+                            <div class="menu-item px-3">
+                                <a href="#" onclick="change_ticket_status('.$data->id.', 1)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    Mark as resolved
+                                </a>
+                            </div>
+                            <div class="menu-item px-3">
+                                <a href="#" onclick="change_ticket_status('.$data->id.', 0)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    Mark as pending
+                                </a>
+                            </div>
+                        </div>
+                        <!--end::Menu-->
+                        ';
+            })
+            ->setRowAttr([
+                'data-id' => function($data) {
+                    return $data->id;
+                },
+                'class' => 'clickable-row',
+                'style' => 'cursor: pointer',
+            ])
+            ->rawColumns(['title_data', 'verified_data', 'category_data', 'created_at_data', 'actions'])
+            ->make(true);
+        }
+
+        return view('backend.tickets', compact('dataset'));
+    }
+
+    public function get_ticket(Request $request, $ticketId) {
+        // dd($request->all());
+
+        $ticket = Ticket::find($ticketId);
+        return $ticket;
+    }
+
+    public function change_ticket_status(Request $request) {
+        // dd($request->all());
+
+        $ticket = Ticket::with('user')->find($request->ticketId);
+        $ticket->status = $request->status;
+        $ticket->save();
+
+
+        // if($request->sellerStatus == 1){
+        //     $email_title = 'Seller account verified';
+        //     $title_data = 'Your seller account has been successfully verified.';
+        //     $email_data = 'You can now sell your items seamlessly on Gamify.';
+        //     $url = url('items/create');
+        // } 
+        // elseif ($request->sellerStatus == 2)
+        // {
+        //     $email_title = 'Seller verification failed';
+        //     $email_data = 'Don\'t worry, check the reason from Gamify Team below and try again.';
+        //     $title_data = 'Seller verification failed';
+        //     $url = url('seller-verification');
+        // }
+
+        // // Email
+        //     $emailData = [
+        //         'title'     => $email_title,
+        //         'name'      => $seller->user->username,
+        //         'data'      => $email_data,
+        //         'reason'    => $request->reason,
+        //         'buyer_id'  => $seller->user->id,
+        //         'link'      => $url,
+        //         'admin'     => '0',
+        //     ];
+
+        //     $notification_exists = User::where('id', $seller->user->id)->whereHas('emailNotifications', function($query){
+        //         $query->where('name','Verification updates');
+        //     })->first();
+            
+        //     if($notification_exists != null){
+        //         Mail::to($seller->user->email)->send(new OrderMail($emailData));
+        //     }
+        // // Email
+
+        // $data = [
+        //     'title' => $title_data,
+        //     'data1' => $request->reason,
+        //     'data2' => '',
+        //     'link' => $url,
+        //     'game_id' => 0,
+        // ];
+
+        // Notification::send($seller->user, new BoostingOfferNotification($data));
+
+        return $ticket;
     }
 
     public function ckeditor_upload(Request $request)

@@ -106,7 +106,7 @@ class ChatWootBotController extends Controller
                     'items' => [
                         ['title' => '💵 Issue with my currency/items'           , 'value' => 'buyer_items'],
                         ['title' => '🚀 Issue with my boosting'                 , 'value' => 'buyer_boosting'],
-                        ['title' => '👤 Issue with my account purchase'         , 'value' => 'buyer_account'],
+                        ['title' => '👤 Issue with my account purchase'         , 'value' => 'buyer_account_purchase'],
                         ['title' => '📦 How do I receive my purchase?'          , 'value' => 'buyer_recieve_purchase'],
                         ['title' => '🛡️ How do I claim my extended warranty?'   , 'value' => 'buyer_warranty'],
                         ['title' => '💸 My payment is not going through'        , 'value' => 'buyer_payment'],
@@ -152,7 +152,9 @@ class ChatWootBotController extends Controller
 
                                 \n\nUsual response time is within 12 hours. 🕐";
                         $text1 = "I will be closing this chat, but don't worry, you are still able to submit a ticket below!";
-                        $text2 = "[**Create Ticket 🎫**\nOrder issues.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nOrder issues.](" . url('create-ticket/OrderIssues') . ")";
+
+                        $close_conversation = 1;
                     }
 
                     if($message == 'buyer_items_refund') {
@@ -171,6 +173,9 @@ class ChatWootBotController extends Controller
                                     "📌 You traded the items/currency back to a different account.";
 
                         $text2 = "***Never** accept any trades after the trade between you and the seller has been completed.\n[**Refund & Return Policy**\nBoosting - Your order is eligible for a refund if:.](" . url('/') . ")";
+                    
+                    
+                        $close_conversation = 1;
                     }
 
                 // end buyer_items
@@ -191,13 +196,17 @@ class ChatWootBotController extends Controller
                     if($message == 'buyer_ruined_account' || $message == 'buyer_taken_items' || $message == 'buyer_report_seller') {
                         $text = "Please fill out the ticket below to send a report to our team.";
                         $text1 = "I will be closing the chat, but don't worry, we will still receive your ticket.";
-                        $text2 = "[**Create Ticket 🎫**\nUser Reports.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nUser Reports.](" . url('create-ticket/UserReports') . ")";
+
+                        $close_conversation = 1;
                     }
 
                     if($message == 'buyer_not_complete' || $message == 'buyer_another_refund_dispute') {
                         $text = "It seems like you\'re having an issue that needs to be addressed by our dispute team. You will be redirected to them, since our general support is not able to investigate your issue.";
                         $text1 = "I will be closing the chat, but don't worry, we will still receive your ticket.";
-                        $text2 = "[**Create Ticket 🎫**\nDispute Claim.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nDispute Claim.](" . url('create-ticket/DisputeClaim') . ")";
+
+                        $close_conversation = 1;
                     }
 
                     if($message == 'buyer_boosting_refund') {
@@ -218,11 +227,15 @@ class ChatWootBotController extends Controller
                                     "📌 The account was banned/shadow banned due to your actions (i.e. botting, toxic behavior, contacting game developers, etc.).";
 
                         $text2 = "[**Refund & Return Policy**\nBoosting - Your order is eligible for a refund if:.](" . url('/') . ")";
+
+                        $close_conversation = 1;
                     }
 
                     if (in_array($message, ['buyer_order_other','buyer_account_purchase_raising_dispute',
                             'buyer_account_purchase_another_issue','buyer_payment_card_another_issue','buyer_payment_crypto_other'])) {
                         $text = "Please describe your issue to the best of your ability so I can transfer you to our team.";
+
+                        $customer_support = 1;
                     }  
                 // end buyer_boosting 
 
@@ -243,23 +256,27 @@ class ChatWootBotController extends Controller
                 }
 
                 // buyer_account_purchase
-                    if($message == 'buyer_not_complete') {
+                    if($message == 'buyer_account_purchase_warranty') {
                         $text = "**Before submitting a ticket**, please review the following information to enable us to assist you more effectively:
                             
                             \n\n**Information and proof of your warranty claim should be provided in the warranty chat or in the order chat with your seller.**
                             \nIf our team lacks information about your warranty claim, they will contact you on the warranty claim chat.";
                         $text1 = "Please be sure to **contact the seller** about your issue first and if something goes wrong, we got your back!
                                     \n\nI will be closing this chat, but don't worry, you are still able to submit a ticket below!";
-                        $text2 = "[**Create Ticket 🎫**\nWarranty Claim Ticket.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nWarranty Claim Ticket.](" . url('create-ticket/WarrantyClaim') . ")";
+
+                        $close_conversation = 1;
                     }
 
                     if($message == 'buyer_account_purchase_dispute') {
                         $text = "Please note that if you **must have an active dispute claim** on your order for our team to be able to assist you.";
                         $text1 = "I will be closing the chat, but don't worry, we will still receive your ticket.";
-                        $text2 = "[**Create Ticket 🎫**\nDispute Claim.](" . url('/') . ")";
+                        $text2 = "[**Create Ticket 🎫**\nDispute Claim.](" . url('create-ticket/DisputeClaim') . ")";
+
+                        $close_conversation = 1;
                     }
 
-                    if($message == 'buyer_boosting_refund') {
+                    if($message == 'buyer_account_purchase_return') {
                         $text = "**Your order is eligible for a refund, if:**\n\n" .
                                     "📌 The account was compromised.\n" .
                                     "📌 The account was not delivered within the guaranteed delivery time.\n" .
@@ -279,6 +296,8 @@ class ChatWootBotController extends Controller
                         $text2 = "*You may always **contact the seller** and agree on **returning the account** in exchange for a refund or partial refund if the account is not damaged and may be sold again.";
 
                         $text3 = "[**Refund & Return Policy**\nLearn about Gamify refund and return policy for accouts...](" . url('/') . ")";
+
+                        $close_conversation = 1;
 
                     }
                 // end buyer_account_purchase
@@ -305,6 +324,8 @@ class ChatWootBotController extends Controller
                         \n\nTo claim your extended warranty, visit the [order page](" . url('orders/sold') . ") for your purchase and select the product for which you want to claim the warranty. The option should appear on the right side of the order page.";
                     $image_path = 'images';
                     $image = 'gamify_claim_warranty.png';
+
+                    $close_conversation = 1;
                 }
 
                 if($message == 'buyer_payment') {
@@ -400,6 +421,7 @@ class ChatWootBotController extends Controller
                             \n2. Once submitted our team will review it within 15 minutes.";
                     $text1 = "[**Verification 🎫**\In some cases, you may be asked to verify your identity or...](" . url('/') . ")";
                     
+                    $close_conversation = 1;
                 }
 
                 if($message == 'buyer_confused') {
@@ -410,15 +432,17 @@ class ChatWootBotController extends Controller
                             \n\n\n**OR**
                             \n\nIf you are unable to find your game or certain product, please fill out the form and it will automatically be added to our suggestions!";
                     
-                    $text1 = "[**Add Suggestions 🎫**](" . url('/') . ")";
+                    $text1 = "[**Add Suggestions 🎫**](" . url('create-ticket/Feedback') . ")";
                                     
+                    $close_conversation = 1;
                 }
 
                 if($message == 'buyer_security') {
                     $text = "Gamify reserves the money spent until the trade is confirmed by buyer.
                             \n\nBuyers may raise disputes if any issues arise with their products.
                             \n\Gamify support has access to product information and conversations, ensuring thorough investigation in case of issue.";
-                    
+
+                    $close_conversation = 1;
                 }
 
                 if($message == 'buyer_dispute_info') {
@@ -429,6 +453,8 @@ class ChatWootBotController extends Controller
                             \n\nAdditionally, our team keeps track of any updates on your order, checking every 24 hours to provide timely assistance.🛡️";
 
                     $text1 = "[**Order Dispute Process 🎫**\nEstablishing direct communication can resolve many problems...](" . url('/') . ")";
+
+                    $close_conversation = 1;
                 }
             // end buyer_order
             
@@ -518,6 +544,8 @@ class ChatWootBotController extends Controller
 
                         if($message == 'buyer_another_refund_verify_document') {
                             $text == "I'll transfer you to a colleague who can help sort this out. Please make sure to enter your information below. Let them know the type of document you have and the specific information it might be missing. They'll assist you further.";
+
+                            $customer_support = 1;
                         }
 
 
@@ -530,7 +558,9 @@ class ChatWootBotController extends Controller
                                 \n[Can check address validation here.](https://awebanalysis.com/en/bitcoin-address-validate/#google_vignette)
                                 \n📌Refunds are sent within 3 business days.
                                 \n📌Minimum refund amount is 5 USD.";
-                        $text1 = "[**Create Ticket 🎫**\nCrypto currency refund request.](" . url('/') . ")";
+                        $text1 = "[**Create Ticket 🎫**\nCrypto currency refund request.](" . url('create-ticket/CryptoRefund') . ")";
+
+                        $close_conversation = 1;
                     }
             // end buyer_another
 
@@ -556,6 +586,8 @@ class ChatWootBotController extends Controller
                 $text = "Please refer to the article below for the latest information about our withdrawals.";
                 $text1 = "I will be closing the chat, but don't worry, we will still receive your ticket.";
                 $text2 = "[**Seller Withdrawals 🎫**\nSellers can make withdrawals of their Gamify banalnce via...](" . url('/') . ")";
+
+                $close_conversation = 1;
             }
             
             if($message == 'seller_order_statuses') {
@@ -567,6 +599,8 @@ class ChatWootBotController extends Controller
                         \n\n5. **Order received:** Customer has marked the order as received.
                         \n\n6. **Order completed:** The order is finished, and the seller has received payment.
                         \n\nStatus will be displayed on the order page.";
+
+                $close_conversation = 1;
             }
 
             if($message == 'seller_becoming') {
@@ -574,12 +608,16 @@ class ChatWootBotController extends Controller
                 $text1 = "[**How to sell?**\nPrerequisites To start selling in Gamify you must first...](" . url('/') . ")";
                 $text2 = "[**How to sell an account?**\nIn order to sell your in-game account, your Gamify account...](" . url('/') . ")";
                 $text3 = "[**How to sell boosting services?**\nNote: In order to sell your boosting services, your Gamify...](" . url('/') . ")";
+
+                $close_conversation = 1;
             }
 
             if($message == 'seller_rules') {
                 $text = "Please refer to these articles for the latest information:";
                 $text1 = "[**Seller Rules**\nSeller rules for existing offers will be applied on December...](" . url('/') . ")";
                 $text2 = "[**Account Seller Rules**\nPrepare to sell accounts on Gamify by learning about the...](" . url('/') . ")";
+
+                $close_conversation = 1;
             }
 
             if($message == 'seller_verification') {
@@ -607,7 +645,9 @@ class ChatWootBotController extends Controller
             if($message == 'seller_refund') {
                 $text = "To request a manual refund for your orders, please fill out the form below. Be sure to include the order IDs for all orders that need to be refunded.";
                 $text1 = "I will close this conversation, but please be sure to submit your ticket below!";
-                $text2 = "[**Create Ticket 🎫**\nSellers request](" . url('/') . ")";
+                $text2 = "[**Create Ticket 🎫**\nSellers request](" . url('create-ticket/SellerRequest') . ")";
+
+                $close_conversation = 1;
             }
         // end seller
 
@@ -617,7 +657,7 @@ class ChatWootBotController extends Controller
             $customer_support = 1;
         }
 
-        if($message == 'close_conversation') {
+        if ($message == 'close_conversation' || $close_conversation == 1) {
             $response = Http::withHeaders([
                 'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
             ])->post("https://app.chatwoot.com/api/v1/accounts/126164/conversations/{$conversationId}/toggle_status", [
@@ -697,5 +737,14 @@ class ChatWootBotController extends Controller
             ]);
         }
     }
+    
+    public function close_conversation($conversationId) {
+        $response = Http::withHeaders([
+            'api_access_token' => 'szzJ4Yq1RpPsxxArmZ8eTsz1',
+        ])->post("https://app.chatwoot.com/api/v1/accounts/126164/conversations/{$conversationId}/toggle_status", [
+            'status' => 'resolved',
+        ]);
+    }
 }
+
 
