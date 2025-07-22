@@ -414,7 +414,7 @@ function renderAttributes(attributes, targetId) {
         }
 
         if (attr.type === 'text') {
-            inputField = `<input type="text" name="attribute_${attr.id}" placeholder="${attr.name}" class="form-control" />`;
+            inputField = `<input type="text" name="attribute_${attr.id}" placeholder="${attr.name}" class="form-control input-theme-1" />`;
         } else if (attr.type === 'select') {
 
             let selectClass = attr.topup === 1 ? 'topup_select_boxes' : 'attribute_select_boxes';
@@ -597,18 +597,18 @@ document.getElementById('addRow').addEventListener('click', function() {
     row.innerHTML = `
         <div class="col-md-5">
             <div class="input-group">
-                <button class="btn btn-minus mr-1" type="button">-</button>
-                <input type="number" class="form-control text-center input-group-text-input" id="discount_amont_${lastNumber}" name="discount_amont[]" value="0" min="0">
+                <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                <input type="number" class="form-control input-theme-1 text-center input-group-text-input" id="discount_amont_${lastNumber}" name="discount_amont[]" value="0" min="0">
                 <span class="input-group-text">${currency_type}</span>
-                <button class="btn btn-plus ml-1" type="button">+</button>
+                <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
             </div>
         </div>
         <div class="col-md-5">
             <div class="input-group">
-                <button class="btn btn-minus mr-1" type="button">-</button>
-                <input type="number" class="form-control text-center input-group-text-input" id="discount_applied_${lastNumber}" name="discount_applied[]" value="0" min="0" max="100">
+                <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                <input type="number" class="form-control input-theme-1 text-center input-group-text-input" id="discount_applied_${lastNumber}" name="discount_applied[]" value="0" min="0" max="100">
                 <span class="input-group-text">%</span>
-                <button class="btn btn-plus ml-1" type="button">+</button>
+                <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
             </div>
         </div>
         <div class="col-md-2 text-center">
@@ -635,7 +635,7 @@ $('#addAccountBtn').click(function() {
         <button type="button" class="btn-delete btn-remove-account" style="position:absolute;top:0;right:0;">
             <i class="bi bi-trash"></i>
         </button>
-        <textarea class="form-control" name="account_info[]" rows="2" placeholder="Type here..."></textarea>
+        <textarea class="form-control input-theme-1" name="account_info[]" rows="2" placeholder="Type here..."></textarea>
         </div>
     `;
 

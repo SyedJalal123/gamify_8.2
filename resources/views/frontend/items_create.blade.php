@@ -166,7 +166,7 @@
                                     <!-- Offer Title -->
                                     <div class="card-section accounts_class items_class">
                                         <label class="form-label">Offer Title</label>
-                                        <textarea class="form-control auto-resize-textarea accounts_r items_r" id="title" name="title" required rows="2" placeholder="Type here..."></textarea>
+                                        <textarea class="form-control input-theme-1 auto-resize-textarea accounts_r items_r" id="title" name="title" required rows="2" placeholder="Type here..."></textarea>
                                         <small class="form-text">Give your item a descriptive title. What would buyers search for to find your item? Add the most searchable words at the front of your title. Titles have a 160 character limit.</small>
                                     </div>
 
@@ -193,7 +193,7 @@
                                     <div class="card-section">
                                         <label class="form-label currency_class accounts_class items_class">Description (Optional)</label>
                                         <label class="form-label topup_class">Delivery instructions</label>
-                                        <textarea class="form-control auto-resize-textarea topup_r" id="description" name="description" rows="4" required placeholder="Type here..."></textarea>
+                                        <textarea class="form-control input-theme-1 auto-resize-textarea topup_r" id="description" name="description" rows="4" required placeholder="Type here..."></textarea>
                                         <small class="form-text">The listing title and description must be accurate and informative. Misleading description violates Seller Rules.</small>
                                     </div>
 
@@ -210,7 +210,7 @@
                                                 <label for="manual_method">Manual</label>
                                             </div>
                                         </div>
-                                        <div id="manual_method_show" class="currency topup mb-3 currency_class topup_class items_class">
+                                        <div id="manual_method_show" class="select-2-theme currency topup mb-3 currency_class topup_class items_class">
                                             <label class="form-label">Guaranteed Delivery Time</label>
                                             <select class="form-select currency_r topup_r items_r" id="delivery_time" name="delivery_time" required>
                                                 <option disabled selected value="">Choose Delivery Time</option>
@@ -228,7 +228,7 @@
                                         </div>
                                         <div class="items mb-3 items_class">
                                             <label class="form-label">Delivery method</label>
-                                            <input type="text" class="form-control items_r" required value="In-game delivery" disabled>
+                                            <input type="text" class="input-theme-1 form-control items_r" required value="In-game delivery" disabled>
                                         </div>
                                         <small class="form-text accounts accounts_class">When the buyer purchases your account, Gamify will instantly deliver the account details so you don't even have to be online!</small>
                                     </div>
@@ -250,7 +250,7 @@
                                         <!-- Default Account 1 -->
                                         <div class="account-field mt-4">
                                             <label class="form-label">Account 1</label>
-                                            <textarea class="form-control auto-resize-textarea accounts_r" id="account_info" name="account_info[]" rows="2" required placeholder="Type here..."></textarea>
+                                            <textarea class="form-control input-theme-1 auto-resize-textarea accounts_r" id="account_info" name="account_info[]" rows="2" required placeholder="Type here..."></textarea>
                                         </div>
                                       
                                         <!-- Container for dynamic accounts -->
@@ -267,19 +267,19 @@
                                             <div class="col-md-6">
                                                 <span class="small">Total Quantity Available</span>
                                                 <div class="input-group">
-                                                    <button class="btn btn-minus mr-1" type="button">-</button>
-                                                    <input type="number" class="form-control text-center input-group-text-input currency_r topup_r items_r" id="quantity_available" required name="quantity_available" value="0" min="0" step="1">
+                                                    <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                                                    <input type="number" class="form-control input-theme-1 text-center input-group-text-input currency_r topup_r items_r" id="quantity_available" required name="quantity_available" value="0" min="0" step="1">
                                                     <span class="input-group-text feature_currency_type">M</span>
-                                                    <button class="btn btn-plus ml-1" type="button">+</button>
+                                                    <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 currency_class items_class">
                                                 <span class="small">Minimum Offer Quantity</span>
                                                 <div class="input-group">
-                                                    <button class="btn btn-minus mr-1" type="button">-</button>
-                                                    <input type="number" class="form-control text-center input-group-text-input currency_r topup_r items_r" id="minimum_quantity" required name="minimum_quantity" value="1" min="1" step="1">
+                                                    <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                                                    <input type="number" class="form-control input-theme-1 text-center input-group-text-input currency_r topup_r items_r" id="minimum_quantity" required name="minimum_quantity" value="1" min="1" step="1">
                                                     <span class="input-group-text feature_currency_type">M</span>
-                                                    <button class="btn btn-plus ml-1" type="button">+</button>
+                                                    <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
                                                 </div>
                                             </div>
                                             <div class="small text-danger d-none quanity_must_error">Quantity must be above or equal to Minimum Offer quantity</div>
@@ -290,7 +290,7 @@
                                     <div class="card-section">
                                         <label class="form-label">Price per <span class="feature_currency__default_amount">1</span><span class="feature_currency_type">M</span></label>
                                         <div class="input-group">
-                                            <input type="number" class="form-control input-group-text-input" id="price" required name="price" placeholder="Price" step="any">
+                                            <input type="number" class="form-control input-theme-1 input-group-text-input" id="price" required name="price" placeholder="Price" step="any">
                                             <span class="input-group-text">$ USD</span>
                                         </div>
                                     </div>
@@ -303,19 +303,19 @@
                                                 <div class="col-md-5">
                                                     <span class="small">If user buys X or more</span>
                                                     <div class="input-group">
-                                                        <button class="btn btn-minus mr-1" type="button">-</button>
-                                                        <input type="number" class="form-control input-group-text-input text-center" id="discount_amont_0" name="discount_amont[]" value="0" min="0">
+                                                        <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                                                        <input type="number" class="form-control input-theme-1 input-group-text-input text-center" id="discount_amont_0" name="discount_amont[]" value="0" min="0">
                                                         <span class="input-group-text feature_currency_type">M</span>
-                                                        <button class="btn btn-plus ml-1" type="button">+</button>
+                                                        <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-5">
                                                     <span class="small">Discount applied</span>
                                                     <div class="input-group">
-                                                        <button class="btn btn-minus mr-1" type="button">-</button>
-                                                        <input type="number" class="form-control input-group-text-input text-center" id="discount_applied_0" name="discount_applied[]" value="0" min="0" max="100">
+                                                        <button class="btn btn-theme-default btn-minus mr-1" type="button">-</button>
+                                                        <input type="number" class="form-control input-theme-1 input-group-text-input text-center" id="discount_applied_0" name="discount_applied[]" value="0" min="0" max="100">
                                                         <span class="input-group-text">%</span>
-                                                        <button class="btn btn-plus ml-1" type="button">+</button>
+                                                        <button class="btn btn-theme-default btn-plus ml-1" type="button">+</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 text-center">
@@ -332,7 +332,7 @@
                                     <!-- Fee Structure -->
                                     <div class="card-section">
                                         <label class="form-label">Fee Structure</label>
-                                        <div class="p-3 bg-light rounded">
+                                        <div class="background-theme-card p-3 rounded">
                                         <div class="small">Flat fee (per purchase): <strong>$0.00 USD</strong></div>
                                         <div class="small">Percentage fee (per purchase): <strong>5% of Price</strong></div>
                                         </div>
@@ -391,7 +391,7 @@
                                                     <div class="collapse" id="serviceOptions_{{$key}}">
                                                         <ul class="list-group list-group-flush">
                                                             @foreach ($item->services as $key2 => $service)
-                                                            <li class="list-group-item service-label">
+                                                            <li class="list-group-item service-label background-theme-body-2 text-theme-primary">
                                                                 {{$service->name}}
                                                                 <div class="custom-control custom-switch">
                                                                     <input type="checkbox" onchange="toggleService(this)"

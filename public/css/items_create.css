@@ -97,7 +97,8 @@ input.invalid {
 }
 
 .category-select {
-    box-shadow: 5px 5px 15px rgb(255 255 255 / 22%);
+    /* box-shadow: 5px 5px 15px rgb(255 255 255 / 22%); */
+    box-shadow: 5px 5px 15px rgb(0 0 0 / 22%);
     cursor: pointer;
 }
 .category-select:hover {
@@ -127,9 +128,6 @@ input.invalid {
 
 
 
-.card-section {
-    color: black;
-}
 .custom-container {
     max-width: 750px;
     margin: 0 auto;
@@ -139,8 +137,9 @@ input.invalid {
     overflow: hidden;
   }
   .card-section {
-    background: #ffffff;
-    border: 1px solid #e2e2e2;
+    background: var(--background-body-1);
+    border: 1px solid var(--border-1);
+    color: var(--text-primary);
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     padding: 25px;
@@ -159,8 +158,9 @@ input.invalid {
   .input-group-text {
     /* min-width: 50px; */
     justify-content: center;
-    background-color: #efeff1;
-    border: 0px;
+    background-color: var(--background-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-1);
     font-weight: 600;
     border-radius: 0px;
   }
@@ -168,14 +168,14 @@ input.invalid {
     border-right: 0px;
     height: auto;
   }
-  .btn-minus, .btn-plus {
+  /* .btn-minus, .btn-plus {
     width: 36px;
     background-color: #f1f1f1;
     border: none;
     font-weight: bold;
     font-size: 20px;
     border-radius: 8px;
-  }
+  } */
   .btn-minus:hover, .btn-plus:hover {
     background-color: #d6d6d6;
   }

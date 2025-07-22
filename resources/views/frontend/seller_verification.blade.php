@@ -30,9 +30,10 @@
         /* Hide all steps by default: */
         .tab {
             display: none;
-            background: white;
+            background: var(--background-body-1);
             padding: 20px;
-            color: black;
+            color: var(--text-primary);
+            border: 1px solid var(--border-1);
             margin: 40px 0px;
             border-radius: 18px;
             text-align: center;
@@ -99,7 +100,7 @@
 
 @section('content')
     <!-- home -->
-    <section class="section section--bg section--first" data-bg="GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg" style="background: url(&quot;GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg.jpg&quot;) center top 140px / auto 500px no-repeat;">
+    <section class="section section--bg section--first">
         <div class="container">
             <div class="row">
                 <!-- title -->
@@ -171,21 +172,21 @@
                                         <div>
                                             <p class="m-2">
                                                 <label for="first_name" class="float-left">First name:</label>
-                                                <input class="h-38" id="first_name" name="first_name" placeholder="First name" oninput="this.className = ''" required>
+                                                <input class="input-theme-1 h-38" id="first_name" name="first_name" placeholder="First name" oninput="this.className = 'input-theme-1'" required>
                                             </p>
                                             <p class="m-2">
                                                 <label for="middle_name" class="float-left">Middle name (if present):</label>
-                                                <input class="h-38" id="middle_name" name="middle_name" placeholder="Middle name" oninput="this.className = ''">
+                                                <input class="input-theme-1 h-38" id="middle_name" name="middle_name" placeholder="Middle name" oninput="this.className = 'input-theme-1'">
                                             </p>
                                             <p class="m-2">
                                                 <label for="last_name" class="float-left">Last name:</label>
-                                                <input class="h-38" id="last_name" name="last_name" placeholder="Last name" oninput="this.className = ''" required>
+                                                <input class="input-theme-1 h-38" id="last_name" name="last_name" placeholder="Last name" oninput="this.className = 'input-theme-1'" required>
                                             </p>
                                             <p class="m-2">
                                                 <label for="dob" class="float-left">Date of Birth:</label>
-                                                <input type="date" id="dob" name="dob" oninput="this.className = ''" required>
+                                                <input class="input-theme-1" type="date" id="dob" name="dob" oninput="this.className = 'input-theme-1'" required>
                                             </p>
-                                            <p class="m-2">
+                                            <p class="m-2 select-2-theme">
                                                 <label for="nationality_select" class="float-left">Nationality:</label>
                                                 <select id="nationality_select" style="width: 100%;" name="nationality" required>
                                                     <option value="">Select Nationality</option>
@@ -438,15 +439,15 @@
                                             <hr>
                                             <p class="m-2">
                                                 <label for="street_address" class="float-left">Street address:</label>
-                                                <input class="h-38" id="street_address" name="street_address" placeholder="Street address" oninput="this.className = ''" required>
+                                                <input class="input-theme-1 h-38" id="street_address" name="street_address" placeholder="Street address" oninput="this.className = 'input-theme-1'" required>
                                             </p>
                                             <p class="m-2">
                                                 <label for="city" class="float-left">City:</label>
-                                                <input class="h-38" id="city" name="city" placeholder="City" oninput="this.className = ''" required>
+                                                <input class="input-theme-1 h-38" id="city" name="city" placeholder="City" oninput="this.className = 'input-theme-1'" required>
                                             </p>
                                             <p class="m-2">
                                                 <div class="row">
-                                                    <div class="col-md-7">
+                                                    <div class="col-md-7 select-2-theme">
                                                         <label for="country_select" class="float-left">Country:</label>
                                                         <select id="country_select" class="form-control" style="width: 100%;" name="country" required>
                                                             <option value="">Select Country</option>
@@ -699,7 +700,7 @@
                                                     <div class="col-md-5">
                                                         <p class="m-2">
                                                             <label for="postal_code" class="float-left">Postal code:</label>
-                                                            <input class="h-38" id="postal_code" name="postal_code" placeholder="Postal code" oninput="this.className = ''" required>
+                                                            <input class="input-theme-1 h-38" id="postal_code" name="postal_code" placeholder="Postal code" oninput="this.className = 'input-theme-1'" required>
                                                         </p>
                                                     </div>
                                                 </div>

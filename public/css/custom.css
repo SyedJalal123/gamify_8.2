@@ -788,8 +788,9 @@ html, body {
     border: 1px solid var(--border-active) !important;
 }
 .category-select {
-    background: white;
-    color: #000;
+    background: var(--background-body-1);
+    color: var(--text-primary);
+    border: 1px solid var(--border-1);
     padding: 15px;
     border-radius: 10px;
     display: flex;
@@ -1402,10 +1403,10 @@ html, body {
     border-color: #f8f9fa;
 }
 .btn-minus, .btn-plus {
-    width: 36px;
+    /* width: 36px;
     background-color: #f1f1f1;
     border: none;
-    font-weight: bold;
+    font-weight: bold; */
     /* font-size: 20px; */
     /* border-radius: 8px; */
 }
@@ -1532,11 +1533,11 @@ html, body {
     }
 
     .text-theme-primary {
-        color: var(--text-primary);
+        color: var(--text-primary) !important;
     }
 
     .text-theme-primary:hover {
-        color: var(--text-primary);
+        color: var(--text-primary) !important;
     }
 
     .text-theme-grey {
@@ -1715,7 +1716,7 @@ html, body {
     .btn-theme-default:hover, .btn-theme-default:focus, .btn-theme-default.active {
         color: var(--text-primary) !important;
         border: 1px solid var(--border-active) !important;
-        background-color: var(--background-card-dark);
+        background-color: var(--background-card-dark) !important;
     }
 
     .btn-theme-red {
