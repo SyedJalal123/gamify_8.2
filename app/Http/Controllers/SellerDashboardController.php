@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\BuyerRequest;
 use App\Models\EmailNotifications;
 use App\Models\Order;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\BuyerRequestConversation;
 use Yajra\DataTables\Facades\DataTables;
@@ -256,6 +257,110 @@ class SellerDashboardController extends Controller
                 ->paginate('20');
         }
         return view('frontend.dashboard.boosting', compact('boostingRequests', 'tag'));
+    }
+
+    public function wallet(Request $request) {
+
+        if($request->ajax()){
+            $transactions = Transaction::with('order')->where('user_id', auth()->id());
+        } else {
+            $transactions = Transaction::with('order')->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
+        }
+
+        $pending_transactions = Order::where('seller_id', auth()->id())
+            ->whereIn('order_status', ['delivered', 'received'])
+            ->get()
+            ->sum(function ($order) {
+                return $order->total_price - $order->other_taxes - $order->payment_fees;
+        });
+
+
+        if($request->ajax()){
+
+            $filterStatus = $request->filterStatus ?? null;
+            $filterDuration = $request->filterDuration ?? null;
+
+            if($filterStatus != null) {
+                $transactions->where('payment_type', $filterStatus);
+            }
+
+            if($filterDuration != null) {
+                $transactions = $transactions
+                    ->whereMonth('created_at', 1)
+                    ->whereYear('created_at', 2025);
+            }else {
+                $transactions = $transactions
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->whereYear('created_at', Carbon::now()->year);
+            }
+
+            return DataTables::eloquent($transactions)
+            ->addColumn('date', function($transaction) {
+                return $transaction->created_at->format('M j, Y, g:i:s A');
+            })
+            ->addColumn('balance', function($transaction) {
+                if($transaction->payment_type == 'withdraw') {
+                    $class = 'text-cherry';
+                    $status = '-';
+                }
+                else  {
+                    $class = 'text-theme-emerald';
+                    $status = '+';
+                }
+                
+
+                return '
+                <span class="'. $class .' text-capitalize">'. $status . '$' . number_format($transaction->balance, 2) .'</span>
+                ';
+            })
+            ->addColumn('description', function($transaction) {
+                return '
+                <span class="'. $class .' text-capitalize fs-13">'. $transaction->description .'</span>
+                ';
+            })
+            ->addColumn('mobile_summary', function ($transaction) {
+                if($transaction->payment_type == 'withdraw') {
+                    $class = 'text-cherry';
+                    $status = '-';
+                }
+                else  {
+                    $class = 'text-theme-emerald';
+                    $status = '+';
+                }
+                
+                return '
+                <div class="d-flex flex-column">
+                    <div class="d-flexmb-2">'.$transaction->created_at->format('M j, Y, g:i:s A').'</div>
+                    <span class="'. $class .' text-capitalize mb-2">'. $status . '$' . number_format($transaction->balance, 2) .'</span>
+                    <div class="fs-13 mb-2">'.$transaction->description.'</div>
+                </div>
+                ';
+            })
+            ->addColumn('row_url', function ($order) {
+                return route('order-detail', $order->order_id);
+            })
+            ->rawColumns(['date', 'balance', 'description', 'mobile_summary', 'row_url'])
+            ->make(true);
+        }
+                
+        // $transactions = $transactions->sortByDesc(function ($transaction) {
+        //     return optional($transaction->messages->sortByDesc('created_at')->first())->created_at 
+        //         ?? $transaction->created_at;
+        // })->values();
+
+        return view('frontend.dashboard.wallet', compact('transactions','pending_transactions'));
+    }
+
+    public function withdraw(Request $request) {
+
+        $transactions = Transaction::with('order')->where('user_id', auth()->id())->get();
+        
+        // $transactions = $transactions->sortByDesc(function ($transaction) {
+        //     return optional($transaction->messages->sortByDesc('created_at')->first())->created_at 
+        //         ?? $transaction->created_at;
+        // })->values();
+
+        return view('frontend.dashboard.wallet', compact('transactions'));
     }
 
     public function messages(Request $request) {

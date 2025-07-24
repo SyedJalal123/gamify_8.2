@@ -1385,7 +1385,7 @@ class AdminDashboardController extends Controller
     public function change_order_status(Request $request) {
         // dd($request->all());
 
-        $order = Order::find($request->orderId);
+        $order = Order::with('seller')->find($request->orderId);
         
         if ($request->orderStatus == 'cancelled') {
             $order->order_status = 'cancelled';
@@ -1394,6 +1394,10 @@ class AdminDashboardController extends Controller
             $order->cancelled_at = now();
         } elseif ($request->orderStatus == 'completed') {
             $order->order_status = 'completed';
+
+            $netAmount = $order->total_price - $order->other_taxes - $order->payment_fees;
+            $order->seller->balance += $netAmount;
+            $order->seller->save();
         }
 
         $order->save();

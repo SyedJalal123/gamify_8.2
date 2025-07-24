@@ -16,7 +16,7 @@
             .d-md-block {
                 display: block !important;
             }
-        }
+        }a
          */
     </style>
     <link rel="stylesheet" href="{{asset('css/live-chat.css')}}">

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('username_updated_at')->nullable();
             $table->timestamp('email_updated_at')->nullable();
+            $table->integer('balance')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });

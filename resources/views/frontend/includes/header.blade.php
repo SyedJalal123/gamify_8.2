@@ -238,6 +238,16 @@
                                                 </a>
                                             </div>
                                             <div class="sidebar-menu mt-2 pt-1 dividor-border-theme-top">
+                                                <a wire:navigate href="{{url('wallet')}}" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'wallet' ? 'active' : '' }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-wallet2 fs-20 mr-2"></i>
+                                                        <div>
+                                                            <div class="font-weight-bold">Wallet</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="sidebar-menu mt-2">
                                                 <a wire:navigate href="{{url('messages')}}?messageType=All" class="sidebar-title sidebar-item p-1 {{ request()->path() == 'messages' ? 'active' : '' }}">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-chat-left-dots fs-20 mr-2"></i>
