@@ -13,6 +13,7 @@ use App\Models\Game;
 use App\Models\Attribute;
 use App\Models\BuyerRequest;
 use App\Models\User;
+use App\Models\Transaction;
 use App\Models\RequestOffer;
 use App\Models\BuyerRequestConversation;
 use App\Events\GroupServiceSellerEvent;
@@ -158,7 +159,7 @@ class StripeController extends Controller
 
         DB::beginTransaction();
 
-        // try {
+        try {
             $order = Order::create([
                 'order_id'           => Str::uuid()->toString(),
                 'item_id'            => $request->item_id ?? null,
@@ -177,6 +178,26 @@ class StripeController extends Controller
                 'order_status'       => ($request->item_id && $item->delivery_method == 'automatic') ? 'received' : 'pending delivery',
                 'payment_status'     => 'paid',
                 'delivery_type'      => $request->delivery_type ?? null,
+            ]);
+
+            $transaction = Transaction::create([
+                'user_id'           => auth()->id(),
+                'order_id'          => $order->id,
+                'balance'           => $request->total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0),
+                'description'       => 'Order is created successfully',
+                'payment_type'      => 'purchase',    
+                'user_type'         => 'buyer',
+                'payment_method'    => 'Bank',        
+            ]);
+
+            $transaction = Transaction::create([
+                'user_id'           => $seller_id,
+                'order_id'          => $order->id,
+                'balance'           => $request->total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0), // also add commision
+                'description'       => 'Order is created successfully',
+                'payment_type'      => 'sale',    
+                'user_type'         => 'seller',
+                'payment_method'    => 'Bank',        
             ]);
 
 
@@ -274,7 +295,7 @@ class StripeController extends Controller
                 'game_id'   => $categoryGame->game_id,
                 'admin'     => '0',
             ];
-
+            
             $data1 = [
                 'title'     => 'New Order',
                 'name'      => 'Gamify',
@@ -322,16 +343,16 @@ class StripeController extends Controller
             DB::commit();
             return $order;
 
-        // } catch (\Throwable $e) {
-        //     DB::rollBack();
+        } catch (\Throwable $e) {
+            DB::rollBack();
 
-        //     Log::error('Order creation failed', [
-        //         'error' => $e->getMessage(),
-        //         'trace' => $e->getTraceAsString(),
-        //     ]);
+            Log::error('Order creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-        //     return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
-        // }
+            return redirect()->back()->with('error', 'Failed to place your order. Please try again.');
+        }
     }
 
     /**

@@ -315,7 +315,7 @@ class SellerDashboardController extends Controller
             })
             ->addColumn('description', function($transaction) {
                 return '
-                <span class="'. $class .' text-capitalize fs-13">'. $transaction->description .'</span>
+                <span class="text-capitalize fs-13">'. $transaction->description .'</span>
                 ';
             })
             ->addColumn('mobile_summary', function ($transaction) {
@@ -353,14 +353,8 @@ class SellerDashboardController extends Controller
 
     public function withdraw(Request $request) {
 
-        $transactions = Transaction::with('order')->where('user_id', auth()->id())->get();
-        
-        // $transactions = $transactions->sortByDesc(function ($transaction) {
-        //     return optional($transaction->messages->sortByDesc('created_at')->first())->created_at 
-        //         ?? $transaction->created_at;
-        // })->values();
 
-        return view('frontend.dashboard.wallet', compact('transactions'));
+        return view('frontend.dashboard.withdraw');
     }
 
     public function messages(Request $request) {

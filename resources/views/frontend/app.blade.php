@@ -56,7 +56,7 @@
                         }
                     }
                 </style>
-            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout'|| Route::currentRouteName() == 'order-detail' || Route::currentRouteName() == 'article-collection')
+            @elseif(Route::currentRouteName() == 'item.detail' || Route::currentRouteName() == 'profile' || Route::currentRouteName() == 'checkout'|| Route::currentRouteName() == 'order-detail' || Route::currentRouteName() == 'article-collection' || Route::currentRouteName() == 'withdraw')
                 <style>
                     .section--first {
                         background: url('/GoGame – Digital marketplace HTML Template Preview - ThemeForest_files/img/bg-2.jpg') center top 0px / auto 500px no-repeat;

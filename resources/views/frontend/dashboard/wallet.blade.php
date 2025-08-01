@@ -43,6 +43,7 @@
             <div class="col-md-12 col-lg-10 pt-lg-5 mt-lg-5 pm-1200-0">
                 <div class="row">
                     <div class="col-12 mb-5 ml-3" style="max-width: 1048px;">
+                        
                         <div class="d-flex flex-row align-items-center mb-4">
                             <i class="bi bi-wallet2 fs-20 fw-bold text-default"></i>
                             <h3 class="ml-2 mb-0 fw-bold text-theme-primary first-letter-cap">Wallet</h3>
