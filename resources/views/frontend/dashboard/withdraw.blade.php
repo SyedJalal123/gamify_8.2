@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab-usdc">
+                            <div class="tab-pane fade py-4" id="tab-usdc">
                                 <div class="d-flex row">
                                     <div class="d-flex flex-column col-md-6">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -134,7 +134,7 @@
                                         </div>
                                         
                                         <div class="d-flex flex-column mb-4">
-                                            <span class="mb-2">Bitcoin wallet address</span>
+                                            <span class="mb-2">USDC wallet address</span>
                                             <input type="text" class="input-theme-1 py-2 px-2 br-5">
                                         </div>
 
@@ -147,19 +147,19 @@
                                     </div>
                                     <div class="d-flex col-md-6">
                                         <div class="d-flex flex-column background-theme-body-3 h-fit p-3">
-                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $100</span>
+                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $200</span>
                                             <p class="fs-11 text-theme-secondary">
-                                                - Withdrawal amount in USD will be converted to Bitcoins based on  <a target="_blank" href="https://www.blockchain.com/">www.blockchain.com</a>  exchange rate at the time of transaction.<br><br>
+                                                - Withdrawal amount in USD will be converted to USDC based on  <a target="_blank" href="https://www.blockchain.com/">www.blockchain.com</a>  exchange rate at the time of transaction.<br><br>
 
-                                                - All Bitcoin withdrawals will incur 6% percentage fee and 20 USD flat fee.<br><br>
+                                                - All USDC withdrawals will incur 6% percentage fee and 20 USD flat fee.<br><br>
 
-                                                - Bitcoin withdrawals are sent through the main Bitcoin blockchain only. No other networks are supported.
+                                                - USDC withdrawals can only be sent to ERC-20 wallets. OMNI and TRC-20 wallets are NOT supported.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab-sepa">
+                            <div class="tab-pane fade py-4" id="tab-sepa">
                                 <div class="d-flex row">
                                     <div class="d-flex flex-column col-md-6">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -169,10 +169,18 @@
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="fs-14">Payment fees</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold">$20.00</span>
+                                                <span class="ml-2">USD</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                            <span class="fs-14 fw-bold">Conversion rate (USD/EUR)</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="ml-2 fw-bold">0.00</span>
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
@@ -185,8 +193,13 @@
                                             </div>
                                         </div>
                                         
+                                        <div class="d-flex flex-column mb-2">
+                                            <span class="mb-2">Recipient name</span>
+                                            <input type="text" class="input-theme-1 py-2 px-2 br-5">
+                                        </div>
+
                                         <div class="d-flex flex-column mb-4">
-                                            <span class="mb-2">Bitcoin wallet address</span>
+                                            <span class="mb-2">IBAN</span>
                                             <input type="text" class="input-theme-1 py-2 px-2 br-5">
                                         </div>
 
@@ -199,19 +212,19 @@
                                     </div>
                                     <div class="d-flex col-md-6">
                                         <div class="d-flex flex-column background-theme-body-3 h-fit p-3">
-                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $100</span>
+                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $10</span>
                                             <p class="fs-11 text-theme-secondary">
-                                                - Withdrawal amount in USD will be converted to Bitcoins based on  <a target="_blank" href="https://www.blockchain.com/">www.blockchain.com</a>  exchange rate at the time of transaction.<br><br>
+                                                - Withdrawals can only be sent to European (SEPA) bank accounts in Euros.<br><br>
 
-                                                - All Bitcoin withdrawals will incur 6% percentage fee and 20 USD flat fee.<br><br>
+                                                - All Sepa withdrawals will incur 4% percentage fee and 5 USD flat fee.<br><br>
 
-                                                - Bitcoin withdrawals are sent through the main Bitcoin blockchain only. No other networks are supported.
+                                                - You must be the recipient of the funds, with the withdrawal address registered to you.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab-skrill">
+                            <div class="tab-pane fade py-4" id="tab-skrill">
                                 <div class="d-flex row">
                                     <div class="d-flex flex-column col-md-6">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -221,10 +234,18 @@
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="fs-14">Payment fees</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold">$20.00</span>
+                                                <span class="ml-2">USD</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                            <span class="fs-14 fw-bold">Conversion rate (USD/EUR)</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="ml-2 fw-bold">0.00</span>
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
@@ -236,9 +257,9 @@
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="d-flex flex-column mb-4">
-                                            <span class="mb-2">Bitcoin wallet address</span>
+                                            <span class="mb-2">Skrill email</span>
                                             <input type="text" class="input-theme-1 py-2 px-2 br-5">
                                         </div>
 
@@ -251,19 +272,19 @@
                                     </div>
                                     <div class="d-flex col-md-6">
                                         <div class="d-flex flex-column background-theme-body-3 h-fit p-3">
-                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $100</span>
+                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $10</span>
                                             <p class="fs-11 text-theme-secondary">
-                                                - Withdrawal amount in USD will be converted to Bitcoins based on  <a target="_blank" href="https://www.blockchain.com/">www.blockchain.com</a>  exchange rate at the time of transaction.<br><br>
+                                                - Withdrawals can only be sent to Skrill accounts in Euros.<br><br>
 
-                                                - All Bitcoin withdrawals will incur 6% percentage fee and 20 USD flat fee.<br><br>
+                                                - All Skrill withdrawals will incur 5% percentage fee and 1 USD flat fee.<br><br>
 
-                                                - Bitcoin withdrawals are sent through the main Bitcoin blockchain only. No other networks are supported.
+                                                - You must be the recipient of the funds, with the withdrawal address registered to you.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab-payoneer">
+                            <div class="tab-pane fade py-4" id="tab-payoneer">
                                 <div class="d-flex row">
                                     <div class="d-flex flex-column col-md-6">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -290,7 +311,7 @@
                                         </div>
                                         
                                         <div class="d-flex flex-column mb-4">
-                                            <span class="mb-2">Bitcoin wallet address</span>
+                                            <span class="mb-2">Payoneer email</span>
                                             <input type="text" class="input-theme-1 py-2 px-2 br-5">
                                         </div>
 
@@ -303,13 +324,16 @@
                                     </div>
                                     <div class="d-flex col-md-6">
                                         <div class="d-flex flex-column background-theme-body-3 h-fit p-3">
-                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $100</span>
+                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $10</span>
                                             <p class="fs-11 text-theme-secondary">
-                                                - Withdrawal amount in USD will be converted to Bitcoins based on  <a target="_blank" href="https://www.blockchain.com/">www.blockchain.com</a>  exchange rate at the time of transaction.<br><br>
+                                                - You must be the owner of the Payoneer account receiving the funds.<br><br>
 
-                                                - All Bitcoin withdrawals will incur 6% percentage fee and 20 USD flat fee.<br><br>
+                                                - A 4% percentage fee and a $2 USD flat fee apply to each withdrawal.<br><br>
 
-                                                - Bitcoin withdrawals are sent through the main Bitcoin blockchain only. No other networks are supported.
+                                                - Withdrawals are typically processed instantly, but may take up to 2 hours.<br><br>
+
+                                                - Withdrawals are final and cannot be reversed. Make sure the email address you provide is correct.<br><br>
+
                                             </p>
                                         </div>
                                     </div>

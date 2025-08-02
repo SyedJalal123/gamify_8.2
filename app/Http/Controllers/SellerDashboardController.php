@@ -267,6 +267,7 @@ class SellerDashboardController extends Controller
             $transactions = Transaction::with('order')->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
         }
 
+
         $pending_transactions = Order::where('seller_id', auth()->id())
             ->whereIn('order_status', ['delivered', 'received'])
             ->get()
@@ -280,18 +281,24 @@ class SellerDashboardController extends Controller
             $filterStatus = $request->filterStatus ?? null;
             $filterDuration = $request->filterDuration ?? null;
 
-            if($filterStatus != null) {
+            if($filterStatus != null && $filterStatus != '') {
                 $transactions->where('payment_type', $filterStatus);
             }
 
+            // if($filterDuration != null && $filterDuration != '') {
+            //     $transactions = $transactions
+            //         ->whereMonth('created_at', 1)
+            //         ->whereYear('created_at', 2025);
+            // }else {
+            //     $transactions = $transactions
+            //         ->whereMonth('created_at', Carbon::now()->month)
+            //         ->whereYear('created_at', Carbon::now()->year);
+            // }
+
             if($filterDuration != null) {
-                $transactions = $transactions
-                    ->whereMonth('created_at', 1)
-                    ->whereYear('created_at', 2025);
+                $transactions = $transactions->where('created_at', '<', Carbon::now()->subMonths(3));
             }else {
-                $transactions = $transactions
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->whereYear('created_at', Carbon::now()->year);
+                $transactions = $transactions->where('created_at', '>=', Carbon::now()->subMonths(3));
             }
 
             return DataTables::eloquent($transactions)
