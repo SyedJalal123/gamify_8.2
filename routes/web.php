@@ -110,6 +110,8 @@ Route::middleware('verified')->group(function () {
     Route::get('/boosting/{tag}', [SellerDashboardController::class, 'boosting'])->name('seller-dashboard.boosting')->middleware(['auth']);
     Route::get('/wallet', [SellerDashboardController::class, 'wallet'])->name('seller-dashboard.wallet')->middleware(['auth']);
     Route::get('/withdraw', [SellerDashboardController::class, 'withdraw'])->name('withdraw')->middleware(['auth']);
+    Route::get('/get_exchange', [SellerDashboardController::class, 'get_exchange'])->name('get_exchange')->middleware(['auth']);
+    Route::post('/withdraw', [SellerDashboardController::class, 'store_withdraw'])->name('withdraw')->middleware(['auth']);
     Route::get('/messages', [SellerDashboardController::class, 'messages'])->name('seller-dashboard.messages')->middleware(['auth']);
     Route::get('/notifications', [SellerDashboardController::class, 'notifications'])->name('seller-dashboard.notifications')->middleware(['auth']);
     Route::get('/feedback', [SellerDashboardController::class, 'feedback'])->name('seller-dashboard.feedback')->middleware(['auth']);

@@ -19,6 +19,8 @@ use Illuminate\Support\Carbon;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Pagination\LengthAwarePaginator;
+// use AmrShawky\LaravelCurrency\Facade\Currency;
+use Illuminate\Support\Facades\Http;
 
 class SellerDashboardController extends Controller
 {
@@ -360,8 +362,49 @@ class SellerDashboardController extends Controller
 
     public function withdraw(Request $request) {
 
+        // Free method 1
+        // $responce = Http::get('https://api.frankfurter.app/latest', [
+        //     'base' => 'USD',
+        //     'symbols' => 'EUR',
+        //     'amount' => 1,
+        // ]);
+        // $data = $response->json();
+        // $conversation_rate = number_format($data['rates']['EUR'], 2);
 
-        return view('frontend.dashboard.withdraw');
+        // Free method 2
+        // $response = Http::get('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+        // $data = $response->json();
+        // $conversation_rate =  number_format($data['usd']['eur'], 2) ?? null;
+
+        // Paid method 1
+        // $responce = Http::get('https://api.exchangeratesapi.io/v1/latest?access_key=eab7dd84207ef37833a62ec9d66b984b', [
+        //     'access_key' => 'eab7dd84207ef37833a62ec9d66b984b',
+        //     'symbols' => 'EUR,USD',
+        // ]);
+
+        // $data = $responce->json();
+        // $conversation_rate = number_format(1/$data['rates']['USD'], 2);
+
+        $conversation_rate = 0;
+
+
+        return view('frontend.dashboard.withdraw', compact('conversation_rate'));
+    }
+
+    public function get_exchange() {
+        $responce = Http::get('https://api.exchangeratesapi.io/v1/latest?access_key=eab7dd84207ef37833a62ec9d66b984b', [
+            'access_key' => 'eab7dd84207ef37833a62ec9d66b984b',
+            'symbols' => 'EUR,USD',
+        ]);
+
+        $data = $responce->json();
+        $conversation_rate = 1/$data['rates']['USD'];
+
+        return $conversation_rate;
+    }
+
+    public function store_withdraw(Request $request) {
+        dd($request->all());
     }
 
     public function messages(Request $request) {

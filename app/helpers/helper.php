@@ -9,7 +9,7 @@ use App\Models\Ticket;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Http;
 
 function pending_tickets() {
     $data = Ticket::where('status', 0)->get();
