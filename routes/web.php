@@ -161,6 +161,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/sellerRequests', [AdminDashboardController::class, 'sellerRequests'])->name('sellerRequests');
     Route::get('/change_seller_status', [AdminDashboardController::class, 'change_seller_status'])->name('change_seller_status');
 
+    Route::get('/withdrawalRequests', [AdminDashboardController::class, 'withdrawalRequests'])->name('withdrawalRequests');
+    Route::get('/change_withdraw_status', [AdminDashboardController::class, 'change_withdraw_status'])->name('change_withdraw_status');
+    Route::get('/get-withdraw/{id}', [AdminDashboardController::class, 'get_withdraw'])->name('get-withdraw');
+
+
     Route::get('/articles', [AdminDashboardController::class, 'articles'])->name('articles');
     Route::get('/articles/add', [AdminDashboardController::class, 'add_article'])->name('articles.add');
     Route::get('/articles/categories', [AdminDashboardController::class, 'article_catgories'])->name('articles.categories');

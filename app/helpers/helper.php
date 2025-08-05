@@ -4,6 +4,7 @@ use App\Models\Seller;
 use App\Models\Item;
 use App\Models\Game;
 use App\Models\BuyerRequest;
+use App\Models\Withdraw;
 use App\Models\Article;
 use App\Models\Ticket;
 use App\Models\Order;
@@ -115,6 +116,11 @@ function seller_data($id) {
     $seller = Seller::with('user')->first();
 
     return $seller;
+}
+
+function pending_withdrawals() {
+    $data = Withdraw::where('status', 0)->get();
+    return $data;
 }
 
 function pending_seller_requests() {

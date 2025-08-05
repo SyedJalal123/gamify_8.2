@@ -55309,3 +55309,9 @@ body {
         height: 33px; 
     }
 }
+
+
+/* Theme background hover */
+    .hover-bg-body-2:hover {
+        background-color: #d9d9d9;
+    }

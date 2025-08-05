@@ -9,6 +9,7 @@ use App\Models\Game;
 use App\Models\Category;
 use App\Models\BuyerRequest;
 use App\Models\EmailNotifications;
+use App\Models\Withdraw;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\User;
@@ -19,8 +20,12 @@ use Illuminate\Support\Carbon;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Pagination\LengthAwarePaginator;
-// use AmrShawky\LaravelCurrency\Facade\Currency;
+use App\Mail\WithdrawalRequest;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\OrderDisputedNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SellerDashboardController extends Controller
 {
@@ -264,7 +269,7 @@ class SellerDashboardController extends Controller
     public function wallet(Request $request) {
 
         if($request->ajax()){
-            $transactions = Transaction::with('order')->where('user_id', auth()->id());
+            $transactions = Transaction::with('order')->where('user_id', auth()->id())->orderBy('id','desc');
         } else {
             $transactions = Transaction::with('order')->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
         }
@@ -309,7 +314,7 @@ class SellerDashboardController extends Controller
             })
             ->addColumn('balance', function($transaction) {
                 if($transaction->payment_type == 'withdraw') {
-                    $class = 'text-cherry';
+                    $class = 'text-theme-cherry';
                     $status = '-';
                 }
                 else  {
@@ -321,6 +326,15 @@ class SellerDashboardController extends Controller
                 return '
                 <span class="'. $class .' text-capitalize">'. $status . '$' . number_format($transaction->balance, 2) .'</span>
                 ';
+            })
+            ->addColumn('show_orderId', function($transaction) {
+                $order_id = null;
+                if($transaction->order !== null) {
+                    $order_id = $transaction->order->order_id;
+                }
+                
+
+                return $order_id;
             })
             ->addColumn('description', function($transaction) {
                 return '
@@ -345,10 +359,7 @@ class SellerDashboardController extends Controller
                 </div>
                 ';
             })
-            ->addColumn('row_url', function ($order) {
-                return route('order-detail', $order->order_id);
-            })
-            ->rawColumns(['date', 'balance', 'description', 'mobile_summary', 'row_url'])
+            ->rawColumns(['date', 'balance', 'show_orderId', 'description', 'mobile_summary', 'row_url'])
             ->make(true);
         }
                 
@@ -404,7 +415,64 @@ class SellerDashboardController extends Controller
     }
 
     public function store_withdraw(Request $request) {
-        dd($request->all());
+        // dd($request->all());
+
+        // try {
+            $user  = auth()->user();
+            if ($request->amount > 0 && $request->amount <= $user->balance) {
+                $user->balance -= $request->amount;
+                $user->save();
+            }else {
+                return redirect()->back()->with('error', 'Low Balance in User Account.');
+            }
+
+            $withdraw = Withdraw::create([
+                'user_id'               =>   auth()->id(),
+                'amount'                =>   $request->amount,
+                'type'                  =>   $request->type,
+                'fees'                  =>   $request->fees,
+                'conversation_rate'     =>   $request->conversation_rate ?? 0,
+                'received'              =>   $request->received,
+                'data1'                 =>   $request->data1,
+                'data2'                 =>   $request->data2,
+            ]);
+            
+            $transaction = Transaction::create([
+                'user_id'           => auth()->id(),
+                'balance'           => $request->amount,
+                'description'       => 'Withdrawal is created successfully',
+                'payment_type'      => 'withdraw',    
+                'user_type'         => 'seller',
+                'payment_method'    => $request->type,        
+            ]);
+    
+            $data = [
+                'title'     => 'Withdraw',
+                'data1'     => 'Request(<span class="fs-11">'.auth()->user()->username.'</span>)',
+                'reason'     => 0,
+                'link'      => url('admin/withdrawalRequests'),
+                'admin'     => '1',
+            ];
+    
+            $userData = [
+                'title'   => 'Withdrawal Request',
+                'name'    => auth()->user()->username,
+                'status'  => 'Pending',
+                'email'   => auth()->user()->email,
+            ];
+    
+            $admins = User::where('role','admin')->get();
+            Notification::send($admins, new OrderDisputedNotification($data));
+            Mail::to(auth()->user()->email)->send(new WithdrawalRequest($userData));
+    
+    
+            return redirect()->back()->with('success', 'Withdrawal request created successfully');
+        // } catch (\Exception $e) {
+        //     Log::error('Withdrawal request failed: '.$e->getMessage());
+
+        //     return redirect()->back()->with('error', 'An error occurred while withdrawal request.');
+        // }
+        
     }
 
     public function messages(Request $request) {

@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-7 d-md-none p-0"></div>
                 <div class="col-5 col-md-3 d-flex justify-content-end mt-1 p-0">
-                    <a href="{{ url('item/'.$item->id) }}" class="btn btn-dark fs-14 p-2 px-3">Buy now</a>
+                    <a wire:navigate href="{{ url('item/'.$item->id) }}" class="btn btn-dark fs-14 p-2 px-3">Buy now</a>
                 </div>
             </div>
         </div>

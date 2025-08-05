@@ -2441,6 +2441,7 @@
 		<script src="{{asset('backend/assets/js/custom/apps/chat/chat.js')}}"></script>
 		<script src="{{asset('backend/assets/js/custom/modals/create-app.js')}}"></script>
 		<script src="{{asset('backend/assets/js/custom/modals/upgrade-plan.js')}}"></script>
+		<script src="{{asset('js/backend/custom.js')}}"></script>
 		<!--end::Page Custom Javascript-->
         @yield('js')
 		<!--end::Javascript-->

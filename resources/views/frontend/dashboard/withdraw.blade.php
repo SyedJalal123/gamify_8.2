@@ -64,6 +64,7 @@
                                                 <span class="fs-14">Withdrawal amount</span>
                                                 <div class="d-flex align-items-center">
                                                     <input type="number" value="0" name="amount" id="bitcoin_value" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="bitcoin">
                                                     <span class="ml-2">USD</span>
                                                 </div>
                                             </div>
@@ -130,6 +131,7 @@
                                                 <span class="fs-14">Withdrawal amount</span>
                                                 <div class="d-flex align-items-center">
                                                     <input type="number" value="0" name="amount" id="usdc_value" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="usdc">
                                                     <span class="ml-2">USD</span>
                                                 </div>
                                             </div>
@@ -151,7 +153,7 @@
                                             <span class="fs-14 fw-bold">You receive</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold" id="usdc_receive_show">$0.00</span>
-                                                <input type="hidden" value="0.00" name="receive" id="usdc_receive">
+                                                <input type="hidden" value="0.00" name="received" id="usdc_receive">
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
@@ -195,6 +197,7 @@
                                                 <span class="fs-14">Withdrawal amount</span>
                                                 <div class="d-flex align-items-center">
                                                     <input type="number" value="0" name="amount" id="sepa_value" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="sepa">
                                                     <span class="ml-2">USD</span>
                                                 </div>
                                             </div>
@@ -225,7 +228,7 @@
                                             <span class="fs-14 fw-bold">You receive</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold" id="sepa_receive_show">€0.00</span>
-                                                <input type="hidden" value="0.00" name="receive" id="sepa_receive">                                                
+                                                <input type="hidden" value="0.00" name="received" id="sepa_receive">                                                
                                                 <span class="ml-2">EUR</span>
                                             </div>
                                         </div>
@@ -279,6 +282,7 @@
                                                 <span class="fs-14">Withdrawal amount</span>
                                                 <div class="d-flex align-items-center">
                                                     <input type="number" value="0" name="amount" id="skrill_value" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="skrill">
                                                     <span class="ml-2">USD</span>
                                                 </div>
                                             </div>
@@ -310,7 +314,7 @@
                                             <span class="fs-14 fw-bold">You receive</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold" id="skrill_receive_show">€0.00</span>
-                                                <input type="hidden" value="0.00" name="receive" id="skrill_receive">    
+                                                <input type="hidden" value="0.00" name="received" id="skrill_receive">    
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
@@ -357,6 +361,7 @@
                                                 <span class="fs-14">Withdrawal amount</span>
                                                 <div class="d-flex align-items-center">
                                                     <input type="number" value="0" id="payoneer_value" name="amount" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="payoneer">
                                                     <span class="ml-2">USD</span>
                                                 </div>
                                             </div>
@@ -379,7 +384,7 @@
                                             <span class="fs-14 fw-bold">You receive</span>
                                             <div class="d-flex align-items-center">
                                                 <span class="ml-2 fw-bold" id="payoneer_receive_show">$0.00</span>
-                                                <input type="hidden" value="0.00" name="receive" id="payoneer_receive">
+                                                <input type="hidden" value="0.00" name="received" id="payoneer_receive">
                                                 <span class="ml-2">USD</span>
                                             </div>
                                         </div>
@@ -426,6 +431,9 @@
             </div>
         </div>
     </section>
+    <div id="pageOverlay">
+        <div class="spinner-border text-light" role="status"></div>
+    </div>
 @endsection
 
 @section('js')
@@ -597,6 +605,9 @@
                 }
 
                 if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
+
                     $('#tab-btc').submit();
                 }
 
@@ -629,6 +640,8 @@
                 }
 
                 if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
                     $('#tab-usdc').submit();
                 }
 
@@ -669,6 +682,8 @@
                 }
 
                 if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
                     $('#tab-sepa').submit();
                 }
 
@@ -701,6 +716,8 @@
                 }
 
                 if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
                     $('#tab-skrill').submit();
                 }
 
@@ -733,6 +750,8 @@
                 }
 
                 if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
                     $('#tab-payoneer').submit();
                 }
 

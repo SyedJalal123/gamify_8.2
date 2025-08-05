@@ -167,7 +167,7 @@
                         responsivePriority: 100 , orderable: false, searchable: false 
                     },
                     {
-                        data: 'order.order_id', name: 'order.order_id', className: 'desktop-only',
+                        data: 'show_orderId', name: 'show_orderId', className: 'desktop-only',
                         responsivePriority: 100 , orderable: false, searchable: false 
                     },
                     {

@@ -10,10 +10,12 @@ use App\Models\Attribute;
 use App\Models\Service;
 use App\Models\Game;
 use App\Models\Order;
+use App\Models\Withdraw;
 use App\Models\ArticleCategory;
 use App\Models\Article;
 use App\Models\Suggestion;
 use App\Models\Ticket;
+use App\Models\Transaction;
 use App\Models\Seller;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -1643,8 +1645,7 @@ class AdminDashboardController extends Controller
         return $ticket;
     }
 
-    public function ckeditor_upload(Request $request)
-    {
+    public function ckeditor_upload(Request $request){
         // dd($request->all());
         
         if ($request->has('token')) {
@@ -1675,5 +1676,175 @@ class AdminDashboardController extends Controller
         }
 
         return response()->json(['error' => 'No file uploaded.'], 400);
+    }
+
+    public function withdrawalRequests(Request $request) {
+        $dataset = Withdraw::with('user');
+
+        if($request->ajax()){
+            $filterStatus = $request->filterStatus ?? null;
+            $filterType = $request->filterType ?? null;
+            $filterDate = $request->filterDate ?? null;
+
+            if($filterStatus != null && $filterStatus != 'all') {
+                $dataset = $dataset->where('status', $filterStatus);
+            }
+
+            if($filterType != null && $filterType != 'all') {
+                $dataset = $dataset->where('type', $filterType);
+            }
+
+            if($filterDate != null) {
+                [$start, $end] = explode(' - ', $filterDate);
+                $startDate = Carbon::createFromFormat('m/d/Y', trim($start))->startOfDay();
+                $endDate = Carbon::createFromFormat('m/d/Y', trim($end))->endOfDay();
+
+                $dataset->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            return DataTables::eloquent($dataset)
+            ->addColumn('title_data', function($data) {
+                if($data->user->profile !== null){
+                    $profile = '<img src="'.url('uploads/profile/thumbnails').'/'.$data->user->profile.'" class="br-40 mr-2" style="width:36px;height36px;">';
+                } else {
+                    $profile = strtoupper(substr($data->user->name,0,1));
+                }
+
+                return '
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row align-items-center">
+                        <a  href="'.url('user-profile'.auth()->user()->username).'?tab=Offers&category=Currency" target="_blank" id="dropdownMenu3" data-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true" aria-expanded="false" class="header__nav-link header__nav-link--more seller-avatar-header me-2 d-flex align-items-center justify-content-center rounded-circle text-white">
+                            '.$profile.'
+                        </a>
+                        <div class="d-flex flex-column">
+                            <div class="text-theme-secondary fs-13 lh-1_3">'. $data->user->username .'</div>
+                            <div class="three-line-ellipsis fs-14 lh-1_3" style="max-width:225px;">'. $data->user->email .'</div>
+                        </div>
+                    </div>
+                </div>
+                ';
+            })
+            ->filterColumn('title_data', function($query, $keyword) {
+                $query->WhereHas('user', function($q) use ($keyword) {
+                    $q->where('username', 'like', "%{$keyword}%")
+                    ->orWhere('email', 'like', "%{$keyword}%");
+                });
+            })
+            ->addColumn('status_data', function($data) {
+                if ($data->status == 0) {
+                    return '<span class="badge badge-warning" id="user-status-'.$data->id.'">Pending</span>';
+                } elseif($data->status == 1) {
+                    return '<span class="badge badge-success" id="user-status-'.$data->id.'">Completed</span>';
+                } elseif($data->status == 2) {
+                    return '<span class="badge badge-danger" id="user-status-'.$data->id.'">Cancelled</span>';
+                }
+                
+            })
+            ->addColumn('amount_data', function($data) {
+                if ($data->type == 'sepa' || $data->type == 'skrill') {
+                    return '€'.$data->amount;
+                } else {
+                    return '$'.$data->amount;
+                }
+                
+            })
+            ->addColumn('created_at_data', function($data) {
+                if($data->updated_at != null){
+                    return Carbon::parse($data->updated_at)->format('M d,Y, h:i A');
+                }else {
+                    return Carbon::parse($data->created_at)->format('M d,Y, h:i A');
+                }
+            })
+            ->orderColumn('created_at_data', function ($query, $order) {
+                $query->orderByRaw('COALESCE(updated_at, created_at) ' . $order);
+            })
+            ->addColumn('actions', function ($data) {
+                return '
+                        <button class="btn btn-light-primary btn-sm show-details" data-id="'.$data->id.'">Details</button>
+                        <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
+                            Actions
+                            <span class="svg-icon svg-icon-5 m-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <polygon points="0 0 24 0 24 24 0 24"></polygon>
+                                        <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-180.000000) translate(-12.000003, -11.999999)"></path>
+                                    </g>
+                                </svg>
+                            </span>
+                        </a>
+                        <!--begin::Menu-->
+                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 w-fit menu-state-bg-light-primary fw-bold fs-7 py-4" data-kt-menu="true">
+                            <div class="menu-item px-3">
+                                <a href="#" onclick="change_withdraw_status('.$data->id.', 1)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    Payment Completed
+                                </a>
+                            </div>
+                            <div class="menu-item px-3">
+                                <a href="#" onclick="change_withdraw_status('.$data->id.', 0)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    Payment Pending
+                                </a>
+                            </div>
+                            <div class="menu-item px-3">
+                            
+                                <a href="#" onclick="if (confirm(\'Are you sure you want to cancel the payment?\')) change_withdraw_status('.$data->id.', 2)" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    Payment Cancelled
+                                </a>
+                            </div>
+                        </div>
+                        <!--end::Menu-->
+                        ';
+            })
+            ->setRowAttr([
+                'data-id' => function($data) {
+                    return $data->id;
+                },
+                'class' => 'clickable-row',
+                'style' => 'cursor: pointer',
+            ])
+            ->rawColumns(['title_data', 'status_data', 'amount_data', 'created_at_data', 'actions'])
+            ->make(true);
+        }
+
+        return view('backend.withdrawal_requests', compact('dataset'));
+    }
+
+    public function get_withdraw(Request $request, $withdrawId) {
+        // dd($request->all());
+
+        $withdraw = Withdraw::find($withdrawId);
+        return $withdraw;
+    }
+
+    public function change_withdraw_status(Request $request) {
+        // dd($request->all());
+
+        $withdraw = Withdraw::with('user')->find($request->withdrawId);
+
+        if($withdraw->status !== 2){
+            $withdraw->status = $request->withdrawStatus;
+            $withdraw->save();
+        
+
+
+            if($request->withdrawStatus == 2) {
+                $transaction = Transaction::create([
+                    'user_id'           => $withdraw->user_id,
+                    'balance'           => $withdraw->amount,
+                    'description'       => 'The withdrawal was unsuccessful',
+                    'payment_type'      => 'refund', 
+                    'user_type'         => 'seller',
+                    'payment_method'    => $withdraw->type,        
+                ]);
+
+                $user = User::find($withdraw->user_id);
+                $user->balance += floatval($withdraw->amount);
+                $user->save();
+            }
+
+            return $withdraw;
+        }else {
+            return null;
+
+        }
     }
 }

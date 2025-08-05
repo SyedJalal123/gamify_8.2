@@ -62,7 +62,7 @@
                         @else
                             @php $title = 'Other'; @endphp
                         @endif
-                    @elseif ($notification->data['title'] == 'Request')
+                    @elseif ($notification->data['title'] == 'Request' || $notification->data['title'] == 'Withdraw')
                         @php
                             $pill_class = 'badge-light-primary';
                             $pill = $notification->data['title'];
