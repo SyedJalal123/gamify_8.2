@@ -15,13 +15,18 @@ class NowPaymentController extends Controller
     {
         // dd($request->all());
 
+        if(auth()->user()->role == 'admin') {
+            return redirect()->back()->with('error', 'You can\'t perform this action.');
+        }
+
+        $orderId = Str::uuid()->toString();
+
         if(isset($request->product_name)){
             $description = $request->product_name;
         }else {
             $description = 'Order#'.$orderId;
         }
 
-        $orderId = Str::uuid()->toString();
 
         $validatedData = $request->validate([
             'total_price' => 'required|numeric|min:0.01',
