@@ -17,11 +17,27 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class CheckoutController extends Controller
 {
     public function show(Request $request)
     {
+        $minAmount = Http::withHeaders([
+            'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        ])->get('https://api.nowpayments.io/v1/min-amount', [
+            'currency_from' => 'USDTTRC20',
+            'currency_to'   => 'USDTTRC20',
+        ])->json();
+
+        $estAmount = Http::withHeaders([
+            'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        ])->get('https://api.nowpayments.io/v1/estimate', [
+            'amount'    => $minAmount['min_amount'],
+            'currency_from' => 'USD',
+            'currency_to'   => 'USDTTRC20',
+        ])->json();
+        
         if($request->offer_id){
             $offer = RequestOffer::with(['buyerRequest.service.categoryGame', 'buyerRequest.attributes'])->findOrFail($request->offer_id);
             $item = null;
@@ -34,13 +50,24 @@ class CheckoutController extends Controller
         $discountPercentage = $request->discountPercentage;
         $quantity = max(1, (int) $request->quantity);
         $totalPrice = $request->totalPrice;
+        $currentBalance = auth()->user()->balance;
+        
+        $cutPrice = min((float)$currentBalance, (float)$totalPrice);
+        $remainingToPay = (float)$totalPrice - (float)$cutPrice;
 
-        return view('frontend.checkout', compact('item', 'offer', 'quantity', 'discountPercentage', 'price', 'totalPrice'));
+        if($totalPrice >= $estAmount['estimated_amount']) {
+            $crypto = 1;
+        }else {
+            $crypto = 0;
+        }
+
+        return view('frontend.checkout', compact('item', 'offer', 'quantity', 'discountPercentage', 'price', 'totalPrice', 'crypto', 'cutPrice', 'remainingToPay'));
     }
 
     public function checkout(Request $request)
     {
         // dd($request->all());
+
         $item = Item::with(['attributes', 'game', 'category'])->findOrFail($request->item_id);
         $quantity = $request->quantity ?? null;
 

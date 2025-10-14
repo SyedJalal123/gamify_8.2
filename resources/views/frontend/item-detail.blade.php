@@ -695,8 +695,19 @@
                     });
                 }
             });
+
+            const min_quant_ = "{{ $item->minimum_quantity }}";
+
+            setTimeout(function () {
+                $('#quantity-input').val(min_quant_);
+            }, 200);
+
+            adjustQty();
+            
+            
         });
-        
+
+
         function adjustQty() {
             const quantityInput = document.getElementById('quantity-input');
             const quantity = parseInt(quantityInput.value);

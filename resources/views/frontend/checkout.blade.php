@@ -45,8 +45,15 @@
     @php
         $quantity = request()->get('quantity', 1);
         $unitPrice = $price;
-        $paymentFee = 1.74;
-        $grandTotal = $totalPrice + $paymentFee;
+        $cutPrice = $cutPrice;
+
+        if($remainingToPay == 0){
+            $paymentFee = 0;
+        }else {
+            $paymentFee = (($remainingToPay / 100) * 8) + 0.3;
+        }
+
+        $grandTotal = $remainingToPay + $paymentFee;
         $loyaltyPoints = floor($totalPrice * 100);
     @endphp
 
@@ -81,7 +88,8 @@
 
             <form action="{{ route('checkout.create') }}" method="post" class="checkout-wrapper" id="checkout-form">
                 @csrf
-                <input type="hidden" name="total_price" value="{{ $grandTotal}}">
+                <input type="hidden" name="total_price" value="{{$grandTotal}}">
+                <input type="hidden" name="main_total_price" value="{{$totalPrice}}">
                 <input type="hidden" name="quantity" value="{{ $quantity }}">
                 <input type="hidden" name="discountPercentage" value="{{ $discountPercentage }}">
 
@@ -215,7 +223,8 @@
                                     <input type="radio" name="payment_method" value="stripe" checked hidden>
                                 </label>
                             </div>
-        
+                            
+                            @if ($crypto == 1)
                             <div class="payment-method cryptocurrency cursor-pointer">
                                 <label class="d-flex cursor-pointer justify-content-between align-items-center m-0">
                                     <span class="fs-14">Cryptocurrency</span>
@@ -263,6 +272,7 @@
                                     <input type="radio" name="payment_method" value="nowpayments" hidden>
                                 </label>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -279,7 +289,17 @@
                             <strong>${{ number_format($paymentFee, 2) }}</strong>
                             <input type="hidden" name="payment_fees" value="{{$paymentFee}}">
                             <input type="hidden" name="price" value="{{$unitPrice}}">
+                            <input type="hidden" name="remaining_to_pay" value="{{$remainingToPay}}">
                         </li>
+                        @if ($cutPrice > 0)
+                            <li class="d-flex justify-content-between mb-2">
+                                <span class="text-theme-secondary">Gamify Balance</span>
+                                <strong>-${{ number_format($cutPrice, 2) }}</strong>
+                                <input type="hidden" name="cut_price" value="{{$cutPrice}}">
+                            </li>
+                        @else
+                            <input type="hidden" name="cut_price" value="0">
+                        @endif
                         {{-- <li class="d-flex justify-content-between mb-2">
                             <span>Loyalty Points</span>
                             <strong>+ {{ $loyaltyPoints }} 🪙</strong>

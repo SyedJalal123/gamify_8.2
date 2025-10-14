@@ -51,6 +51,9 @@
                             <button type="button" class="btn btn-theme-default px-5 py-3 mr-0 mb-2 tab-btn" data-target="#tab-payoneer">
                                 <img src="{{asset('images/logos/payoneer-logo-dark.webp')}}" alt="">
                             </button>
+                            <button type="button" class="btn btn-theme-default px-5 py-3 mr-0 mb-2 tab-btn" data-target="#tab-easypaisa">
+                                <img src="{{asset('images/logos/easypaisa.png')}}" width="100px" alt="">
+                            </button>
                         </div>
 
                         <!-- Tab Content -->
@@ -424,6 +427,83 @@
                                     </div>
                                 </div>
                             </form>
+                            <form action="{{ url('withdraw') }}" method="POST" class="tab-pane fade py-4" id="tab-easypaisa">
+                                @csrf
+                                <div class="d-flex row">
+                                    <div class="d-flex flex-column col-md-6">
+                                        <div class="d-flex flex-column mb-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fs-14">Withdrawal amount</span>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="number" value="0" name="amount" id="easypaisa_value" class="input-theme-1 py-2 px-2 text-right br-5" style="width:110px;">
+                                                    <input type="hidden" name="type" value="easypaisa">
+                                                    <span class="ml-2">USD</span>
+                                                </div>
+                                            </div>
+                                            <div class="errors fs-13 text-theme-cherry">
+                                                <p class="mb-0 d-none" id="easypaisa_min_withdrawl_error">Minimum withdrawal amount is 10$</p>
+                                                <p class="mb-0 d-none" id="easypaisa_less_balance_error">Withdraw amount cannot be greater than main balance</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                            <span class="fs-14">Payment fees</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="ml-2 fw-bold" id="easypaisa_fees_show">$1.00</span>
+                                                <input type="hidden" value="1" name="fees" id="easypaisa_fees">
+                                                <span class="ml-2">USD</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 dividor-border-theme-bottom">
+                                            <span class="fs-14 fw-bold">You receive</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="ml-2 fw-bold" id="easypaisa_receive_show">$0.00</span>
+                                                <input type="hidden" value="0.00" name="received" id="easypaisa_receive">
+                                                <span class="ml-2">USD</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex flex-column mb-2">
+                                            <div class="d-flex flex-column">
+                                                <span class="mb-2">Easypaisa number</span>
+                                                <input type="text" name="data1" id="easypaisa_data1" class="input-theme-1 py-2 px-2 br-5">
+                                            </div>
+                                            <div class="errors fs-13 text-theme-cherry">
+                                                <p class="mb-0 d-none" id="easypaisa_data1_error">Please enter the Easypaisa number.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-column mb-4">
+                                            <div class="d-flex flex-column">
+                                                <span class="mb-2">Easypaisa account name</span>
+                                                <input type="text" name="data2" id="easypaisa_data2" class="input-theme-1 py-2 px-2 br-5">
+                                            </div>
+                                            <div class="errors fs-13 text-theme-cherry">
+                                                <p class="mb-0 d-none" id="easypaisa_data2_error">Please enter the Easypaisa account name.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <button type="button" id="easypaisa_submit" class="btn form__btn py-2 px-5 mb-2 fs-14">
+                                                Submit
+                                                <i class="bi bi-shield-check ml-1"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex col-md-6">
+                                        <div class="d-flex flex-column background-theme-body-3 h-fit p-3">
+                                            <span class="mb-2 fs-13 fw-bold">Minimum withdrawal amount: $100</span>
+                                            <p class="fs-11 text-theme-secondary">
+                                                - A 4% percentage fee and a $1 USD flat fee apply to each withdrawal.<br><br>
+
+                                                - Withdrawals are typically processed instantly, but may take up to 2 hours.<br><br>
+
+                                                - Withdrawals are final and cannot be reversed. Make sure the email address you provide is correct.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </form>
                     </div>
                 </div>
@@ -574,6 +654,27 @@
 
                 $('#payoneer_receive').val(receive);
                 $('#payoneer_receive_show').text('$'+receive);
+                
+            });
+
+            $('#easypaisa_value').on('keyup', function() {
+                var fee = 1;
+                var tax_per = 4;
+                var val = $('#easypaisa_value').val();
+
+                var tax = (tax_per / 100) * val;
+                var tax = (tax + fee).toFixed(2);
+                var receive = (val - tax).toFixed(2);
+
+                if(receive < 0) {
+                    receive = (0).toFixed(2);
+                }
+
+                $('#easypaisa_fees_show').text('$'+tax);
+                $('#easypaisa_fees').val(tax);
+
+                $('#easypaisa_receive').val(receive);
+                $('#easypaisa_receive_show').text('$'+receive);
                 
             });
 
@@ -753,6 +854,41 @@
                     const overlay = document.getElementById('pageOverlay');
                     overlay.style.display = 'flex';
                     $('#tab-payoneer').submit();
+                }
+
+            });
+
+            $('#easypaisa_submit').on('click', function() {
+                var amount = $('#easypaisa_value').val();
+                var data1 = $('#easypaisa_data1').val();
+                var valid = true;
+
+                if(amount == '' || amount < 10) {
+                    valid = false;
+                    $('#easypaisa_min_withdrawl_error').removeClass('d-none');
+                }else {
+                    $('#easypaisa_min_withdrawl_error').addClass('d-none');
+                }
+
+                if(amount > parseFloat(userBalance)) {
+                    valid = false;
+                    $('#easypaisa_less_balance_error').removeClass('d-none');
+                }else {
+                    $('#easypaisa_less_balance_error').addClass('d-none');
+                }
+
+                if(data1 == '') {
+                    valid = false;
+                    $('#easypaisa_data1_error').removeClass('d-none');
+                }else {
+                    $('#easypaisa_data1_error').addClass('d-none');
+                }
+
+                if(valid == true) {
+                    const overlay = document.getElementById('pageOverlay');
+                    overlay.style.display = 'flex';
+
+                    $('#tab-easypaisa').submit();
                 }
 
             });

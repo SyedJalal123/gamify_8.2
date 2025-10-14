@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->integer('quantity')->default('1');
             $table->float('price', 10, 4);
+            $table->float('cut_price', 10, 4);
+            $table->float('remaining_to_pay', 10, 4);
+            $table->float('price', 10, 4);
             $table->string('account_id')->nullable();
             $table->integer('discount_in_per')->default('0');
             $table->decimal('payment_fees', 10, 2);

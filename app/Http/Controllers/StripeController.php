@@ -34,6 +34,12 @@ class StripeController extends Controller
 {
     public function create(Request $request)
     {
+        // dd($request->all());
+
+        // if($request->remaining_to_pay == '0') {
+        //     $this->createOrder($request);
+        // }
+
         if(auth()->user()->role == 'admin') {
             return redirect()->back()->with('error', 'You can\'t perform this action.');
         }
@@ -63,7 +69,10 @@ class StripeController extends Controller
                 // 'conversation_id' => $request->conversation_id,
                 'offer_id' => $request->offer_id,
                 'item_id' => $request->item_id,
+                'main_total_price' => $request->main_total_price,
                 'total_price' => $request->total_price,
+                'cut_price' => $request->cut_price,
+                'remaining_to_pay' => $request->remaining_to_pay,
                 'quantity' => $request->quantity,
                 'discountPercentage' => $request->discountPercentage,
                 'product_name' => $request->product_name,
@@ -122,7 +131,7 @@ class StripeController extends Controller
             // }else {
             //     $order->update(['payment_status' => 'paid', 'created_at' => Carbon::now()]);
             // }
-        /////////////////////
+        //////////////////////
         
         if($order->order_id){
             return redirect()->route('order-detail', ['order_id' => $order->order_id])->with('success', 'Payment successful!');
@@ -134,7 +143,7 @@ class StripeController extends Controller
     public function createOrder($request) 
     {
         
-        // dd($request);
+        // dd($request->all());
         
         if($request->item_id){
             $item = Item::with('categoryGame','seller')->find($request->item_id);
@@ -173,17 +182,23 @@ class StripeController extends Controller
                 'account_id'         => $account_id,
                 'discount_in_per'    => $request->discountPercentage ?? 0,
                 'payment_fees'       => $request->payment_fees ?? 0,
-                'total_price'        => $request->total_price,
+                'total_price'        => $request->main_total_price,
+                'remaining_to_pay'   => $request->remaining_to_pay,
+                'cut_price'          => $request->cut_price,
                 'payment_method'     => $request->payment_method,
                 'order_status'       => ($request->item_id && $item->delivery_method == 'automatic') ? 'received' : 'pending delivery',
                 'payment_status'     => 'paid',
                 'delivery_type'      => $request->delivery_type ?? null,
             ]);
 
+            $user = auth()->user();
+            $user->balance = (float) $user->balance - (float) $request->cut_price;
+            $user->save();
+
             $transaction = Transaction::create([
                 'user_id'           => auth()->id(),
                 'order_id'          => $order->id,
-                'balance'           => $request->total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0),
+                'balance'           => $request->main_total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0),
                 'description'       => 'Order is created successfully',
                 'payment_type'      => 'purchase',    
                 'user_type'         => 'buyer',
@@ -193,7 +208,7 @@ class StripeController extends Controller
             $transaction = Transaction::create([
                 'user_id'           => $seller_id,
                 'order_id'          => $order->id,
-                'balance'           => $request->total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0), // also add commision
+                'balance'           => $request->main_total_price - ($request->payment_fees ?? 0 + $request->other_taxes ?? 0), // also add commision
                 'description'       => 'Order is created successfully',
                 'payment_type'      => 'sale',    
                 'user_type'         => 'seller',

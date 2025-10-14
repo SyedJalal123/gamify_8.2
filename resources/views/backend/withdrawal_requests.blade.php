@@ -240,6 +240,10 @@
                 }else if(withdraw.type == 'payoneer'){
                     data1 = 'Payoneer email';
                     sign = '$';
+                }else if(withdraw.type == 'easypaisa'){
+                    data1 = 'Easypaisa number';
+                    data2 = 'Account name';
+                    sign = '$';
                 }
 
                 data1 = `<div class="row mb-7">
