@@ -23,20 +23,20 @@ class CheckoutController extends Controller
 {
     public function show(Request $request)
     {
-        $minAmount = Http::withHeaders([
-            'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-        ])->get('https://api.nowpayments.io/v1/min-amount', [
-            'currency_from' => 'USDTTRC20',
-            'currency_to'   => 'USDTTRC20',
-        ])->json();
+        // $minAmount = Http::withHeaders([
+        //     'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        // ])->get('https://api.nowpayments.io/v1/min-amount', [
+        //     'currency_from' => 'USDTTRC20',
+        //     'currency_to'   => 'USDTTRC20',
+        // ])->json();
 
-        $estAmount = Http::withHeaders([
-            'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-        ])->get('https://api.nowpayments.io/v1/estimate', [
-            'amount'    => $minAmount['min_amount'],
-            'currency_from' => 'USD',
-            'currency_to'   => 'USDTTRC20',
-        ])->json();
+        // $estAmount = Http::withHeaders([
+        //     'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        // ])->get('https://api.nowpayments.io/v1/estimate', [
+        //     'amount'    => $minAmount['min_amount'],
+        //     'currency_from' => 'USD',
+        //     'currency_to'   => 'USDTTRC20',
+        // ])->json();
         
         if($request->offer_id){
             $offer = RequestOffer::with(['buyerRequest.service.categoryGame', 'buyerRequest.attributes'])->findOrFail($request->offer_id);
@@ -55,11 +55,12 @@ class CheckoutController extends Controller
         $cutPrice = min((float)$currentBalance, (float)$totalPrice);
         $remainingToPay = (float)$totalPrice - (float)$cutPrice;
 
-        if($totalPrice >= $estAmount['estimated_amount']) {
-            $crypto = 1;
-        }else {
-            $crypto = 0;
-        }
+        // if($totalPrice >= $estAmount['estimated_amount']) {
+        //     $crypto = 1;
+        // }else {
+        //     $crypto = 0;
+        // }
+        $crypto = 0;
 
         return view('frontend.checkout', compact('item', 'offer', 'quantity', 'discountPercentage', 'price', 'totalPrice', 'crypto', 'cutPrice', 'remainingToPay'));
     }
