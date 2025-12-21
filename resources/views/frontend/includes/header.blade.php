@@ -140,7 +140,7 @@
                                         <div class="p-0">
                                             @if(auth()->user()->role == 'admin')
                                             <div class="sidebar-menu mt-1">
-                                                <a href="{{url('admin/dashboard')}}" class="sidebar-title sidebar-item p-1">
+                                                <a href="{{url('admin/games')}}" class="sidebar-title sidebar-item p-1">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-activity fs-20 mr-2"></i>
                                                         <div>

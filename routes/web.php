@@ -136,7 +136,8 @@ Route::middleware('verified')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Backend Routes
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'games'])->name('dashboard');
 
     Route::get('/games', [AdminDashboardController::class, 'games'])->name('games');
     Route::post('/add_game', [AdminDashboardController::class, 'add_game'])->name('add_game');

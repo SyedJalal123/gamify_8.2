@@ -241,7 +241,7 @@
         </div>
         <!--end::User-->
         <!--begin::Aside search-->
-        <div class="aside-search py-5">
+        {{-- <div class="aside-search py-5">
             <!--begin::Search-->
             <div id="kt_header_search" class="d-flex align-items-center" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-menu-trigger="auto" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-start" data-kt-menu-flip="bottom">
                 <!--begin::Form-->
@@ -964,7 +964,7 @@
                 <!--end::Menu-->
             </div>
             <!--end::Search-->
-        </div>
+        </div> --}}
         <!--end::Aside search-->
         <!--end::Aside user-->
     </div>
@@ -975,7 +975,7 @@
         <div class="hover-scroll-overlay-y px-2 my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="{default: '#kt_aside_toolbar, #kt_aside_footer', lg: '#kt_header, #kt_aside_toolbar, #kt_aside_footer'}" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="5px">
             <!--begin::Menu-->
             <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true">
-                <div class="menu-item">
+                {{-- <div class="menu-item">
                     <div class="menu-content pb-2">
                         <span class="menu-section text-muted text-uppercase fs-8 ls-1">Dashboard</span>
                     </div>
@@ -996,7 +996,7 @@
                         </span>
                         <span class="menu-title">Dashboard</span>
                     </a>
-                </div>
+                </div> --}}
 
                 <div class="menu-item">
                     <div class="menu-content pt-8 pb-2">
