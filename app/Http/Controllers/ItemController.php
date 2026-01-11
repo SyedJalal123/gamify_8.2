@@ -10,6 +10,7 @@ use App\Models\Attribute;
 use App\Models\ItemAttribute;
 use App\Models\CategoryGame;
 use App\Models\Service;
+use App\Models\Deal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,8 @@ class ItemController extends Controller
         $category = $request->category;
 
         $categories = Category::with('categoryGames.game','categoryGames.services')->get();
-        return view('frontend.items_create', compact('categories', 'category'));
+        $deals = Deal::all();
+        return view('frontend.items_create', compact('categories', 'category','deals'));
     }
 
     public function index()
@@ -156,6 +158,7 @@ class ItemController extends Controller
             $item = Item::create([
                 'category_id'         => $request->category_id,
                 'seller_id'           => Auth::id(),
+                'deal_id'             => $request->deal,
                 'category_game_id'    => $request->category_game_id,
                 'title'               => $request->title ?? null,
                 'images'              => !empty($imagePaths) ? json_encode($imagePaths) : null,
@@ -303,6 +306,7 @@ class ItemController extends Controller
             $item->update([
                 'category_id'         => $request->category_id,
                 'seller_id'           => Auth::id(),
+                'deal_id'             => $request->deal,
                 'category_game_id'    => $request->category_game_id,
                 'title'               => $request->title ?? null,
                 'images'              => !empty($imagePaths) ? json_encode($imagePaths) : null,

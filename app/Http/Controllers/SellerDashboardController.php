@@ -13,6 +13,7 @@ use App\Models\Withdraw;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Deal;
 use App\Models\BuyerRequestConversation;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
@@ -776,7 +777,8 @@ class SellerDashboardController extends Controller
     public function editOffer(Request $request, $offer_id) {
         $offer = Item::with('categoryGame.category', 'categoryGame.game')->find($offer_id);
         $categoryId = $offer->categoryGame->category->id;
+        $deals = Deal::all();
 
-        return view('frontend.dashboard.edit-offers', compact('offer', 'categoryId'));
+        return view('frontend.dashboard.edit-offers', compact('offer', 'categoryId', 'deals'));
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_game_id')->constrained('category_game')->onDelete('cascade');
+            $table->foreignId('deal_id')->nullable()->constrained('deals')->nullOnDelete();
             $table->text('title')->nullable();
             $table->json('images')->nullable();
             $table->string('feature_image')->nullable();

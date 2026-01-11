@@ -337,6 +337,20 @@
                                 <div class="small text-danger d-none dis_quantity_max_error_0">Volume Discount quantity cannot be greater than Total Quantity available</div>
                                 <div class="small text-danger d-none dis_quantity_min_error_0">Volume Discount quantity must be greater than Minimum Offer quantity</div>
                             </div>
+
+                            <!-- Deals Discount -->
+                            <div class="card-section {{ !in_array($categoryId, [1, 2, 4]) ? 'd-none' : '' }}">
+                                <div id="manual_method_show" class="select-2-theme currency topup mb-3">
+                                    <label class="form-label">Select Deals</label>
+                                    <select class="form-select" id="deal" name="deal">
+                                        <option selected value="">Choose Deal</option>
+                                        @foreach ($deals as $deal)    
+                                            <option {{ $offer->deal_id == $deal->id ? 'selected' : '' }} value="{{$deal->id}}">{{ $deal->title }} / {{$deal->discount_percentage}}% - ({{ date('d-M-Y', strtotime($deal->start_at)) }} / {{ date('d-M-Y', strtotime($deal->end_at)) }}) </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                {{-- <small class="form-text accounts accounts_class">When the buyer purchases your account, Gamify will instantly deliver the account details so you don't even have to be online!</small> --}}
+                            </div>
                         
                             <!-- Fee Structure -->
                             <div class="card-section">

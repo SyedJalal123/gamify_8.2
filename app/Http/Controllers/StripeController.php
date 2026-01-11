@@ -92,7 +92,7 @@ class StripeController extends Controller
         // dd($request->all());
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        $session_id = $request->get('session_id');  
+        $session_id = $request->get('session_id');
 
         if (!$session_id) {
             return redirect()->route('home')->with('error', 'No session ID found.');

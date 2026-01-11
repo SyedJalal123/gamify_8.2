@@ -18,6 +18,7 @@ use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Models\Seller;
 use App\Models\User;
+use App\Models\Deal;
 use Yajra\DataTables\Facades\DataTables;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Carbon;
@@ -34,304 +35,421 @@ class AdminDashboardController extends Controller
     public function index() {
         return view('backend.dashboard');
     }
+    // Articles
+        public function articles(Request $request) {
+            $articles = Article::with('category')->orderBy('id', 'desc');
+            $categories = ArticleCategory::with('articles')->orderBy('id', 'desc')->get();
 
-    public function articles(Request $request) {
-        $articles = Article::with('category')->orderBy('id', 'desc');
-        $categories = ArticleCategory::with('articles')->orderBy('id', 'desc')->get();
+            if($request->ajax()){
 
-        if($request->ajax()){
+                return DataTables::eloquent($articles)
+                ->addColumn('action_data', function($article) {
+                    $title = addslashes($article->name);
 
-            return DataTables::eloquent($articles)
-            ->addColumn('action_data', function($article) {
-                $title = addslashes($article->name);
-
-                return '
-                    <div class="menu-item px-3 float-end">
-                        <form method="POST" action="' . route('admin.articles.destroy', $article->id) . '" class="d-inline" onsubmit="return confirm(\'Are you sure you want to delete this article?\');">
-                            <input type="hidden" name="_token" value="' . csrf_token() . '">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-link text-danger m-0 menu-link align-baseline">Delete</button>
-                        </form>
-                    </div>
-                    <div data-bs-toggle="modal" onclick="edit_article_modal_values(' . $article->id . ')" data-bs-target="#kt_modal_edit_article" class="menu-item px-3 float-end">
-                        <span class="menu-link px-3">Show</span>
-                    </div>
-                ';
-            })
-            ->rawColumns(['title_data', 'action_data'])
-            ->make(true);
-        }
-
-        $articles = $articles->get();
-
-        return view('backend.articles', compact('articles','categories'));
-    }
-
-    public function add_article(Request $request) {
-        $categories = ArticleCategory::all();
-        return view('backend.add_article', compact('categories'));
-    }
-
-    public function store_article(Request $request) {
-        // dd($request->all());
-        try {
-            Article::create([
-                'category_id' => $request->category_id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'short_description' => $request->short_description,
-                'slug' => Str::slug($request->title) . '-' . rand(100000, 999999),
-            ]);
-            
-            return redirect()->back()->with('success', 'Article added successfully');
-        } catch (\Exception $e) {
-            Log::error('Article add failed: '.$e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while adding the article.');
-        }
-    }
-
-    public function edit_article(Request $request) {
-        // dd($request->all());
-
-        try {
-            $article = Article::where('id', $request->article_id)->first();
-
-            $article->category_id = $request->category_id;
-            $article->title = $request->title;
-            $article->description = $request->description;
-            $article->short_description = $request->short_description;
-            // $article->slug = Str::slug($request->title) . '-' . rand(100000, 999999);
-            $article->save();
-
-            
-
-            return redirect()->back()->with('success', 'Article updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Article update failed: '.$e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while updating the article.');
-        }
-    }
-
-    public function destroy_article(Request $request, $id){
-        try {
-            $article = Article::findOrFail($id);
-            $article->delete();
-
-            return redirect()->back()->with('success', 'Article deleted successfully');
-        } catch (\Exception $e) {
-            Log::error('Article delete failed: ' . $e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while deleting the article.');
-        }
-    }
-
-    public function article_catgories(Request $request) {
-        $categories = ArticleCategory::with('articles')->orderBy('id', 'desc');
-
-        if($request->ajax()){
-
-            return DataTables::eloquent($categories)
-            // ->addColumn('title_data', function($category) {
-            //     return '
-            //         <div class="d-flex align-items-center">
-            //             <div class="symbol symbol-50px overflow-hidden me-3">
-            //                 <img src="'.asset("uploads/games/".$category->image_name).'" alt="'.$category->name.'" style="width: 32px;height: 32px;" class="w-100" />
-            //             </div>
-            //             <div class="d-flex flex-column">
-            //                 <a href="#" class="text-gray-800 text-hover-primary mb-1">'.$category->name.'</a>
-            //             </div>
-            //         </div>
-            //     ';
-            // })
-            ->addColumn('action_data', function($category) {
-                $name = addslashes($category->name);
-
-                return '
-                    <div data-bs-toggle="modal" onclick="edit_category_modal_values(\'' . $name . '\', \'' . $category->id . '\')" data-bs-target="#kt_modal_edit_category" class="menu-item px-3 float-end">
-                        <span class="menu-link px-3">Edit</span>
-                    </div>
-                ';
-            })
-            ->rawColumns(['title_data', 'action_data'])
-            ->make(true);
-        }
-
-
-        return view('backend.article_catgories', compact('categories'));
-    }
-
-    public function add_article_category(Request $request) {
-        // dd($request->all());
-
-        try {
-            ArticleCategory::create([
-                'name' => $request->name,
-                'slug' => Str::slug($request->name) . '-' . rand(100000, 999999),
-            ]);
-            
-            return redirect()->back()->with('success', 'Category added successfully');
-        } catch (\Exception $e) {
-            Log::error('Category add failed: '.$e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while adding the category.');
-        }
-    }
-
-    public function edit_article_category(Request $request) {
-        // dd($request->all());
-
-        try {
-            $category = ArticleCategory::where('id', $request->category_id)->first();
-
-            $category->name = $request->name;
-            $category->slug = Str::slug($request->name) . '-' . rand(100000, 999999);
-            $category->save();
-
-            
-
-            return redirect()->back()->with('success', 'Category updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Category update failed: '.$e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while updating the category.');
-        }
-    }
-
-    public function games(Request $request) {
-        $games = Game::with('attributes')->orderBy('id', 'desc');
-
-        if($request->ajax()){
-
-            return DataTables::eloquent($games)
-            ->addColumn('title_data', function($game) {
-                return '
-                    <div class="d-flex align-items-center">
-                        <div class="symbol symbol-50px overflow-hidden me-3">
-                            <img src="'.asset("uploads/games/".$game->image_name).'" alt="'.$game->name.'" style="width: 32px;height: 32px;" class="w-100" />
+                    return '
+                        <div class="menu-item px-3 float-end">
+                            <form method="POST" action="' . route('admin.articles.destroy', $article->id) . '" class="d-inline" onsubmit="return confirm(\'Are you sure you want to delete this article?\');">
+                                <input type="hidden" name="_token" value="' . csrf_token() . '">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-link text-danger m-0 menu-link align-baseline">Delete</button>
+                            </form>
                         </div>
-                        <div class="d-flex flex-column">
-                            <a href="#" class="text-gray-800 text-hover-primary mb-1">'.$game->name.'</a>
+                        <div data-bs-toggle="modal" onclick="edit_article_modal_values(' . $article->id . ')" data-bs-target="#kt_modal_edit_article" class="menu-item px-3 float-end">
+                            <span class="menu-link px-3">Show</span>
                         </div>
-                    </div>
-                ';
-            })
-            ->addColumn('action_data', function($game) {
-                return '
-                        <div  data-bs-toggle="modal" onclick="edit_game_modal_values(\'' . $game->image . '\', \'' . $game->name . '\', \'' . $game->id . '\')" data-bs-target="#kt_modal_edit_game" class="menu-item px-3 float-end">
+                    ';
+                })
+                ->rawColumns(['title_data', 'action_data'])
+                ->make(true);
+            }
+
+            $articles = $articles->get();
+
+            return view('backend.articles', compact('articles','categories'));
+        }
+
+        public function add_article(Request $request) {
+            $categories = ArticleCategory::all();
+            return view('backend.add_article', compact('categories'));
+        }
+
+        public function store_article(Request $request) {
+            // dd($request->all());
+            try {
+                Article::create([
+                    'category_id' => $request->category_id,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'short_description' => $request->short_description,
+                    'slug' => Str::slug($request->title) . '-' . rand(100000, 999999),
+                ]);
+                
+                return redirect()->back()->with('success', 'Article added successfully');
+            } catch (\Exception $e) {
+                Log::error('Article add failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while adding the article.');
+            }
+        }
+
+        public function edit_article(Request $request) {
+            // dd($request->all());
+
+            try {
+                $article = Article::where('id', $request->article_id)->first();
+
+                $article->category_id = $request->category_id;
+                $article->title = $request->title;
+                $article->description = $request->description;
+                $article->short_description = $request->short_description;
+                // $article->slug = Str::slug($request->title) . '-' . rand(100000, 999999);
+                $article->save();
+
+                
+
+                return redirect()->back()->with('success', 'Article updated successfully');
+            } catch (\Exception $e) {
+                Log::error('Article update failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while updating the article.');
+            }
+        }
+
+        public function destroy_article(Request $request, $id){
+            try {
+                $article = Article::findOrFail($id);
+                $article->delete();
+
+                return redirect()->back()->with('success', 'Article deleted successfully');
+            } catch (\Exception $e) {
+                Log::error('Article delete failed: ' . $e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while deleting the article.');
+            }
+        }
+
+        public function article_catgories(Request $request) {
+            $categories = ArticleCategory::with('articles')->orderBy('id', 'desc');
+
+            if($request->ajax()){
+
+                return DataTables::eloquent($categories)
+                // ->addColumn('title_data', function($category) {
+                //     return '
+                //         <div class="d-flex align-items-center">
+                //             <div class="symbol symbol-50px overflow-hidden me-3">
+                //                 <img src="'.asset("uploads/games/".$category->image_name).'" alt="'.$category->name.'" style="width: 32px;height: 32px;" class="w-100" />
+                //             </div>
+                //             <div class="d-flex flex-column">
+                //                 <a href="#" class="text-gray-800 text-hover-primary mb-1">'.$category->name.'</a>
+                //             </div>
+                //         </div>
+                //     ';
+                // })
+                ->addColumn('action_data', function($category) {
+                    $name = addslashes($category->name);
+
+                    return '
+                        <div data-bs-toggle="modal" onclick="edit_category_modal_values(\'' . $name . '\', \'' . $category->id . '\')" data-bs-target="#kt_modal_edit_category" class="menu-item px-3 float-end">
                             <span class="menu-link px-3">Edit</span>
                         </div>
-                ';
-            })
-            ->rawColumns(['title_data', 'action_data'])
-            ->make(true);
-        }
-
-
-        return view('backend.games', compact('games'));
-    }
-
-    public function add_game(Request $request) {
-        // dd($request->all());
-
-        try {
-            if ($request->hasFile('image')) {
-                // if ($user->profile && file_exists(public_path('uploads/games/' . $request->image))) {
-                //     unlink(public_path('uploads/games/' . $request->image));
-                //     unlink(public_path('uploads/games/28_' . $request->image));
-                // }
-
-                $image = $request->file('image');
-
-                // Generate unique filename
-                $randomNumber = rand(1, 99999);
-                $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
-
-                // Original upload path
-                $originalPath = public_path('uploads/games/' . $filename);
-                $image->move(public_path('uploads/games'), $filename);
-
-                // Initialize Intervention Image
-                $imgManager = new ImageManager(new Driver());
-
-                // Resize to 125x125
-                $img125 = $imgManager->read($originalPath)->cover(32, 32);
-                $savePath125 = public_path('uploads/games/' . $filename);
-                $img125->save($savePath125);
-
-                // Resize to 44x44
-                $img44 = $imgManager->read($originalPath)->cover(28, 28);
-                $savePath44 = public_path('uploads/games/28_' . $filename);
-                $img44->save($savePath44);
-
+                    ';
+                })
+                ->rawColumns(['title_data', 'action_data'])
+                ->make(true);
             }
 
-            Game::create([
-                'name' => $request->name,
-                'image' => 'uploads/games/'.$filename,
-                'image_name' => $filename,
-            ]);
-            
-            return redirect()->back()->with('success', 'Game added successfully');
-        } catch (\Exception $e) {
-            Log::error('Game add failed: '.$e->getMessage());
 
-            return redirect()->back()->with('error', 'An error occurred while adding the game.');
+            return view('backend.article_catgories', compact('categories'));
         }
-    }
 
-    public function edit_game(Request $request) {
-        // dd($request->all());
+        public function add_article_category(Request $request) {
+            // dd($request->all());
 
-        try {
-            $game = Game::where('id', $request->game_id)->first();
+            try {
+                ArticleCategory::create([
+                    'name' => $request->name,
+                    'slug' => Str::slug($request->name) . '-' . rand(100000, 999999),
+                ]);
+                
+                return redirect()->back()->with('success', 'Category added successfully');
+            } catch (\Exception $e) {
+                Log::error('Category add failed: '.$e->getMessage());
 
-            if ($request->hasFile('image')) {
-                // if ($game->image && file_exists(public_path($game->image))) {
-                //     unlink(public_path($game->image));
-                //     unlink(public_path('uploads/games/28_'.$game->image_name));
-                // }
+                return redirect()->back()->with('error', 'An error occurred while adding the category.');
+            }
+        }
 
-                $image = $request->file('image');
+        public function edit_article_category(Request $request) {
+            // dd($request->all());
 
-                // Generate unique filename
-                $randomNumber = rand(1, 99999);
-                $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+            try {
+                $category = ArticleCategory::where('id', $request->category_id)->first();
 
-                // Original upload path
-                $originalPath = public_path('uploads/games/' . $filename);
-                $image->move(public_path('uploads/games'), $filename);
+                $category->name = $request->name;
+                $category->slug = Str::slug($request->name) . '-' . rand(100000, 999999);
+                $category->save();
 
-                // Initialize Intervention Image
-                $imgManager = new ImageManager(new Driver());
+                
 
-                // Resize to 125x125
-                $img125 = $imgManager->read($originalPath)->cover(32, 32);
-                $savePath125 = public_path('uploads/games/' . $filename);
-                $img125->save($savePath125);
+                return redirect()->back()->with('success', 'Category updated successfully');
+            } catch (\Exception $e) {
+                Log::error('Category update failed: '.$e->getMessage());
 
-                // Resize to 44x44
-                $img44 = $imgManager->read($originalPath)->cover(28, 28);
-                $savePath44 = public_path('uploads/games/28_' . $filename);
-                $img44->save($savePath44);
+                return redirect()->back()->with('error', 'An error occurred while updating the category.');
+            }
+        }
+    // End Articles
 
-                $game->image = 'uploads/games/'.$filename;
-                $game->image_name = $filename;
+    // Deals
+        public function deals(Request $request) {
+            $deals = Deal::orderBy('id', 'desc');
+
+            if($request->ajax()){
+
+                return DataTables::eloquent($deals)
+                ->addColumn('duration', function($deal) {
+                    return '<div>'.Carbon::parse($deal->start_at)->format('M d,Y').' - '.Carbon::parse($deal->end_at)->format('M d,Y').'</div>';
+                })
+                ->addColumn('discount', function($deal) {
+                    return '<div>'.$deal->discount_percentage.'%</div>';
+                })
+                ->addColumn('active', function($deal) {
+                    $is_active = 'Active';
+                    if($deal->is_active == 0){
+                        $is_active = 'Inactive';
+                    }
+                    return '<div>'.$is_active.'</div>';
+                })
+                ->addColumn('action_data', function($deal) {
+                    return '
+                            <div  data-bs-toggle="modal" onclick="edit_game_modal_values(\'' . $deal->title . '\', \'' . $deal->discount_percentage . '\', \'' . $deal->start_at . '\', \'' . $deal->end_at . '\', \'' . $deal->is_active . '\', \'' . $deal->id . '\')" data-bs-target="#kt_modal_edit_game" class="menu-item px-3 float-end">
+                                <span class="menu-link px-3">Edit</span>
+                            </div>
+                    ';
+                })
+                ->rawColumns(['duration','active','discount','action_data'])
+                ->make(true);
             }
 
-            $game->name = $request->name;
-            $game->save();
+            $deals = $deals->get();
 
-            
-
-            return redirect()->back()->with('success', 'Game updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Game update failed: '.$e->getMessage());
-
-            return redirect()->back()->with('error', 'An error occurred while updating the game.');
+            return view('backend.deals', compact('deals'));
         }
-    }
+
+        public function add_deal(Request $request) {
+            // dd($request->all());
+            try {
+                $request->validate([
+                    'title' => 'required',
+                    'discount_percentage' => 'required|integer|min:1|max:100',
+                    'date_range' => 'required|string',
+                ]);
+
+                [$start, $end] = array_map('trim', explode('-', $request->date_range));
+                $startAt = Carbon::createFromFormat('m/d/Y', $start)->startOfDay();
+                $endAt   = Carbon::createFromFormat('m/d/Y', $end)->endOfDay();
+
+                $isactive = 0;
+                if(isset($request->is_active)){
+                    $isactive = 1;
+                }
+                
+                Deal::create([
+                    'title' => $request->title,
+                    'discount_percentage' => $request->discount_percentage,
+                    'start_at' => $startAt,
+                    'end_at' => $endAt,
+                    'is_active' => $isactive,
+                ]);
+                
+                return redirect()->back()->with('success', 'Deal added successfully');
+            } catch (\Exception $e) {
+                Log::error('Deal add failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while adding the deal.');
+            }
+        }
+
+        public function edit_deal(Request $request) {
+            // dd($request->all());
+            try {
+                $deal = Deal::where('id',$request->edit_deal_id)->first();
+
+                [$start, $end] = array_map('trim', explode('-', $request->date_range));
+                
+                $startAt = Carbon::createFromFormat('m/d/Y', $start)->startOfDay();
+                $endAt   = Carbon::createFromFormat('m/d/Y', $end)->endOfDay();
+                
+                $isactive = 0;
+                if(isset($request->is_active)){
+                    $isactive = 1;
+                }
+                
+                $deal->title = $request->title;
+                $deal->start_at = $startAt;
+                $deal->end_at = $endAt;
+                $deal->is_active = $isactive;
+                $deal->save();
+                
+                return redirect()->back()->with('success', 'Deal updated successfully');
+            } catch (\Exception $e) {
+                Log::error('Deal update failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while updating the deal.');
+            }
+        }
+
+        public function destroy_deal(Request $request, $id){
+            try {
+                $article = Deal::findOrFail($id);
+                $article->delete();
+
+                return redirect()->back()->with('success', 'Deal deleted successfully');
+            } catch (\Exception $e) {
+                Log::error('Deal delete failed: ' . $e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while deleting the deal.');
+            }
+        }
+
+    // End Deals
+
+    // Games
+        public function games(Request $request) {
+            $games = Game::with('attributes')->orderBy('id', 'desc');
+
+            if($request->ajax()){
+
+                return DataTables::eloquent($games)
+                ->addColumn('title_data', function($game) {
+                    return '
+                        <div class="d-flex align-items-center">
+                            <div class="symbol symbol-50px overflow-hidden me-3">
+                                <img src="'.asset("uploads/games/".$game->image_name).'" alt="'.$game->name.'" style="width: 32px;height: 32px;" class="w-100" />
+                            </div>
+                            <div class="d-flex flex-column">
+                                <a href="#" class="text-gray-800 text-hover-primary mb-1">'.$game->name.'</a>
+                            </div>
+                        </div>
+                    ';
+                })
+                ->addColumn('action_data', function($game) {
+                    return '
+                            <div  data-bs-toggle="modal" onclick="edit_game_modal_values(\'' . $game->image . '\', \'' . $game->name . '\', \'' . $game->id . '\')" data-bs-target="#kt_modal_edit_game" class="menu-item px-3 float-end">
+                                <span class="menu-link px-3">Edit</span>
+                            </div>
+                    ';
+                })
+                ->rawColumns(['title_data', 'action_data'])
+                ->make(true);
+            }
+
+
+            return view('backend.games', compact('games'));
+        }
+
+        public function add_game(Request $request) {
+            // dd($request->all());
+
+            try {
+                if ($request->hasFile('image')) {
+                    // if ($user->profile && file_exists(public_path('uploads/games/' . $request->image))) {
+                    //     unlink(public_path('uploads/games/' . $request->image));
+                    //     unlink(public_path('uploads/games/28_' . $request->image));
+                    // }
+
+                    $image = $request->file('image');
+
+                    // Generate unique filename
+                    $randomNumber = rand(1, 99999);
+                    $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+
+                    // Original upload path
+                    $originalPath = public_path('uploads/games/' . $filename);
+                    $image->move(public_path('uploads/games'), $filename);
+
+                    // Initialize Intervention Image
+                    $imgManager = new ImageManager(new Driver());
+
+                    // Resize to 125x125
+                    $img125 = $imgManager->read($originalPath)->cover(32, 32);
+                    $savePath125 = public_path('uploads/games/' . $filename);
+                    $img125->save($savePath125);
+
+                    // Resize to 44x44
+                    $img44 = $imgManager->read($originalPath)->cover(28, 28);
+                    $savePath44 = public_path('uploads/games/28_' . $filename);
+                    $img44->save($savePath44);
+
+                }
+
+                Game::create([
+                    'name' => $request->name,
+                    'image' => 'uploads/games/'.$filename,
+                    'image_name' => $filename,
+                ]);
+                
+                return redirect()->back()->with('success', 'Game added successfully');
+            } catch (\Exception $e) {
+                Log::error('Game add failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while adding the game.');
+            }
+        }
+
+        public function edit_game(Request $request) {
+            // dd($request->all());
+
+            try {
+                $game = Game::where('id', $request->game_id)->first();
+
+                if ($request->hasFile('image')) {
+                    // if ($game->image && file_exists(public_path($game->image))) {
+                    //     unlink(public_path($game->image));
+                    //     unlink(public_path('uploads/games/28_'.$game->image_name));
+                    // }
+
+                    $image = $request->file('image');
+
+                    // Generate unique filename
+                    $randomNumber = rand(1, 99999);
+                    $filename = time() . '.' . $randomNumber . '.' . $image->getClientOriginalExtension();
+
+                    // Original upload path
+                    $originalPath = public_path('uploads/games/' . $filename);
+                    $image->move(public_path('uploads/games'), $filename);
+
+                    // Initialize Intervention Image
+                    $imgManager = new ImageManager(new Driver());
+
+                    // Resize to 125x125
+                    $img125 = $imgManager->read($originalPath)->cover(32, 32);
+                    $savePath125 = public_path('uploads/games/' . $filename);
+                    $img125->save($savePath125);
+
+                    // Resize to 44x44
+                    $img44 = $imgManager->read($originalPath)->cover(28, 28);
+                    $savePath44 = public_path('uploads/games/28_' . $filename);
+                    $img44->save($savePath44);
+
+                    $game->image = 'uploads/games/'.$filename;
+                    $game->image_name = $filename;
+                }
+
+                $game->name = $request->name;
+                $game->save();
+
+                
+
+                return redirect()->back()->with('success', 'Game updated successfully');
+            } catch (\Exception $e) {
+                Log::error('Game update failed: '.$e->getMessage());
+
+                return redirect()->back()->with('error', 'An error occurred while updating the game.');
+            }
+        }
+    // End Games
 
     public function items(Request $request, $category) {
         if($category == 'TopUp') {

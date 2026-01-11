@@ -132,8 +132,26 @@
                                     <div class="d-flex justify-content-between border-bottom px-4 py-3">
                                         <p class="m-0 text-theme-secondary">Price</p>
                                         <div class="d-flex flex-row">
+
+                                            {{-- If Flash Deal Activated --}}
+                                                @php
+                                                    $underline_class = '';
+                                                    $discount = 0;
+                                                    $afterPrice = $item->price;
+                                                @endphp
+                                                @if($item->deal != null && $item->deal->is_active == 1)
+                                                @php
+                                                    $underline_class = 'text-decoration-line-through text-danger';
+                                                    $discount = $item->deal->discount_percentage;
+                                                    $afterPrice = $item->price - ($item->price * $discount / 100);
+                                                @endphp
+                                                @endif
+                                            {{-- If Flash Deal Activated --}}
                                             @if(!$isTopup)
-                                                <h5 class="m-0 fw-bold">${{ number_format($item->price, 4) }}</h5>
+                                                <h5 class="m-0 fw-bold {{$underline_class}}">${{ number_format($item->price, 4) }}</h5>
+                                                @if($item->deal != null && $item->deal->is_active == 1)
+                                                <h5 class="m-0 fw-bold">&nbsp;${{ number_format($afterPrice, 4) }}</h5>
+                                                @endif
                                                 <span class="pl-1">/ {{ $item->categoryGame->currency_type }}</span>
                                             @else
                                                 <h5 class="m-0 fw-bold">${{ number_format($item->price * (int) $topupValue, 4) }}</h5>
@@ -148,8 +166,8 @@
                                             <input type="hidden" name="price" value="{{ $item->price * (int) $topupValue }}">
                                             <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * (int) $topupValue * $item->minimum_quantity }}">
                                         @else
-                                            <input type="hidden" name="price" value="{{ $item->price }}">
-                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * $item->minimum_quantity }}">
+                                            <input type="hidden" name="price" value="{{ $afterPrice }}">
+                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $afterPrice * $item->minimum_quantity }}">
                                         @endif
                                         
                                         <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
@@ -207,7 +225,7 @@
                                                 @if($isTopup)
                                                     id="totalPrice" name="totalPrice">{{ number_format($item->price * (int) $topupValue * $item->minimum_quantity, 2) }}
                                                 @else
-                                                    id="totalPrice" name="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}
+                                                    id="totalPrice" name="totalPrice">{{ number_format($afterPrice * $item->minimum_quantity, 2) }}
                                                 @endif
                                                 </span>
                                                 | Buy now
@@ -381,7 +399,24 @@
                                     <div class="d-flex justify-content-between px-4 py-3">
                                         <p class="m-0 text-theme-secondary">Price</p>
                                         <div class="d-flex flex-row">
-                                            <h5 class="m-0 fw-bold">${{ number_format($item->price, 2) }}</h5>
+                                            {{-- If Flash Deal Activated --}}
+                                                @php
+                                                    $underline_class = '';
+                                                    $discount = 0;
+                                                    $afterPrice = $item->price;
+                                                @endphp
+                                                @if($item->deal != null && $item->deal->is_active == 1)
+                                                @php
+                                                    $underline_class = 'text-decoration-line-through text-danger';
+                                                    $discount = $item->deal->discount_percentage;
+                                                    $afterPrice = $item->price - ($item->price * $discount / 100);
+                                                @endphp
+                                                @endif
+                                            {{-- If Flash Deal Activated --}}
+                                            <h5 class="m-0 fw-bold {{$underline_class}}">${{ number_format($item->price, 2) }}</h5>
+                                            @if($item->deal != null && $item->deal->is_active == 1)
+                                            <h5 class="m-0 fw-bold">&nbsp;${{number_format($afterPrice,2)}}</h5>
+                                            @endif
                                             @if ($item->categoryGame->currency_type != null)
                                                 <span class="pl-1">/ {{ $item->categoryGame->currency_type }}</span>
                                             @endif
@@ -428,8 +463,8 @@
                                         <form method="GET" action="{{ route('checkout') }}" class="p-3">
                                             @csrf
                                             <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                            <input type="hidden" name="price" value="{{ $item->price }}">
-                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price * $item->minimum_quantity }}">
+                                            <input type="hidden" name="price" value="{{ $afterPrice }}">
+                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $afterPrice * $item->minimum_quantity }}">
                                             <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
 
                                             <div class="d-flex flex-column p-2">
@@ -483,7 +518,7 @@
                                                 <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
                                                     id="price-submit-button">
                                                     $<span
-                                                        id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
+                                                        id="totalPrice">{{ number_format($afterPrice * $item->minimum_quantity, 2) }}</span>
                                                     | Buy now
                                                 </button>
                                             @endif
@@ -536,8 +571,8 @@
                                         <form method="GET" action="{{ route('checkout') }}" class="p-3">
                                             @csrf
                                             <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                            <input type="hidden" name="price" value="{{ $item->price }}">
-                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $item->price }}">
+                                            <input type="hidden" name="price" value="{{ $afterPrice }}">
+                                            <input type="hidden" id="total-price" name="totalPrice" value="{{ $afterPrice }}">
                                             <input type="hidden" id="discount-percentage" name="discountPercentage" value="0">
 
                                             @if(auth()->id() == $item->seller_id) 
@@ -548,7 +583,7 @@
                                                 <button type="submit" class="btn btn-dark w-fill mb-2 mx-2 py-3 fw-bold br-10"
                                                     id="price-submit-button">
                                                     $<span
-                                                        id="totalPrice">{{ number_format($item->price * $item->minimum_quantity, 2) }}</span>
+                                                        id="totalPrice">{{ number_format($afterPrice * $item->minimum_quantity, 2) }}</span>
                                                     | Buy now
                                                 </button>
                                             @endif
@@ -707,13 +742,12 @@
             
         });
 
-
         function adjustQty() {
             const quantityInput = document.getElementById('quantity-input');
             const quantity = parseInt(quantityInput.value);
             const minQuantity = parseInt({{ $item->minimum_quantity }});
             const maxQuantity = parseInt({{ $item->quantity_available }});
-            const price = parseFloat({{ $item->price }});
+            const price = parseFloat({{ $afterPrice }});
             let discountArray = @json($discountArray);
 
             const submitBtn = document.getElementById('price-submit-button');

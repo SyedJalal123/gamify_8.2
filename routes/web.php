@@ -177,6 +177,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/ckeditor/upload', [AdminDashboardController::class, 'ckeditor_upload'])->name('ckeditor.upload');
     Route::delete('/articles/{id}', [AdminDashboardController::class, 'destroy_article'])->name('articles.destroy');
 
+    Route::get('/games', [AdminDashboardController::class, 'games'])->name('games');
+    Route::post('/add_game', [AdminDashboardController::class, 'add_game'])->name('add_game');
+    Route::post('/edit_game', [AdminDashboardController::class, 'edit_game'])->name('edit_game');
+
+    Route::get('/deals', [AdminDashboardController::class, 'deals'])->name('deals');
+    Route::post('/add_deal', [AdminDashboardController::class, 'add_deal'])->name('add_deal');
+    Route::post('/edit_deal', [AdminDashboardController::class, 'edit_deal'])->name('edit_deal');
+    Route::delete('/deals/{id}', [AdminDashboardController::class, 'destroy_deal'])->name('deals.destroy');
+
     Route::get('/tickets', [AdminDashboardController::class, 'tickets'])->name('tickets');
     Route::get('/change_ticket_status', [AdminDashboardController::class, 'change_ticket_status'])->name('change_ticket_status');
     Route::get('/get-ticket/{id}', [AdminDashboardController::class, 'get_ticket'])->name('get-ticket');

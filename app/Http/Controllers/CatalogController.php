@@ -130,7 +130,7 @@ class CatalogController extends Controller
         }else if ($categoryGame->category->id == 5){
             return view('frontend.catalog.boostingCatalog', compact('categoryGame'));
         }else if($categoryGame->category->id == 1) {
-            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->get();
+            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller', 'deal')->get();
             
             $grouped = collect();  // Holds the best seller's item for each topup value
             $sellerStats = [];
@@ -213,7 +213,7 @@ class CatalogController extends Controller
                 // dd($sortedItems);
                 return view('frontend.catalog._items', ['items' => $paginatedItems])->render();
             }
-    
+
             return view('frontend.catalog.catalog', [
                 'categoryGame' => $categoryGame,
                 'items' => $paginatedItems,
@@ -221,7 +221,7 @@ class CatalogController extends Controller
             ]);
         } else {
             // Default category view
-            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller')->paginate(12)->withQueryString();
+            $items = $itemsQuery->with('attributes', 'categoryGame.game', 'seller','deal')->paginate(12)->withQueryString();
         
             if ($request->ajax()) {
                 // Optional: render differently if needed

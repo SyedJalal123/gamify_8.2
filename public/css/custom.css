@@ -2072,6 +2072,10 @@ input[type=number] {
     background-color: var(--background-card);
 }
 
+.text-decoration-line-through {
+    text-decoration: line-through;
+}
+
 .underline {
     text-decoration: underline;
 } 

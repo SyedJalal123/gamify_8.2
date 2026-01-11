@@ -5,8 +5,23 @@
     @if ($items->count() > 0)
     <div class="row-3-2-1">
         @foreach ($items as $item)
-        <div class="position-relative">
+        
+        <div class="position-relative overflow-hidden">
             <a wire:navigate href="{{ route('item.detail', $item->id) }}" class="text-dark text-decoration-none animate-class">
+                @php
+                    $underline_class = '';
+                    $discount = 0;
+                @endphp
+                @if($item->deal != null && $item->deal->is_active == 1)
+                @php
+                    $underline_class = 'text-decoration-line-through text-danger';
+                    $discount = $item->deal->discount_percentage;
+                @endphp
+                <span class="badge bg-danger text-theme-primary" 
+                style="position: absolute;top: 10px;right: -30px;transform: rotate(45deg);padding: 8px 40px;font-size: 0.9rem;">
+                    -{{$item->deal->discount_percentage}}%
+                </span>
+                @endif
                 <div class="drop-box">
                     <div class="d-flex flex-row">
                         @if (Request::segment(1) == 'user-profile')
@@ -34,15 +49,26 @@
                     </div>
                     <p class="m-0">
                         @php
-                        $price = floor($item->price * 10000) / 10000;
-
-                        $num = strlen(substr(strrchr($price, "."), 1));
+                            $price = floor($item->price * 10000) / 10000;
+                            $cutPrice = $price - ($price * $discount / 100);
+                            $num = strlen(substr(strrchr($price, "."), 1));
                         @endphp
+
                         @if($num >= 4)
-                        <strong class="fs-20">${{ number_format($price * (int) $topupValue, 4, '.', '') }}</strong>
+                        <strong class="fs-20 {{$underline_class}}">${{ number_format($price * (int) $topupValue, 4, '.', '') }}</strong>
                         @else
-                        <strong class="fs-20">${{ number_format($price * (int) $topupValue, 2, '.', '') }}</strong>
+                        <strong class="fs-20 {{$underline_class}}">${{ number_format($price * (int) $topupValue, 2, '.', '') }}</strong>
                         @endif
+
+                        
+                        @if($item->deal != null && $item->deal->is_active == 1)
+                        @if($num >= 4)
+                        <strong class="fs-20">${{ number_format($cutPrice, 4, '.', '') }}</strong>
+                        @else
+                        <strong class="fs-20">${{ number_format($cutPrice, 2, '.', '') }}</strong>
+                        @endif
+                        @endif
+                        
                     </p>
                 </div>
                 <div class="drop-box skeleton-overlay skeleton-overlay-start h-100" style="opacity: 1;">
