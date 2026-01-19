@@ -99,9 +99,9 @@ class StripeController extends Controller
         }
 
         $session = CheckoutSession::retrieve($session_id);
-dd($session->metadata);
-        $order = $this->createOrder($session->metadata);
 
+        $order = $this->createOrder($session->metadata);
+dd($order);
         // Access the metadata
             // $order_id = $session->metadata->order_id;
             // $conversation_id = $session->metadata->conversation_id;
