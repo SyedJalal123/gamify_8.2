@@ -342,21 +342,35 @@ class StripeController extends Controller
             //     'photo_1' => asset("$path_1"),
             //     'photo_2' => asset("$path_2"),
             // ];
+DB::commit(); // always commit payment first
 
-            Notification::send($seller, new BoostingOfferNotification($data));
+if ($seller instanceof \Illuminate\Foundation\Auth\User) {
 
-            $notification_exists = User::where('id',$seller->id)->whereHas('emailNotifications', function($query){
-                $query->where('name','New order');
-            })->first();
+    $notificationExists = $seller->emailNotifications()
+        ->where('name', 'New order')
+        ->exists();
+
+    if ($notificationExists) {
+        $seller->notify(new BoostingOfferNotification($data));
+    }
+}
+
+return $order;
+
+            // Notification::send($user, new BoostingOfferNotification($data));
+
+            // $notification_exists = User::where('id',$seller->id)->whereHas('emailNotifications', function($query){
+            //     $query->where('name','New order');
+            // })->first();
             
-            if($notification_exists != null){
-                Mail::to($seller->email)->send(new OrderMail($emailData));
-            }
+            // if($notification_exists != null){
+            //     Mail::to($seller->email)->send(new OrderMail($emailData));
+            // }
 
-            // Notification::send($admins, new BoostingOfferNotification($data1));
+            // // Notification::send($admins, new BoostingOfferNotification($data1));
 
-            DB::commit();
-            return $order;
+            // DB::commit();
+            // return $order;
 
         } catch (\Throwable $e) {
             DB::rollBack();

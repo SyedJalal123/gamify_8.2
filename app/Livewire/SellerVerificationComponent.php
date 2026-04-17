@@ -238,8 +238,8 @@ class SellerVerificationComponent extends Component
                 'category'  => 'notification',
             ];
 
-            Notification::send($admins, new OrderDisputedNotification($data));
-            Notification::send($this->conversation->seller, new BoostingOfferNotification($data1));
+            // Notification::send($admins, new OrderDisputedNotification($data));
+            // Notification::send($this->conversation->seller, new BoostingOfferNotification($data1));
 
             // Email
                 if (auth()->id() == $this->order->buyer_id) {
