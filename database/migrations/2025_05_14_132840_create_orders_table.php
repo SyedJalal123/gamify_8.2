@@ -45,7 +45,7 @@ return new class extends Migration
             $table->text('dispute_details')->nullable();
 
             $table->integer('feedback')->default('0');
-            $table->text('feedback_comment')->default('GGWP!');
+            $table->string('feedback_comment')->default('GGWP!');
 
             $table->timestamp('feedback_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
